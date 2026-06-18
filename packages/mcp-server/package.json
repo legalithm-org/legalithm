@@ -1,6 +1,6 @@
 {
   "name": "legalithm-mcp-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "EU AI Act compliance MCP server for Claude Code / Cursor — classify, explain obligations, generate Article 50 disclosures. Offline by default.",
   "mcpName": "io.github.PedramMadani/legalithm-mcp-server",
   "type": "module",
@@ -8,12 +8,25 @@
     "legalithm-mcp": "dist/index.js"
   },
   "main": "./dist/index.js",
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["eu-ai-act", "ai-act", "compliance", "mcp", "model-context-protocol", "cursor", "claude-code", "legalithm", "ai-governance"],
+  "keywords": [
+    "eu-ai-act",
+    "ai-act",
+    "compliance",
+    "mcp",
+    "model-context-protocol",
+    "cursor",
+    "claude-code",
+    "legalithm",
+    "ai-governance"
+  ],
   "license": "MIT",
   "author": "Legalithm",
   "homepage": "https://www.legalithm.com",

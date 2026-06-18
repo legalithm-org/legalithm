@@ -1,13 +1,16 @@
 {
   "name": "legalithm",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "EU AI Act compliance in your coding loop — detect AI deps, generate a dated compliance record, and gate CI/agents on it.",
   "bin": {
     "legalithm": "dist/index.js"
   },
   "type": "module",
   "main": "./dist/index.js",
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "npm run build"
