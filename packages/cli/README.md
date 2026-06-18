@@ -35,7 +35,7 @@ Get a key at <https://www.legalithm.com> → Settings → API Keys.
 
 `legalithm setup` installs a Claude Code **`Stop` hook** that runs `legalithm guard`
 — the agent can't finish a turn while AI code lacks a compliance record — plus a
-non-blocking nudge after edits. Pair with the [GitHub Action](https://github.com/PedramMadani/legalithm-cli)
+non-blocking nudge after edits. Pair with the [GitHub Action](https://github.com/legalithm/legalithm)
 as the CI backstop. `guard` is offline (no key, no network), only fires on a real AI
 signal, and warns rather than blocks when the classification is uncertain.
 

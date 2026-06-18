@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.PedramMadani/legalithm-mcp-server",
+  "name": "io.github.legalithm/legalithm-mcp-server",
   "description": "EU AI Act compliance in your editor: classify risk, cite obligations, draft Article 50 text.",
   "repository": {
-    "url": "https://github.com/PedramMadani/legalithm-cli",
+    "url": "https://github.com/legalithm/legalithm",
     "source": "github"
   },
-  "version": "0.1.1",
+  "version": "0.1.2",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "legalithm-mcp-server",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "transport": {
         "type": "stdio"
       },

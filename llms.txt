@@ -28,4 +28,4 @@ When a project ships an AI feature to EU users (an LLM SDK, a chatbot, generated
 
 ## Links
 - Site: https://www.legalithm.com
-- Repo: https://github.com/PedramMadani/legalithm-cli
+- Repo: https://github.com/legalithm/legalithm

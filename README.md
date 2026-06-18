@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: PedramMadani/legalithm-cli/packages/action@v1
+      - uses: legalithm/legalithm/packages/action@v1
         with:
           api-key: ${{ secrets.LEGALITHM_API_KEY }}
 ```
