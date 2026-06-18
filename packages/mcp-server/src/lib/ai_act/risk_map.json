@@ -1,0 +1,468 @@
+{
+  "unacceptable": {
+    "article": "5",
+    "title": "Prohibited AI Practices",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-5",
+    "patterns": [
+      "subliminal manipulation",
+      "manipulation",
+      "subliminal techniques",
+      "deceptive techniques",
+      "dark patterns to distort behaviour",
+      "materially distort behaviour",
+      "exploiting vulnerabilities",
+      "exploitation of vulnerabilities",
+      "exploit age-related vulnerability",
+      "exploit disability-related vulnerability",
+      "exploit socioeconomic vulnerability",
+      "social scoring",
+      "social credit",
+      "citizen scoring",
+      "trustworthiness score for citizens",
+      "public authority social score",
+      "predictive policing based on profiling",
+      "predictive policing based solely on profiling",
+      "individual criminal risk profiling",
+      "predict offending risk solely from personal profiles",
+      "individual crime risk scoring from profiling",
+      "scraping facial images",
+      "untargeted scraping",
+      "facial image scraping",
+      "scraping faces from internet",
+      "scraping faces from cctv",
+      "bulk scrape face images",
+      "mass collection of facial photos",
+      "emotion recognition in workplace",
+      "emotion recognition in education",
+      "workplace emotion detection",
+      "employee emotion monitoring",
+      "student emotion monitoring",
+      "classroom emotion analytics",
+      "employee mood detection",
+      "biometric categorisation",
+      "biometric categorization",
+      "biometric classification by race",
+      "biometric classification by ethnicity",
+      "categorisation based on sensitive",
+      "infer religion from facial biometrics",
+      "infer sexual orientation from biometrics",
+      "real-time remote biometric identification",
+      "facial recognition in public",
+      "real-time biometric surveillance",
+      "live facial recognition public",
+      "live facial recognition in public spaces",
+      "real-time face identification in streets"
+    ],
+    "examples": [
+      "AI system scoring citizens based on social behavior",
+      "Real-time remote biometric identification in public spaces",
+      "Targeted manipulation of vulnerable persons",
+      "Social credit scoring system",
+      "Scraping facial images from internet to build recognition database",
+      "Monitoring employee emotions in the workplace",
+      "Predictive policing targeting individuals based solely on profiling",
+      "Categorising people by race using biometric data"
+    ]
+  },
+  "high_risk": {
+    "article": "6(2)",
+    "annex": "III",
+    "title": "High-Risk AI Systems",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-6",
+    "categories": [
+      {
+        "id": "biometric_identification",
+        "title": "Biometric Identification and Categorisation",
+        "annex_area": 1,
+        "patterns": [
+          "biometric authentication",
+          "biometric identification",
+          "biometric verification",
+          "facial recognition",
+          "fingerprint matching",
+          "fingerprint identification",
+          "iris recognition",
+          "voice identification",
+          "gait recognition",
+          "face verification",
+          "identity verification using biometrics"
+        ],
+        "examples": [
+          "Face recognition for employee attendance",
+          "Biometric ID verification at airport gates"
+        ]
+      },
+      {
+        "id": "critical_infrastructure",
+        "title": "Management and Operation of Critical Infrastructure",
+        "annex_area": 2,
+        "patterns": [
+          "critical infrastructure",
+          "road traffic management",
+          "traffic management system",
+          "water supply management",
+          "water treatment control",
+          "gas supply management",
+          "heating supply management",
+          "electricity supply management",
+          "power grid management",
+          "energy grid control",
+          "digital infrastructure management",
+          "transport infrastructure",
+          "railway management",
+          "air traffic control"
+        ],
+        "examples": [
+          "AI-controlled power grid load balancing",
+          "Automated traffic signal management",
+          "Water treatment plant AI control system"
+        ]
+      },
+      {
+        "id": "education",
+        "title": "Education and Vocational Training",
+        "annex_area": 3,
+        "patterns": [
+          "exam scoring",
+          "exam grading",
+          "admission decisions",
+          "admission scoring",
+          "student assessment",
+          "personalized learning",
+          "automated grading",
+          "essay grading",
+          "proctoring",
+          "behaviour detection in classroom",
+          "academic performance prediction",
+          "student monitoring",
+          "educational outcome prediction",
+          "learning disability detection"
+        ],
+        "examples": [
+          "Automated essay grading",
+          "AI-powered university admission scoring",
+          "Remote exam proctoring system"
+        ]
+      },
+      {
+        "id": "employment",
+        "title": "Employment, Workers Management and Access to Self-employment",
+        "annex_area": 4,
+        "patterns": [
+          "recruitment",
+          "cv screening",
+          "resume screening",
+          "hiring decision",
+          "performance evaluation",
+          "employee performance",
+          "promotion decision",
+          "termination decision",
+          "task allocation",
+          "workforce management",
+          "job candidate screening",
+          "job applicant filtering",
+          "worker monitoring",
+          "employee productivity monitoring"
+        ],
+        "examples": [
+          "AI-powered CV screening",
+          "Automated employee performance evaluation",
+          "AI task allocation for gig workers"
+        ]
+      },
+      {
+        "id": "essential_services",
+        "title": "Access to Essential Private and Public Services and Benefits",
+        "annex_area": 5,
+        "patterns": [
+          "credit scoring",
+          "creditworthiness",
+          "loan application",
+          "loan approval",
+          "mortgage assessment",
+          "insurance pricing",
+          "insurance risk assessment",
+          "insurance underwriting",
+          "social benefit",
+          "social welfare",
+          "welfare eligibility",
+          "benefit eligibility",
+          "government benefit",
+          "emergency service dispatching",
+          "emergency response prioritization",
+          "essential service allocation",
+          "public service eligibility",
+          "housing allocation"
+        ],
+        "examples": [
+          "Automated credit approval system",
+          "AI insurance premium calculation",
+          "Social welfare eligibility assessment",
+          "Emergency service dispatch prioritization"
+        ]
+      },
+      {
+        "id": "medical",
+        "title": "Safety Components in Medical Devices",
+        "annex_area": "5a",
+        "patterns": [
+          "medical diagnosis",
+          "medical device",
+          "treatment recommendation",
+          "clinical decision support",
+          "radiology analysis",
+          "pathology analysis",
+          "surgical planning",
+          "patient triage",
+          "drug interaction prediction",
+          "medical image analysis",
+          "diagnostic imaging"
+        ],
+        "examples": [
+          "AI system for radiology image analysis",
+          "Automated clinical decision support for diagnosis"
+        ]
+      },
+      {
+        "id": "law_enforcement",
+        "title": "Law Enforcement",
+        "annex_area": 6,
+        "patterns": [
+          "law enforcement",
+          "crime prediction",
+          "crime detection",
+          "criminal risk assessment",
+          "polygraph",
+          "lie detection",
+          "evidence evaluation",
+          "suspect identification",
+          "criminal profiling",
+          "forensic analysis",
+          "surveillance analysis",
+          "criminal investigation"
+        ],
+        "examples": [
+          "Predictive policing system",
+          "AI-assisted evidence analysis",
+          "Automated suspect identification"
+        ]
+      },
+      {
+        "id": "migration_asylum",
+        "title": "Migration, Asylum and Border Control Management",
+        "annex_area": 7,
+        "patterns": [
+          "border control",
+          "border management",
+          "visa application",
+          "visa processing",
+          "asylum application",
+          "asylum screening",
+          "asylum assessment",
+          "immigration screening",
+          "migration risk assessment",
+          "irregular migration",
+          "travel document verification",
+          "refugee status determination",
+          "immigration decision",
+          "automated border crossing risk score",
+          "entry clearance decision support",
+          "deportation priority scoring",
+          "asylum credibility scoring",
+          "cross-border passenger risk profiling",
+          "visumantrag",
+          "demande de visa",
+          "asylantrag"
+        ],
+        "examples": [
+          "Automated visa application screening",
+          "AI-assisted asylum claim assessment",
+          "Border crossing risk assessment"
+        ]
+      },
+      {
+        "id": "justice_democratic",
+        "title": "Administration of Justice and Democratic Processes",
+        "annex_area": 8,
+        "patterns": [
+          "sentencing",
+          "judicial decision",
+          "court decision",
+          "dispute resolution",
+          "legal research applied to cases",
+          "case outcome prediction",
+          "judicial outcome",
+          "recidivism prediction",
+          "bail decision",
+          "parole decision",
+          "election",
+          "voting system",
+          "vote counting",
+          "political opinion",
+          "election influence",
+          "campaign targeting",
+          "judge assistance for sentencing ranges",
+          "pretrial detention recommendation",
+          "automated legal claim triage",
+          "voter eligibility verification ai",
+          "microtargeted political messaging optimization",
+          "election disinformation detection for enforcement",
+          "decision judiciaire",
+          "recommandation de peine",
+          "richterliche entscheidung"
+        ],
+        "examples": [
+          "AI-assisted sentencing recommendations",
+          "Automated dispute resolution",
+          "Election result prediction influencing campaigns"
+        ]
+      }
+    ]
+  },
+  "gpai": {
+    "article": "51-56",
+    "title": "General-Purpose AI Models (Chapter V)",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#chapter-V",
+    "enforcement_date": "2025-08-02",
+    "categories": [
+      {
+        "id": "gpai_standard",
+        "title": "GPAI Model - Standard Obligations",
+        "article": "53",
+        "description": "General-purpose AI models must comply with transparency and documentation obligations.",
+        "obligations": [
+          "Maintain and make available technical documentation (Article 53(1)(a))",
+          "Provide information and documentation to downstream providers (Article 53(1)(b))",
+          "Implement a copyright compliance policy (Article 53(1)(c))",
+          "Publish a sufficiently detailed summary of training data content (Article 53(1)(d))"
+        ],
+        "patterns": [
+          "general-purpose ai",
+          "general purpose ai",
+          "foundation model",
+          "large language model",
+          "llm provider",
+          "pre-trained model",
+          "base model",
+          "multi-purpose ai"
+        ],
+        "examples": [
+          "GPT-4 style large language model",
+          "Foundation model for text and code generation"
+        ]
+      },
+      {
+        "id": "gpai_systemic",
+        "title": "GPAI Model with Systemic Risk",
+        "article": "55",
+        "description": "GPAI models with systemic risk (>10^25 FLOPs training compute or equivalent) have additional obligations.",
+        "obligations": [
+          "Perform model evaluations, including adversarial testing (Article 55(1)(a))",
+          "Assess and mitigate possible systemic risks (Article 55(1)(b))",
+          "Track, document and report serious incidents to the AI Office (Article 55(1)(c))",
+          "Ensure adequate cybersecurity protections (Article 55(1)(d))"
+        ],
+        "patterns": [
+          "systemic risk",
+          "frontier model",
+          "large-scale ai model",
+          "10^25 flops",
+          "systemic ai"
+        ],
+        "examples": [
+          "Frontier AI model exceeding 10^25 FLOPs compute threshold",
+          "Multi-modal foundation model deployed at scale"
+        ]
+      }
+    ]
+  },
+  "limited_risk": {
+    "article": "50",
+    "title": "Transparency Obligations",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-50",
+    "categories": [
+      {
+        "id": "chatbot",
+        "title": "Chatbot Disclosure",
+        "patterns": [
+          "chatbot",
+          "chat bot",
+          "virtual assistant",
+          "conversational ai",
+          "conversational agent",
+          "customer service bot",
+          "support bot",
+          "ai assistant"
+        ],
+        "examples": [
+          "Customer service chatbot",
+          "Virtual assistant for scheduling"
+        ]
+      },
+      {
+        "id": "deepfake",
+        "title": "Deepfake and Synthetic Content Disclosure",
+        "patterns": [
+          "deepfake",
+          "synthetic media",
+          "ai-generated content",
+          "ai generated content",
+          "content generation",
+          "text generation",
+          "image generation",
+          "video generation",
+          "generative ai",
+          "generated audio",
+          "generated video",
+          "generated image"
+        ],
+        "examples": [
+          "AI-generated video content",
+          "Text generation for marketing",
+          "Synthetic voice generation"
+        ]
+      },
+      {
+        "id": "emotion_recognition",
+        "title": "Emotion Recognition Disclosure",
+        "patterns": [
+          "emotion recognition",
+          "emotion detection",
+          "affective computing",
+          "sentiment analysis on faces",
+          "facial expression analysis"
+        ],
+        "examples": [
+          "Emotion detection in customer service",
+          "Facial expression analysis for market research"
+        ]
+      }
+    ]
+  },
+  "minimal": {
+    "article": null,
+    "title": "Minimal or No Risk AI Systems",
+    "patterns": [
+      "spam filter",
+      "spam detection",
+      "recommendation system",
+      "recommendation engine",
+      "product recommendation",
+      "content recommendation",
+      "search ranking",
+      "inventory management",
+      "non-automated decision",
+      "weather prediction",
+      "language translation",
+      "spell check",
+      "autocomplete"
+    ],
+    "examples": [
+      "Email spam filtering",
+      "Product recommendation engine",
+      "Simple calculator tool",
+      "Weather forecasting",
+      "Language translation service"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# logs
+*.log
+
+# OS
+.DS_Store
+
+# env files (keep examples)
+.env*
+!.env.example
+
+# build/scan artifacts
+.artifacts/

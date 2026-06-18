@@ -1,0 +1,34 @@
+name: 'Legalithm AI Act Check'
+description: 'Fail the build if your committed EU AI Act compliance record (compliance/legalithm.json) has drifted from the current law or your app.'
+author: 'Legalithm'
+branding:
+  icon: 'shield'
+  color: 'blue'
+
+inputs:
+  api-key:
+    description: 'Legalithm API key (lgl_...). Store it as a repository secret.'
+    required: true
+  api-url:
+    description: 'Legalithm API base URL.'
+    required: false
+    default: 'https://www.legalithm.com'
+  fail-on:
+    description: 'When to fail: risk-or-rule (default) | risk | any | never.'
+    required: false
+    default: 'risk-or-rule'
+  working-directory:
+    description: 'Directory containing compliance/legalithm.json.'
+    required: false
+    default: '.'
+
+runs:
+  using: 'composite'
+  steps:
+    - shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        LEGALITHM_API_KEY: ${{ inputs.api-key }}
+        LEGALITHM_API_URL: ${{ inputs.api-url }}
+        LEGALITHM_FAIL_ON: ${{ inputs.fail-on }}
+      run: bash "${{ github.action_path }}/entrypoint.sh"
