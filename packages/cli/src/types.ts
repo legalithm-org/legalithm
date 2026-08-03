@@ -131,9 +131,14 @@ export interface StoredRecord {
   schemaVersion: string;
   recordId: string;
   inputHash: string;
+  recordHash?: string;
   asOf: string;
-  legalBasis: { engineVersion: string; statement: string };
+  legalBasis: { engineVersion: string; statement: string; instrument?: string };
   system: { name: string; version: string; input: UseCase };
   classification: { risk: string; confidenceScore?: number; reviewRequired?: boolean };
+  obligations?: unknown;
+  annex4?: unknown;
+  disclaimer?: string;
+  $schema?: string;
   [key: string]: unknown;
 }

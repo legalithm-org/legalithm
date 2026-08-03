@@ -1,0 +1,9 @@
+{
+  "version": "1.1.0",
+  "updatedAt": "2026-08-03",
+  "regulation": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+  "amendments": [
+    "Regulation (EU) 2026/1744"
+  ],
+  "notes": "Obligations corpus expanded toward 35 rows (software-only high-risk path). Schema v2 + applies_if."
+}

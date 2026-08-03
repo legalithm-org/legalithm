@@ -5,12 +5,13 @@ import { join } from 'path';
 import { runInit } from '../commands/init.js';
 import { runCheck } from '../commands/check.js';
 import { runLogin } from '../commands/login.js';
+import { computeRecordHash } from '../record-hash.js';
 import type { StoredRecord, UseCase } from '../types.js';
 
 const INPUT: UseCase = { role: 'provider', domain: 'employment', use_case: 'screen candidates', audience: 'workers' };
 
 function fakeRecord(over: Partial<StoredRecord> = {}): StoredRecord {
-  return {
+  const base: StoredRecord = {
     schemaVersion: '1.0',
     recordId: 'r1',
     inputHash: 'hash-a',
@@ -22,7 +23,8 @@ function fakeRecord(over: Partial<StoredRecord> = {}): StoredRecord {
     obligations: [{ title: 'Risk management', description: 'Article 9', how_to_prove: 'Document it', priority: 'high' }],
     annex4: { sections: { systemOverview: { title: 'System Overview', content: 'x', todo: ['do y'] } } },
     ...over,
-  } as StoredRecord;
+  };
+  return { ...base, recordHash: over.recordHash ?? computeRecordHash(base) };
 }
 
 let dir: string;
@@ -104,6 +106,25 @@ describe('runCheck', () => {
     expect(res.report?.drift.some((d) => d.type === 'risk')).toBe(true);
   });
 
+  it('exits 1 when risk tier was hand-edited without updating recordHash', async () => {
+    await init();
+    const tampered = fakeRecord({
+      classification: { risk: 'minimal' },
+      recordHash: fakeRecord().recordHash,
+    });
+    const { writeRecordBundle } = await import('../record-io.js');
+    writeRecordBundle(dir, tampered);
+    const res = await runCheck({
+      cwd: dir,
+      regenerate: async () => fakeRecord(),
+      failOn: 'risk-or-rule',
+      json: false,
+      log: () => {},
+    });
+    expect(res.exitCode).toBe(1);
+    expect(res.report?.drift.some((d) => d.type === 'integrity')).toBe(true);
+  });
+
   it('exits 0 on input-only drift under the default policy', async () => {
     await init();
     const res = await runCheck({
@@ -135,6 +156,25 @@ describe('runCheck', () => {
     let out = '';
     await runCheck({ cwd: dir, regenerate: async () => fakeRecord(), failOn: 'risk-or-rule', json: true, log: (m) => (out += m) });
     expect(JSON.parse(out).status).toBe('in-sync');
+  });
+
+  it('writes SARIF output when --sarif is set', async () => {
+    await init();
+    const sarifPath = join(dir, 'out.sarif');
+    const res = await runCheck({
+      cwd: dir,
+      regenerate: async () => fakeRecord({ classification: { risk: 'limited' } }),
+      failOn: 'risk-or-rule',
+      json: false,
+      sarif: sarifPath,
+      toolVersion: '0.5.0',
+      log: () => {},
+    });
+    expect(res.exitCode).toBe(1);
+    expect(existsSync(sarifPath)).toBe(true);
+    const sarif = JSON.parse(readFileSync(sarifPath, 'utf8'));
+    expect(sarif.version).toBe('2.1.0');
+    expect(sarif.runs[0].results[0].ruleId).toBe('legalithm/risk-drift');
   });
 
   it('prints human-readable drift output in non-json mode', async () => {

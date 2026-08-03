@@ -1,4 +1,13 @@
 {
+  "meta": {
+    "version": "1.1.0",
+    "updatedAt": "2026-08-03",
+    "regulation": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+    "amendments": [
+      "Regulation (EU) 2026/1744"
+    ],
+    "notes": "Obligations corpus expanded toward 35 rows (software-only high-risk path). Schema v2 + applies_if."
+  },
   "obligations": [
     {
       "id": "risk_management",
@@ -10,7 +19,12 @@
       "evidence_type": "document",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-9",
       "priority": "high",
-      "guidance": "Document risk assessment methodology, identified risks and mitigation measures. Regular reviews required."
+      "guidance": "Document risk assessment methodology, identified risks and mitigation measures. Regular reviews required.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "data_governance",
@@ -22,7 +36,12 @@
       "evidence_type": "process",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-10",
       "priority": "high",
-      "guidance": "Document design choices, collection processes, preparation operations, assumptions, availability/quantity/suitability assessments, bias examination, and identified gaps. Ensure training, validation and testing data sets are relevant, sufficiently representative, and to the best extent possible free of errors and complete."
+      "guidance": "Document design choices, collection processes, preparation operations, assumptions, availability/quantity/suitability assessments, bias examination, and identified gaps. Ensure training, validation and testing data sets are relevant, sufficiently representative, and to the best extent possible free of errors and complete.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "technical_documentation",
@@ -35,7 +54,12 @@
       "evidence_type": "document",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-11",
       "priority": "high",
-      "guidance": "Comprehensive documentation as per Annex IV. Must cover system architecture, data, training, validation, documentation."
+      "guidance": "Comprehensive documentation as per Annex IV. Must cover system architecture, data, training, validation, documentation.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "record_keeping",
@@ -47,7 +71,12 @@
       "evidence_type": "record",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-12",
       "priority": "high",
-      "guidance": "Ensure the system can automatically record events (logs) over its lifetime with traceability appropriate to the intended purpose. Logs must support risk situations under Article 79(1) or substantial modification, post-market monitoring under Article 72, and operational monitoring under Article 26(5). Article 19 sets a six-month minimum retention period for automatically generated logs for providers."
+      "guidance": "Ensure the system can automatically record events (logs) over its lifetime with traceability appropriate to the intended purpose. Logs must support risk situations under Article 79(1) or substantial modification, post-market monitoring under Article 72, and operational monitoring under Article 26(5). Article 19 sets a six-month minimum retention period for automatically generated logs for providers.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "transparency_provider",
@@ -59,7 +88,12 @@
       "evidence_type": "document",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-13",
       "priority": "high",
-      "guidance": "Provide clear instructions for use, expected level of accuracy, limitations, any human oversight measures."
+      "guidance": "Provide clear instructions for use, expected level of accuracy, limitations, any human oversight measures.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "human_oversight",
@@ -71,7 +105,12 @@
       "evidence_type": "control",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-14",
       "priority": "high",
-      "guidance": "Enable humans to detect automation bias, unexpected outputs, and intervene or interrupt the system."
+      "guidance": "Enable humans to detect automation bias, unexpected outputs, and intervene or interrupt the system.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "accuracy_robustness_cybersecurity",
@@ -83,7 +122,12 @@
       "evidence_type": "control",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-15",
       "priority": "high",
-      "guidance": "Implement measures to ensure accuracy, resilience to errors, resistance to cyber-attacks, and reliable output."
+      "guidance": "Implement measures to ensure accuracy, resilience to errors, resistance to cyber-attacks, and reliable output.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "quality_management_system",
@@ -95,19 +139,29 @@
       "evidence_type": "process",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-17",
       "priority": "high",
-      "guidance": "ISO 9001-compliant QMS covering design, development, testing, validation, documentation and maintenance."
+      "guidance": "ISO 9001-compliant QMS covering design, development, testing, validation, documentation and maintenance.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "conformity_assessment",
       "role": "provider",
       "risk": "high",
-      "article": "18",
-      "title": "Conformity Assessment",
-      "description": "Before placing on the market a high-risk AI system, the provider shall carry out the relevant conformity assessment procedure.",
+      "article": "43",
+      "title": "Article 43: Conformity Assessment for High-Risk AI Systems",
+      "description": "Article **43** determines **which conformity assessment procedure** a high-risk AI system must follow before it can be placed on the market or put into service. For **Annex III point 1** (biometric) systems where harmonised standards or common specifications have been applied, the provider may choose between **internal control** (Annex VI) or **notified body** assessment (Annex VII). Where harmonised standards do not exist, are not applied, or are published with restrictions, the **notified body** route (Annex VII) is mandatory for point 1 systems. For **Annex III points 2 to 8**, providers follow **internal control** (Annex VI) with no notified body involvement. For **Annex I** product-law systems, the existing sectoral conformity assessment procedure applies, integrating AI Act Section 2",
       "evidence_type": "document",
-      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-18",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-43",
       "priority": "high",
-      "guidance": "Perform self-assessment or third-party assessment as per Annex V/VI/IX. Affix CE marking if compliant."
+      "guidance": "Perform self-assessment or third-party assessment as per Annex V/VI/IX. Affix CE marking if compliant.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "post_market_monitoring",
@@ -119,7 +173,12 @@
       "evidence_type": "process",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-72",
       "priority": "medium",
-      "guidance": "Continuously monitor system performance, collect and analyze relevant data, report serious incidents to authorities."
+      "guidance": "Continuously monitor system performance, collect and analyze relevant data, report serious incidents to authorities.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "eu_database_registration",
@@ -131,7 +190,18 @@
       "evidence_type": "record",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-49",
       "priority": "high",
-      "guidance": "Register the AI system in the EU public database before market placement. Include provider identity, system description, intended purpose, risk level, conformity assessment status, and Member States where the system is placed on the market."
+      "guidance": "Register the AI system in the EU public database before market placement. Include provider identity, system description, intended purpose, risk level, conformity assessment status, and Member States where the system is placed on the market.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null,
+      "applies_if": [
+        {
+          "field": "deployed_in_eu",
+          "op": "truthy"
+        }
+      ]
     },
     {
       "id": "human_oversight_deployer",
@@ -143,7 +213,12 @@
       "evidence_type": "process",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-14",
       "priority": "high",
-      "guidance": "Assign competent human personnel to monitor system operation and intervene when necessary."
+      "guidance": "Assign competent human personnel to monitor system operation and intervene when necessary.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "data_quality_governance_deployer",
@@ -155,7 +230,12 @@
       "evidence_type": "process",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-26",
       "priority": "high",
-      "guidance": "Ensure relevant, sufficiently representative, accurate and complete input data for the system."
+      "guidance": "Ensure relevant, sufficiently representative, accurate and complete input data for the system.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "fria_deployer",
@@ -167,7 +247,18 @@
       "evidence_type": "document",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-27",
       "priority": "high",
-      "guidance": "Conduct a FRIA covering: description of deployer's processes using the AI system, period and frequency of use, categories of affected persons, specific risks of harm, human oversight measures, and measures taken in case of materialization of risks. Notify the relevant market surveillance authority of the results."
+      "guidance": "Conduct a FRIA covering: description of deployer's processes using the AI system, period and frequency of use, categories of affected persons, specific risks of harm, human oversight measures, and measures taken in case of materialization of risks. Notify the relevant market surveillance authority of the results.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null,
+      "applies_if": [
+        {
+          "field": "deployed_in_eu",
+          "op": "truthy"
+        }
+      ]
     },
     {
       "id": "transparency_deployer",
@@ -179,7 +270,12 @@
       "evidence_type": "document",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-26",
       "priority": "medium",
-      "guidance": "Inform affected natural persons of the use of the high-risk AI system (Article 26(11)). Where individual decision-making is involved, also consider the right to explanation under Article 86."
+      "guidance": "Inform affected natural persons of the use of the high-risk AI system (Article 26(11)). Where individual decision-making is involved, also consider the right to explanation under Article 86.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     },
     {
       "id": "chatbot_disclosure",
@@ -191,7 +287,19 @@
       "evidence_type": "control",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-50",
       "priority": "medium",
-      "guidance": "Display clear indication that the interaction is with an AI system. Ensure disclosure is visible and understandable."
+      "guidance": "Display clear indication that the interaction is with an AI system. Ensure disclosure is visible and understandable.",
+      "applies_from_milestone": "art-50-transparency",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null,
+      "applies_if": [
+        {
+          "field": "deployed_in_eu",
+          "op": "eq",
+          "value": true
+        }
+      ]
     },
     {
       "id": "deepfake_disclosure",
@@ -203,7 +311,19 @@
       "evidence_type": "control",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-50",
       "priority": "medium",
-      "guidance": "Clearly mark AI-generated content. Include metadata where technically feasible. Exception for authorized law enforcement."
+      "guidance": "Clearly mark AI-generated content. Include metadata where technically feasible. Exception for authorized law enforcement.",
+      "applies_from_milestone": "art-50-transparency",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null,
+      "applies_if": [
+        {
+          "field": "deployed_in_eu",
+          "op": "eq",
+          "value": true
+        }
+      ]
     },
     {
       "id": "emotion_recognition_disclosure",
@@ -215,7 +335,19 @@
       "evidence_type": "control",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-50",
       "priority": "medium",
-      "guidance": "Notify individuals when emotion recognition is being used. Obtain consent where required by data protection law."
+      "guidance": "Notify individuals when emotion recognition is being used. Obtain consent where required by data protection law.",
+      "applies_from_milestone": "art-50-transparency",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null,
+      "applies_if": [
+        {
+          "field": "deployed_in_eu",
+          "op": "eq",
+          "value": true
+        }
+      ]
     },
     {
       "id": "general_transparency_deployer",
@@ -227,7 +359,297 @@
       "evidence_type": "control",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-50",
       "priority": "low",
-      "guidance": "Ensure AI system interactions are clearly identified. Provide adequate information to users about system capabilities and limitations."
+      "guidance": "Ensure AI system interactions are clearly identified. Provide adequate information to users about system capabilities and limitations.",
+      "applies_from_milestone": "art-50-transparency",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
+    },
+    {
+      "id": "provider_obligations_list",
+      "role": "provider",
+      "risk": "high",
+      "article": "16",
+      "title": "Article 16: Obligations of Providers of High-Risk AI Systems",
+      "description": "Article 16 is the master obligation list for providers of high-risk AI systems. It consolidates every duty a provider must fulfil before and after placing a high-risk system on the EU market or putting it into service. Rather than creating new rules, it acts as a routing table: each lettered point references a specific requirement article (Articles 8-15, 17, 43, 47-49, 72) so the provider can track every obligation in one place. Always verify on [EUR-Lex](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-16).",
+      "evidence_type": "document",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-16",
+      "priority": "high",
+      "guidance": "Map every Article 16 lettered obligation (a), (j) to an internal workstream owner and timeline.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
+    },
+    {
+      "id": "keep_documentation",
+      "role": "provider",
+      "risk": "high",
+      "article": "18",
+      "title": "Article 18: Documentation Keeping",
+      "description": "Article 18 requires providers of high-risk AI systems to keep specified documentation available for market surveillance authorities for a period of 10 years after the system has been placed on the market or put into service. The documentation includes: (a) the [technical documentation](/en/ai-act-guide/article-11-technical-documentation) (Annex IV); (b) the documentation on the [quality management system](/en/ai-act-guide/article-17); (c) any changes approved by notified bodies (where applicable); (d) the decisions and documents issued by notified bodies; (e) the [EU declaration of conformity](/en/ai-act-guide/article-47). Providers must also keep automatically generated logs within their control, to the extent such logs are generated by the system under [Article 12](/en/ai-act-guide/article-12).",
+      "evidence_type": "record",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-18",
+      "priority": "high",
+      "guidance": "Establish a 10-year document retention policy for all Article 18 categories.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
+    },
+    {
+      "id": "log_retention",
+      "role": "provider",
+      "risk": "high",
+      "article": "19",
+      "title": "Article 19: Automatically Generated Logs",
+      "description": "Article 19 requires providers of high-risk AI systems to keep the automatically generated logs (as provided for in [Article 12](/en/ai-act-guide/article-12)) for a period appropriate to the intended purpose of the system, and at least 6 months unless otherwise provided by applicable Union or national law (including GDPR). This complements Article 18 (documentation keeping) by specifically addressing operational logs rather than static documentation. The provider must keep logs to the extent the logs are under their control.",
+      "evidence_type": "record",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-19",
+      "priority": "high",
+      "guidance": "Set log retention to at least 6 months, extend if the intended purpose requires longer.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
+    },
+    {
+      "id": "corrective_actions",
+      "role": "provider",
+      "risk": "high",
+      "article": "20",
+      "title": "Article 20: Corrective Actions and Duty of Information",
+      "description": "Article 20 requires providers of high-risk AI systems to take immediate corrective action when they consider or have reason to consider that a system they placed on the market or put into service is not in conformity with the Regulation. The provider must bring the system into conformity, withdraw it, or recall it as appropriate. When the system presents a risk (within Article 79(1)), the provider must immediately inform the national competent authorities of the Member State(s) where the system is available, giving details of the non-conformity and corrective measures taken. This is the provider's proactive self-correction duty.",
+      "evidence_type": "process",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-20",
+      "priority": "high",
+      "guidance": "Establish internal escalation procedures to surface non-conformity immediately.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
+    },
+    {
+      "id": "cooperate_authorities",
+      "role": "provider",
+      "risk": "high",
+      "article": "21",
+      "title": "Article 21: Cooperation with Competent Authorities",
+      "description": "Article 21 requires providers of high-risk AI systems, upon a reasoned request from a national competent authority, to provide all information and documentation necessary to demonstrate conformity with Chapter III, Section 2 requirements, in an official Union language determined by the requesting authority. Providers must also cooperate with authorities on any action taken in relation to the system. This is the general cooperation backbone that supports Article 74 market surveillance and Article 79 enforcement procedures.",
+      "evidence_type": "process",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-21",
+      "priority": "medium",
+      "guidance": "Establish an authority request handling procedure with defined response timelines.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
+    },
+    {
+      "id": "authorised_representative",
+      "role": "provider",
+      "risk": "high",
+      "article": "22",
+      "title": "Article 22: Authorised Representatives of Providers of High-Risk AI Systems",
+      "description": "Article 22 requires providers of high-risk AI systems established in third countries to appoint an authorised representative established in the Union by written mandate before placing the system on the market or making it available. The representative must be empowered to: (a) verify that the EU declaration of conformity and Annex IV technical documentation have been drawn up; (b) keep documentation available for authorities for 10 years; (c) cooperate with national competent authorities on corrective actions; (d) terminate the mandate if the provider acts contrary to its obligations. This is the high-risk AI system counterpart to [Article 54](/en/ai-act-guide/article-54) (GPAI models).",
+      "evidence_type": "document",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-22",
+      "priority": "high",
+      "guidance": "Determine if the high-risk AI system provider is established outside the Union.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null,
+      "applies_if": [
+        {
+          "field": "deployed_in_eu",
+          "op": "truthy"
+        }
+      ]
+    },
+    {
+      "id": "importer_obligations",
+      "role": "importer",
+      "risk": "high",
+      "article": "23",
+      "title": "Article 23: Obligations of Importers",
+      "description": "Article 23 places gate-keeping obligations on importers of high-risk AI systems. Before placing a system on the Union market, importers must verify that: (a) the conformity assessment has been carried out; (b) the provider has drawn up the Annex IV technical documentation; (c) the system bears CE marking; (d) the system is accompanied by the EU declaration of conformity and instructions for use; (e) the provider has appointed an authorised representative where required ([Article 22](/en/ai-act-guide/article-22)). Importers must also indicate their name, trade name, and contact address on the system or packaging, and inform the provider and market surveillance authority if the system presents a risk.",
+      "evidence_type": "process",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-23",
+      "priority": "high",
+      "guidance": "Before import: verify conformity assessment, CE marking, EU declaration, instructions for use, and authorised representative.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null,
+      "applies_if": [
+        {
+          "field": "deployed_in_eu",
+          "op": "truthy"
+        }
+      ]
+    },
+    {
+      "id": "distributor_obligations",
+      "role": "distributor",
+      "risk": "high",
+      "article": "24",
+      "title": "Article 24: Obligations of Distributors",
+      "description": "Article 24 places verification obligations on distributors of high-risk AI systems. Before making a system available on the market, distributors must verify that: the system bears the CE marking; it is accompanied by the EU declaration of conformity and instructions for use; and the provider and importer have complied with their respective obligations. Distributors must also ensure storage and transport conditions do not compromise compliance, and inform the provider or importer and market surveillance authority if the system presents a risk.",
+      "evidence_type": "process",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-24",
+      "priority": "high",
+      "guidance": "Before making available: verify CE marking, EU declaration, instructions for use.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null,
+      "applies_if": [
+        {
+          "field": "deployed_in_eu",
+          "op": "truthy"
+        }
+      ]
+    },
+    {
+      "id": "value_chain_requalification",
+      "role": "provider",
+      "risk": "high",
+      "article": "25",
+      "title": "Article 25: Responsibilities Along the AI Value Chain",
+      "description": "Article 25 is the re-qualification trigger: it defines when a distributor, importer, deployer, or third party becomes a provider of a high-risk AI system and inherits the full provider obligations under [Article 16](/en/ai-act-guide/article-16). This happens when they: (a) put their name or trademark on a system already placed on the market; (b) make a substantial modification; or (c) modify the system's intended purpose so it becomes high-risk. The original provider is released from Article 16 duties once the new provider is properly identified. Critical for deployer due diligence, any modification beyond normal use may shift obligations.",
+      "evidence_type": "document",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-25",
+      "priority": "high",
+      "guidance": "Include Article 25 analysis in all change control and modification approval workflows.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
+    },
+    {
+      "id": "eu_declaration_of_conformity",
+      "role": "provider",
+      "risk": "high",
+      "article": "47",
+      "title": "Article 47: EU Declaration of Conformity",
+      "description": "Article 47 requires providers of high-risk AI systems to draw up a written, machine-readable EU declaration of conformity for each system and keep it available for 10 years after market placement. The declaration must contain the information set out in [Annex V](/en/ai-act-guide/annex-v), be updated as necessary, and be translated into the language(s) required by the Member State(s) where the system is made available. For dual-regulated products under Annex I legislation, a single declaration may cover both the AI Act and the sectoral requirements.",
+      "evidence_type": "document",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-47",
+      "priority": "high",
+      "guidance": "Map Annex V content requirements into a declaration template.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
+    },
+    {
+      "id": "ce_marking",
+      "role": "provider",
+      "risk": "high",
+      "article": "48",
+      "title": "Article 48: CE Marking for High-Risk AI Systems",
+      "description": "Article 48 requires the CE marking to be affixed to high-risk AI systems to indicate conformity with the Regulation. The marking must be affixed visibly, legibly, and indelibly to the AI system or, where not possible, to its packaging or accompanying documentation. The CE marking is subject to the general principles in Regulation (EC) No 765/2008 (the NLF accreditation and market surveillance regulation). For AI systems that are purely digital (no physical product), the CE marking appears in the digital documentation or user interface.",
+      "evidence_type": "control",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-48",
+      "priority": "high",
+      "guidance": "Complete conformity assessment (Article 43) and issue EU declaration (Article 47) before affixing CE marking.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
+    },
+    {
+      "id": "gpai_provider_obligations",
+      "role": "provider",
+      "risk": "limited",
+      "article": "53",
+      "title": "Article 53: Obligations for Providers of General-Purpose AI Models",
+      "description": "Article 53 is the operational backbone of Chapter V: it sets the baseline obligations that every provider of a GPAI model must meet when placing the model on the Union market-regardless of systemic-risk status. The four pillars: (1)(a) prepare technical documentation per [Annex XI](/en/ai-act-guide/annex-xi); (1)(b) provide downstream AI system providers with information and documentation to understand capabilities and limitations and comply with their own obligations; (1)(c) establish a policy to comply with Union copyright law, including the text and data mining opt-out regime under Directive (EU) 2019/790; (1)(d) make publicly available a sufficiently detailed summary of training content using a template provided by the AI Office. Article 53(2) provides a narrow exception for free and open-source GPAI models that are not systemic risk.",
+      "evidence_type": "document",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-53",
+      "priority": "high",
+      "guidance": "Prepare Annex XI Section 1 documentation (architecture, parameters, data provenance, compute, energy) for every model release on the Union market.",
+      "applies_from_milestone": "gpai-chapter-v",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null,
+      "applies_if": [
+        {
+          "field": "is_gpai",
+          "op": "truthy"
+        }
+      ]
+    },
+    {
+      "id": "gpai_systemic_risk",
+      "role": "provider",
+      "risk": "limited",
+      "article": "55",
+      "title": "Article 55: Obligations for Providers of GPAI Models with Systemic Risk",
+      "description": "Article 55 adds four additional obligations on top of the [Article 53](/en/ai-act-guide/article-53) baseline for providers of GPAI models classified with systemic risk under [Article 51](/en/ai-act-guide/article-51): (a) perform model evaluation including adversarial testing; (b) assess and mitigate possible systemic risks; (c) track, document, and report serious incidents to the AI Office and national authorities; (d) ensure adequate cybersecurity protection. Compliance can be demonstrated through adherence to codes of practice under [Article 56](/en/ai-act-guide/article-56) or equivalent measures until harmonised standards are adopted.",
+      "evidence_type": "process",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-55",
+      "priority": "high",
+      "guidance": "Establish a model evaluation programme using standardised protocols (benchmarks, evaluations, stress tests) before each major release.",
+      "applies_from_milestone": "gpai-chapter-v",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null,
+      "applies_if": [
+        {
+          "field": "is_gpai",
+          "op": "truthy"
+        }
+      ]
+    },
+    {
+      "id": "serious_incident_reporting",
+      "role": "provider",
+      "risk": "high",
+      "article": "73",
+      "title": "Article 73: Reporting of Serious Incidents",
+      "description": "Article 73 requires providers of high-risk AI systems to report serious incidents to the market surveillance authorities of the Member State(s) where the incident occurred. Reports must be made immediately after the provider establishes a causal link (or reasonable likelihood) between the AI system and the incident, and no later than 15 days after becoming aware. For death or serious damage to health, an initial report must be submitted immediately and no later than 2 days after awareness. The article also covers follow-up reporting, deployer cooperation, and interaction with sectoral incident reporting. Always verify on [EUR-Lex](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-73).",
+      "evidence_type": "process",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-73",
+      "priority": "high",
+      "guidance": "Define internal escalation procedures to surface potential serious incidents within hours, not days.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
+    },
+    {
+      "id": "right_to_explanation",
+      "role": "deployer",
+      "risk": "high",
+      "article": "86",
+      "title": "Article 86: Right to Lodge a Complaint with a Market Surveillance Authority",
+      "description": "Article 86 grants any natural or legal person who has grounds to consider that there has been an infringement of the AI Act the right to lodge a complaint with the relevant market surveillance authority. The authority must handle complaints in accordance with national procedures, inform the complainant of progress and outcome within a reasonable time, and accept complaints from consumer organisations and other representative bodies. This provides a public enforcement mechanism paralleling the private explanation right in [Article 85](/en/ai-act-guide/article-85).",
+      "evidence_type": "process",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-86",
+      "priority": "medium",
+      "guidance": "Identify which market surveillance authority in each Member State where you operate would receive complaints about your AI systems.",
+      "applies_from_milestone": "high-risk-annex-iii",
+      "applies_until": null,
+      "legal_basis_version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+      "harmonised_standard": null,
+      "oj_citation_date": null
     }
   ]
 }

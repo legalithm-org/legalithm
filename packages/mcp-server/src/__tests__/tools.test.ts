@@ -68,7 +68,10 @@ describe('generateDisclosureTool', () => {
   it('returns a German Article 50 snippet', () => {
     const r = generateDisclosureTool('chatbot', 'de');
     expect(r.text).toMatch(/KI-System/);
-    expect(r.article).toBe('Article 50');
+    // T6.2: the paragraph now comes from the corpus rather than being a literal
+    // in disclosures.ts, so the citation is paragraph-level. `chatbot` is the
+    // Art 50(1) duty to inform a person they are interacting with an AI system.
+    expect(r.article).toBe('Article 50(1)');
     expect(r.citationUrl).toContain('eur-lex');
     expect(r.disclaimer).toBe(DISCLAIMER);
     expect(r.asOf).toBe(RULES_ENGINE_META.updatedAt);

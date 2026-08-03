@@ -1,47 +1,63 @@
-// Article 50 transparency disclosure snippets (EN/DE). Offline templates — the
-// operational layer the free LLM can't reliably produce on demand with citations.
-// asOf / engineVersion are stamped by tools.ts (RULES_ENGINE_META) on every MCP response.
+// Article 50 transparency disclosure templates for the offline MCP server.
+//
+// T6.2: this file used to hold its own copy of the templates. It is published to
+// npm, so its wording reached users independently of the product's and neither
+// knew about the other — the corpus said "AI-generated" while this said a full
+// sentence, for the same obligation.
+//
+// The text now comes from disclosures.json, generated from
+// lib/ai_act/disclosure-corpus.yml (`long_form` register) by
+// scripts/generate-mcp-disclosures-json.ts. Do not edit the strings here.
+//
+// asOf / engineVersion are stamped by tools.ts (RULES_ENGINE_META) on every response.
+import corpus from './disclosures.json';
 
 export type DisclosureScenario = 'chatbot' | 'genai-content' | 'deepfake' | 'emotion';
 
-const ARTICLE_50_URL = 'https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-50';
+interface LongFormEntry {
+  paragraph: string;
+  [lang: string]: string;
+}
 
-const TEMPLATES: Record<DisclosureScenario, { en: string; de: string }> = {
-  chatbot: {
-    en: 'You are interacting with an AI system. Responses are generated automatically and may be inaccurate. A human is available on request.',
-    de: 'Sie interagieren mit einem KI-System. Antworten werden automatisch generiert und können fehlerhaft sein. Auf Wunsch ist eine menschliche Ansprechperson verfügbar.',
-  },
-  'genai-content': {
-    en: 'This content was generated or assisted by artificial intelligence and is marked as AI-generated in a machine-readable way.',
-    de: 'Dieser Inhalt wurde von künstlicher Intelligenz erzeugt oder unterstützt und ist maschinenlesbar als KI-generiert gekennzeichnet.',
-  },
-  deepfake: {
-    en: 'This image/audio/video has been artificially generated or manipulated (AI-generated content).',
-    de: 'Dieses Bild/Audio/Video wurde künstlich erzeugt oder manipuliert (KI-generierter Inhalt).',
-  },
-  emotion: {
-    en: 'This system uses emotion-recognition AI. You are informed of its operation; processing follows applicable data-protection law.',
-    de: 'Dieses System nutzt KI zur Emotionserkennung. Sie werden über den Betrieb informiert; die Verarbeitung erfolgt nach geltendem Datenschutzrecht.',
-  },
-};
+const LONG_FORM = corpus.longForm as Record<string, LongFormEntry>;
 
 export interface DisclosureResult {
   scenario: DisclosureScenario;
   locale: 'en' | 'de';
   text: string;
+  /** e.g. "Article 50(1)" — the paragraph is corpus data, not a literal here. */
   article: string;
   citationUrl: string;
+  /** Corpus version the text came from, so a stale bundle is detectable. */
+  corpusVersion: string;
+  corpusUpdatedAt: string;
 }
 
-export function generateDisclosure(scenario: DisclosureScenario, locale: 'en' | 'de' = 'en'): DisclosureResult {
-  const tpl = TEMPLATES[scenario];
+export function generateDisclosure(
+  scenario: DisclosureScenario,
+  locale: 'en' | 'de' = 'en',
+): DisclosureResult {
+  const entry = LONG_FORM[scenario];
+  if (!entry) {
+    throw new Error(
+      `Unknown disclosure scenario "${scenario}". Available: ${Object.keys(LONG_FORM).join(', ')}`,
+    );
+  }
+
+  // Fall back to English rather than returning undefined: long_form is EN/DE
+  // today and a missing translation must not silently produce an empty
+  // disclosure artifact.
+  const text = entry[locale] ?? entry.en;
+
   return {
     scenario,
     locale,
-    text: tpl[locale],
-    article: 'Article 50',
-    citationUrl: ARTICLE_50_URL,
+    text,
+    article: `Article ${entry.paragraph}`,
+    citationUrl: corpus.meta.referenceUrl,
+    corpusVersion: corpus.meta.version,
+    corpusUpdatedAt: corpus.meta.updatedAt,
   };
 }
 
-export const DISCLOSURE_SCENARIOS = Object.keys(TEMPLATES) as DisclosureScenario[];
+export const DISCLOSURE_SCENARIOS = Object.keys(LONG_FORM) as DisclosureScenario[];

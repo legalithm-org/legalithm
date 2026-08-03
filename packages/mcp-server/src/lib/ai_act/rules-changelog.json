@@ -2,6 +2,8 @@
   {
     "version": "1.1.0",
     "date": "2026-08-03",
+    "instrument": "reg-2026-1744",
+    "instrumentInForce": "2026-07-27",
     "summary": "Reclassify medical safety-component AI under Article 6(1) / Annex I.",
     "changes": [
       "Removed fabricated Annex III medical area that did not exist in the Act.",
@@ -9,15 +11,67 @@
       "Applicable deadline for that path is 2028-08-02 (Annex I embedded), not the Annex III track.",
       "Annex III point 5 remains access to and enjoyment of essential private and public services and benefits."
     ],
+    "structuredChanges": [
+      {
+        "article": "Annex III",
+        "paragraph": null,
+        "from_date": null,
+        "to_date": null,
+        "instrument": "reg-2026-1744",
+        "change": "removed_fabricated_medical_area"
+      },
+      {
+        "article": "6",
+        "paragraph": "1",
+        "from_date": null,
+        "to_date": "2028-08-02",
+        "instrument": "reg-2026-1744",
+        "change": "medical_safety_component_annex_i_path"
+      },
+      {
+        "article": "6",
+        "paragraph": "2",
+        "from_date": null,
+        "to_date": "2027-12-02",
+        "instrument": "reg-2026-1744",
+        "change": "annex_iii_high_risk_unconditional"
+      },
+      {
+        "article": "50",
+        "paragraph": null,
+        "from_date": null,
+        "to_date": "2026-08-02",
+        "instrument": "reg-2026-1744",
+        "change": "Article 50 transparency obligations"
+      },
+      {
+        "article": "113",
+        "paragraph": "3",
+        "from_date": null,
+        "to_date": "2026-12-02",
+        "instrument": "reg-2026-1744",
+        "change": "ncii_csam_ban_application"
+      },
+      {
+        "article": "111",
+        "paragraph": "4",
+        "from_date": null,
+        "to_date": "2026-12-02",
+        "instrument": "reg-2026-1744",
+        "change": "preexisting_synthetic_marking"
+      }
+    ],
     "sources": [
       "https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng",
       "Regulation (EU) 2026/1744 (Digital Omnibus on AI)"
     ],
-    "notes": "Depends on lib/ai_act/enforcement-dates.ts for the Annex I calendar date."
+    "notes": "Depends on lib/ai_act/enforcement-dates.ts for the Annex I calendar date. instrumentInForce from LEGAL_INSTRUMENTS reg-2026-1744."
   },
   {
     "version": "1.0.0",
     "date": "2026-07-17",
+    "instrument": "reg-2024-1689",
+    "instrumentInForce": "2024-08-01",
     "summary": "Baseline EU AI Act rules corpus.",
     "changes": [
       "Article 5 prohibited practices (subliminal/manipulative, social scoring, real-time remote biometric ID, etc.).",
@@ -25,6 +79,56 @@
       "Article 6(3) exceptions (narrow procedural task, improves human activity, pattern-detection, preparatory task).",
       "Chapter V GPAI obligations, standard (Article 53) and systemic-risk (Article 55).",
       "Article 50 transparency: chatbot disclosure and synthetic-content (deepfake) labelling."
+    ],
+    "structuredChanges": [
+      {
+        "article": "5",
+        "paragraph": null,
+        "from_date": null,
+        "to_date": "2025-02-02",
+        "instrument": "reg-2024-1689",
+        "change": "prohibited_practices"
+      },
+      {
+        "article": "6",
+        "paragraph": "2",
+        "from_date": null,
+        "to_date": "2027-12-02",
+        "instrument": "reg-2024-1689",
+        "change": "annex_iii_high_risk"
+      },
+      {
+        "article": "6",
+        "paragraph": "3",
+        "from_date": null,
+        "to_date": null,
+        "instrument": "reg-2024-1689",
+        "change": "high_risk_exceptions"
+      },
+      {
+        "article": "53",
+        "paragraph": null,
+        "from_date": null,
+        "to_date": "2025-08-02",
+        "instrument": "reg-2024-1689",
+        "change": "gpai_standard_obligations"
+      },
+      {
+        "article": "55",
+        "paragraph": null,
+        "from_date": null,
+        "to_date": "2025-08-02",
+        "instrument": "reg-2024-1689",
+        "change": "gpai_systemic_risk_obligations"
+      },
+      {
+        "article": "50",
+        "paragraph": null,
+        "from_date": null,
+        "to_date": "2026-08-02",
+        "instrument": "reg-2024-1689",
+        "change": "Article 50 transparency obligations"
+      }
     ],
     "sources": [
       "https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng"

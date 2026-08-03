@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "updatedAt": "2026-08-03",
+    "regulation": "Regulation (EU) 2024/1689, Article 50",
+    "referenceUrl": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-50"
+  },
+  "longForm": {
+    "chatbot": {
+      "paragraph": "50(1)",
+      "en": "You are interacting with an AI system. Responses are generated automatically and may be inaccurate. A human is available on request.",
+      "de": "Sie interagieren mit einem KI-System. Antworten werden automatisch generiert und können fehlerhaft sein. Auf Wunsch ist eine menschliche Ansprechperson verfügbar."
+    },
+    "genai-content": {
+      "paragraph": "50(2)",
+      "en": "This content was generated or assisted by artificial intelligence and is marked as AI-generated in a machine-readable way.",
+      "de": "Dieser Inhalt wurde von künstlicher Intelligenz erzeugt oder unterstützt und ist maschinenlesbar als KI-generiert gekennzeichnet."
+    },
+    "deepfake": {
+      "paragraph": "50(4)",
+      "en": "This image/audio/video has been artificially generated or manipulated (AI-generated content).",
+      "de": "Dieses Bild/Audio/Video wurde künstlich erzeugt oder manipuliert (KI-generierter Inhalt)."
+    },
+    "emotion": {
+      "paragraph": "50(3)",
+      "en": "This system uses emotion-recognition AI. You are informed of its operation; processing follows applicable data-protection law.",
+      "de": "Dieses System nutzt KI zur Emotionserkennung. Sie werden über den Betrieb informiert; die Verarbeitung erfolgt nach geltendem Datenschutzrecht."
+    }
+  }
+}

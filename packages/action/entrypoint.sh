@@ -6,9 +6,10 @@ set -uo pipefail
 
 CLI="${LEGALITHM_CLI:-npx -y legalithm@latest}"
 FAIL_ON="${LEGALITHM_FAIL_ON:-risk-or-rule}"
+SARIF_PATH="${LEGALITHM_SARIF_PATH:-legalithm-results.sarif}"
 
 set +e
-OUT=$($CLI check --json --fail-on "$FAIL_ON" 2>&1)
+OUT=$($CLI check --json --fail-on "$FAIL_ON" --sarif "$SARIF_PATH" 2>&1)
 CODE=$?
 set -e
 
@@ -21,5 +22,9 @@ case "$CODE" in
   3) echo "::error::Could not verify compliance (API/auth/network error)." ;;
   *) echo "::error::Unexpected 'legalithm check' exit code: $CODE" ;;
 esac
+
+if [ -f "$SARIF_PATH" ]; then
+  echo "sarif_file=$SARIF_PATH" >> "${GITHUB_OUTPUT:-/dev/null}"
+fi
 
 exit "$CODE"

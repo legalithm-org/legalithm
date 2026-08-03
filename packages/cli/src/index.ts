@@ -14,6 +14,7 @@ import { parseArgs, flagString, flagBool } from './args.js';
 import { detectStack } from './detect.js';
 import { resolveApiUrl, resolveApiKey } from './config.js';
 import { postJson } from './http.js';
+import { readRecord } from './record-io.js';
 import { runInit } from './commands/init.js';
 import { runCheck } from './commands/check.js';
 import { runDiscover } from './commands/discover.js';
@@ -22,6 +23,7 @@ import { runGuard, type HookMode } from './commands/guard.js';
 import { mergeClaudeSettings, mergeMcpConfig, CURSOR_RULE, CLAUDE_MD_SNIPPET, SETUP_FILES, DEFAULT_CLI } from './commands/setup.js';
 import { runMark, mimeForFile } from './commands/mark.js';
 import { runVerify } from './commands/verify.js';
+import { runVerifyRecord, signaturePath } from './commands/verify-record.js';
 import { emitSurfaceActive, flushTelemetry, CLI_TELEMETRY_COMMANDS } from './telemetry.js';
 import { maybePromptSaveShare } from './save-share-prompt.js';
 import type { StackInput, UseCase, StoredRecord, ProviderRole, Domain, Audience } from './types.js';
@@ -233,11 +235,13 @@ Commands:
   classify Quick risk hint for the current repo
   mark     Mark an AI-generated image (Art 50(2)); --watermark adds a second, distribution-proof layer (no key)
   verify   Detect AI content marking on an asset: C2PA credential + pixel watermark; --check scans a directory (no key)
+  verify-record  Offline integrity check for compliance/legalithm.json (+ optional .sig) (no key)
   login    Save an API key:  legalithm login --key lgl_...
 
 Flags:
   --role provider|deployer   --domain <annex-iii area>   --use-case "..."   --audience <...>
   --json                     machine-readable check output
+  --sarif <path>             write SARIF 2.1.0 results (check; default legalithm-results.sarif)
   --fail-on risk-or-rule|risk|any|never   (check; default risk-or-rule)
   --no-prompt                skip the post-init/check save-or-share prompt
 
@@ -387,6 +391,24 @@ export async function main(argv: string[]): Promise<number> {
     );
   }
 
+  if (command === 'verify-record') {
+    const { bundledEngineVersion } = await import('./engine-version.js');
+    return runVerifyRecord(
+      {
+        readRecord: (d) => readRecord(d),
+        readSignature: (d) => {
+          const path = signaturePath(d);
+          if (!existsSync(path)) return null;
+          return readFileSync(path, 'utf8');
+        },
+        bundledEngineVersion,
+        log: (m) => console.log(m),
+        error: (m) => console.error(m),
+      },
+      { cwd, json: flagBool(flags, 'json') },
+    );
+  }
+
   // Auto-discovery (P2-B1). Offline by default; --push needs an API key.
   if (command === 'discover') {
     const pkg = readPackageJson(cwd);
@@ -470,10 +492,19 @@ export async function main(argv: string[]): Promise<number> {
       return res.exitCode;
     }
     case 'check': {
+      const sarifFlag = flags.sarif;
+      const sarifPath =
+        sarifFlag === true
+          ? 'legalithm-results.sarif'
+          : typeof sarifFlag === 'string'
+            ? sarifFlag
+            : undefined;
       const res = await runCheck({
         cwd,
         failOn: flagString(flags, 'fail-on') ?? 'risk-or-rule',
         json: flagBool(flags, 'json'),
+        sarif: sarifPath,
+        toolVersion: VERSION,
         regenerate: (stored) =>
           postJson<StoredRecord>(
             `${apiUrl}/api/v1/record/generate`,

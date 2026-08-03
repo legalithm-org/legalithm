@@ -32,3 +32,9 @@ runs:
         LEGALITHM_API_URL: ${{ inputs.api-url }}
         LEGALITHM_FAIL_ON: ${{ inputs.fail-on }}
       run: bash "${{ github.action_path }}/entrypoint.sh"
+    - name: Upload SARIF
+      if: always() && hashFiles(format('{0}/legalithm-results.sarif', inputs.working-directory)) != ''
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ format('{0}/legalithm-results.sarif', inputs.working-directory) }}
+        category: legalithm-ai-act

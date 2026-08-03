@@ -18,11 +18,19 @@ describe('README references ship in the tarball', () => {
   const readme = readFileSync(join(pkgDir, 'README.md'), 'utf8');
 
   /** Backticked paths that look like repo files, e.g. `templates/CLAUDE.md`. */
-  const referenced = [...readme.matchAll(/`([A-Za-z0-9_./-]+\/[A-Za-z0-9_.-]+\.[A-Za-z0-9]+)`/g)]
-    .map((m) => m[1])
-    // Paths the user creates in THEIR repo, not ones we ship.
-    .filter((p) => !p.startsWith('.cursor/') && !p.startsWith('.claude/') && p !== '.mcp.json')
-    .filter((p) => !p.includes('claude_desktop_config'));
+  const referenced = [...readme.matchAll(/`([A-Za-z0-9_./~-]+\/[A-Za-z0-9_.-]+\.[A-Za-z0-9]+)`/g)]
+    .map((m) => m[1]!)
+    /*
+     * Only paths INSIDE this package are ours to ship. Client config lives in
+     * dot-directories the user creates (.cursor/, .claude/, .codex/, .mcp.json)
+     * or under an absolute home path — none of it is packed by us.
+     *
+     * This started as a list of known prefixes and immediately went stale: the
+     * moment the README documented Codex, `.codex/config.toml` tripped the
+     * guard and failed the build. A rule beats an enumeration, because the next
+     * client to appear will not be in anyone's list either.
+     */
+    .filter((p) => !p.startsWith('.') && !p.startsWith('~'));
 
   const unique = [...new Set(referenced)];
 
