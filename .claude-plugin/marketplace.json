@@ -1,0 +1,15 @@
+{
+  "name": "legalithm",
+  "description": "EU AI Act compliance tooling for coding agents, cited to Regulation (EU) 2024/1689.",
+  "owner": {
+    "name": "Legalithm",
+    "email": "dev@legalithm.com"
+  },
+  "plugins": [
+    {
+      "name": "legalithm",
+      "source": "./",
+      "description": "EU AI Act compliance in your editor: classify risk, cite obligations, draft Article 50 disclosures. Offline, no API key."
+    }
+  ]
+}
