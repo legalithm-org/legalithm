@@ -26,7 +26,7 @@ import { emitSurfaceActive, flushTelemetry, CLI_TELEMETRY_COMMANDS } from './tel
 import { maybePromptSaveShare } from './save-share-prompt.js';
 import type { StackInput, UseCase, StoredRecord, ProviderRole, Domain, Audience } from './types.js';
 
-const VERSION = '0.4.4';
+const VERSION = '0.5.0';
 const DISCLAIMER = 'Checked against Regulation (EU) 2024/1689 — not legal advice.';
 
 interface PackageJson {
@@ -71,6 +71,42 @@ function readManifests(cwd: string): Record<string, string> {
   return out;
 }
 
+/** G3.2: read GitHub Actions workflows + Docker/compose files (bounded, shallow). */
+function readCiIacManifests(cwd: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  const tryRead = (rel: string) => {
+    const abs = join(cwd, rel);
+    try {
+      if (existsSync(abs) && statSync(abs).isFile()) out[rel] = readFileSync(abs, 'utf8');
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const workflowsDir = join(cwd, '.github', 'workflows');
+  try {
+    if (existsSync(workflowsDir) && statSync(workflowsDir).isDirectory()) {
+      for (const entry of readdirSync(workflowsDir)) {
+        if (!/\.ya?ml$/i.test(entry)) continue;
+        tryRead(join('.github', 'workflows', entry));
+      }
+    }
+  } catch {
+    /* ignore */
+  }
+
+  try {
+    for (const entry of readdirSync(cwd)) {
+      if (/^Dockerfile(\.|$)/i.test(entry) || /^docker-compose(\..+)?\.ya?ml$/i.test(entry)) {
+        tryRead(entry);
+      }
+    }
+  } catch {
+    /* ignore */
+  }
+  return out;
+}
+
 // Bounded, shallow walk of the repo's source files (relative paths) so chat/assistant
 // route files can be detected (P2-B1). Skips vendored/build dirs; capped in depth + count.
 const WALK_SKIP = new Set(['node_modules', '.git', '.next', 'dist', 'build', 'coverage', '.turbo', 'vendor']);
@@ -99,6 +135,25 @@ function readSourcePaths(cwd: string, maxFiles = 4000): string[] {
     }
   };
   walk(cwd, 0);
+  return out;
+}
+
+/**
+ * G3.1: read the three MCP config paths that `legalithm setup` writes.
+ * Dotfiles are skipped by readSourcePaths; these are explicit known-path reads
+ * (not an expanded walk). Bound unchanged (maxFiles still 4000).
+ */
+function readMcpConfigs(cwd: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const rel of ['.mcp.json', '.cursor/mcp.json', '.claude/settings.json'] as const) {
+    const abs = join(cwd, rel);
+    try {
+      if (!existsSync(abs) || !statSync(abs).isFile()) continue;
+      out[rel] = readFileSync(abs, 'utf8');
+    } catch {
+      /* unreadable — skip */
+    }
+  }
   return out;
 }
 
@@ -335,11 +390,14 @@ export async function main(argv: string[]): Promise<number> {
   // Auto-discovery (P2-B1). Offline by default; --push needs an API key.
   if (command === 'discover') {
     const pkg = readPackageJson(cwd);
+    const mcpConfigs = readMcpConfigs(cwd);
     const stack: StackInput = {
       packageJson: { name: pkg.name, version: pkg.version, dependencies: pkg.dependencies, devDependencies: pkg.devDependencies },
       envKeys: Object.keys(process.env),
       manifests: readManifests(cwd),
+      ciManifests: readCiIacManifests(cwd),
       filePaths: readSourcePaths(cwd),
+      mcpConfigs,
     };
     const wantPush = flagBool(flags, 'push');
     if (wantPush && !apiKey) {

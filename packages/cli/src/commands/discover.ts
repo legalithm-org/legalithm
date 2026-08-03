@@ -74,6 +74,14 @@ export async function runDiscover(deps: RunDiscoverDeps): Promise<RunDiscoverRes
     log(`  role:     ${item.role}`);
     log(`  category: ${item.category}`);
     log(`  purpose:  ${item.purpose ?? ''}`);
+    if (item.agentProfile) {
+      log('  agentProfile:');
+      log(`    principalName:    ${item.agentProfile.principalName ?? 'not yet declared'}`);
+      log(`    principalType:    ${item.agentProfile.principalType ?? 'not yet declared'}`);
+      log(`    authorityScope:   ${item.agentProfile.authorityScope ?? 'not yet declared'}`);
+      log(`    autonomyLevel:    ${item.agentProfile.autonomyLevel ?? 'not yet declared'}`);
+      log(`    tools:            ${item.agentProfile.tools.length ? item.agentProfile.tools.join(', ') : '(none detected)'}`);
+    }
     log(detection.disclaimer);
     if (!deps.push) {
       log('\nRun `legalithm discover --push` (with a login/API key) to add it to your Legalithm inventory.');

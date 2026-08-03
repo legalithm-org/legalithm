@@ -4,7 +4,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import type { UseCase } from './lib/ai_act/types';
+import type { UseCase, Domain } from './lib/ai_act/types';
 import { classifyTool, explainObligationTool, generateDisclosureTool, checkRecordTool } from './tools.js';
 import { emitSurfaceActive } from './telemetry.js';
 
@@ -16,14 +16,35 @@ const API_URL = process.env.LEGALITHM_API_URL || 'https://www.legalithm.com';
  * visible: this shipped as 0.1.0 while the published package was 0.1.3.
  * Guarded by __tests__/version-sync.test.ts.
  */
-export const SERVER_VERSION = '0.1.3';
+export const SERVER_VERSION = '0.2.1';
 
 const asText = (obj: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(obj, null, 2) }] });
 
 const role = z.enum(['provider', 'deployer']);
 const risk = z.enum(['unacceptable', 'high', 'limited', 'minimal']);
-const domain = z.enum(['biometrics', 'employment', 'credit', 'medical', 'education', 'law-enforcement', 'other']);
+/**
+ * W3/T3.3 renamed `credit` to `essential-services`, because Annex III area 5
+ * ("essential private services and essential public services and benefits") is
+ * broader than credit scoring. Published 0.1.3 accepted `credit` and agents may
+ * hold that tool schema in cache, so it stays accepted and is normalised below
+ * rather than failing validation.
+ */
+const DEPRECATED_DOMAIN_ALIASES: Record<string, Domain> = { credit: 'essential-services' };
+
+const domain = z.enum([
+  'biometrics', 'employment', 'essential-services', 'medical', 'education',
+  'law-enforcement', 'critical-infrastructure', 'migration-asylum',
+  'justice-democratic', 'other',
+  'credit', // deprecated — normalised to essential-services
+]);
+
 const audience = z.enum(['general', 'workers', 'children', 'vulnerable-groups', 'other']);
+
+/** Resolve deprecated domain aliases before the engine sees the use case. */
+function normalizeUseCase(args: { domain: string } & Record<string, unknown>): UseCase {
+  const alias = DEPRECATED_DOMAIN_ALIASES[args.domain];
+  return (alias ? { ...args, domain: alias } : args) as unknown as UseCase;
+}
 
 export function createServer(): McpServer {
   const server = new McpServer({ name: 'legalithm', version: SERVER_VERSION });
@@ -36,7 +57,7 @@ export function createServer(): McpServer {
     },
     async (args) => {
       emitSurfaceActive(API_URL, 'classify');
-      return asText(classifyTool(args as UseCase));
+      return asText(classifyTool(normalizeUseCase(args)));
     },
   );
 

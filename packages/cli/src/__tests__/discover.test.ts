@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { detectStack, buildInventory, inferSystemCategory } from '../detect.js';
+import { detectStack, buildInventory, inferSystemCategory, emptyAgentProfileStub } from '../detect.js';
 import { runDiscover } from '../commands/discover.js';
 import type { InventoryItem } from '../types.js';
 
@@ -16,6 +16,10 @@ describe('inferSystemCategory (P2-B1)', () => {
   it('no AI signal → other', () => {
     const d = detectStack({ packageJson: { dependencies: { express: '4' } } });
     expect(inferSystemCategory(d.signals)).toBe('other');
+  });
+  it('MCP config path → agent', () => {
+    const d = detectStack({ filePaths: ['.mcp.json'] });
+    expect(inferSystemCategory(d.signals)).toBe('agent');
   });
 });
 
@@ -35,6 +39,44 @@ describe('buildInventory (P2-B1)', () => {
     expect(item.name).toBe('app');
     expect(item.category).toBe('other');
     expect(item.dataCategories).toBeUndefined();
+  });
+});
+
+describe('discover AgentProfile stub (T3.6)', () => {
+  it('MCP config → agent category with honest nulls — no invented principal fields', () => {
+    const d = detectStack({
+      packageJson: { name: 'agent-app', dependencies: {} },
+      filePaths: ['.mcp.json', '.cursor/mcp.json'],
+    });
+    const item = buildInventory(d, 'agent-app');
+    expect(item.category).toBe('agent');
+    expect(item.agentProfile).toEqual(emptyAgentProfileStub());
+    expect(item.agentProfile?.principalName).toBeNull();
+    expect(item.agentProfile?.principalType).toBeNull();
+    expect(item.agentProfile?.authorityScope).toBeNull();
+    expect(item.agentProfile?.autonomyLevel).toBeNull();
+    expect(item.agentProfile?.composition).toBeNull();
+    // Guard against plausible-looking fabrications in the stub payload.
+    const serialized = JSON.stringify(item.agentProfile);
+    expect(serialized).not.toMatch(/Acme|John|Jane|Legalithm Inc|on behalf of|default principal/i);
+    expect(Object.values(item.agentProfile ?? {})).toEqual(
+      expect.arrayContaining([null, null, null, null, null]),
+    );
+  });
+
+  it('prints not yet declared for undeclared agent fields', async () => {
+    const detection = detectStack({ filePaths: ['.mcp.json'] });
+    const lines: string[] = [];
+    await runDiscover({
+      detect: () => detection,
+      name: 'mcp-app',
+      json: false,
+      log: (m) => lines.push(m),
+    });
+    const out = lines.join('\n');
+    expect(out).toMatch(/not yet declared/);
+    expect(out).toMatch(/principalName:\s+not yet declared/);
+    expect(out).not.toMatch(/principalName:\s+(?!not yet declared)\S+/);
   });
 });
 

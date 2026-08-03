@@ -82,9 +82,31 @@ export interface IngestResponse {
 // Risk Classification Types
 export type RiskLevel = 'unacceptable' | 'high' | 'limited' | 'minimal';
 
-export type ProviderRole = 'provider' | 'deployer';
+/** Art 3 roles. GPAI Chapter V duties gate on provider in the engine. */
+export type ProviderRole = 'provider' | 'deployer' | 'importer' | 'distributor';
 
-export type Domain = 'biometrics' | 'employment' | 'credit' | 'medical' | 'education' | 'law-enforcement' | 'other';
+export const PROVIDER_ROLES = [
+  'provider',
+  'deployer',
+  'importer',
+  'distributor',
+] as const satisfies readonly ProviderRole[];
+
+/**
+ * Structured assessment domains. `essential-services` is Annex III area 5
+ * (broader than credit alone). Input alias `credit` still normalises here.
+ */
+export type Domain =
+  | 'biometrics'
+  | 'employment'
+  | 'essential-services'
+  | 'medical'
+  | 'education'
+  | 'law-enforcement'
+  | 'critical-infrastructure'
+  | 'migration-asylum'
+  | 'justice-democratic'
+  | 'other';
 
 export type Audience = 'general' | 'workers' | 'children' | 'vulnerable-groups' | 'other';
 

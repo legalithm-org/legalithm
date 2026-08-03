@@ -94,6 +94,49 @@ describe('detectStack — robustness & privacy', () => {
   });
 });
 
+describe('detectStack — MCP agent capability (G3.1)', () => {
+  const oneServer = (name: string) =>
+    JSON.stringify({ mcpServers: { [name]: { type: 'stdio', command: 'npx', args: ['-y', 'x'] } } });
+
+  it('fixture with all three MCP config files yields three agent_capability signals', () => {
+    const result = detectStack({
+      mcpConfigs: {
+        '.mcp.json': oneServer('legalithm'),
+        '.cursor/mcp.json': oneServer('cursor-extra'),
+        '.claude/settings.json': oneServer('claude-extra'),
+      },
+    });
+    const agentSignals = result.signals.filter((s) => s.kind === 'agent_capability');
+    expect(agentSignals).toHaveLength(3);
+    expect(agentSignals.map((s) => s.evidence).sort()).toEqual([
+      'mcp-server:.claude/settings.json#claude-extra',
+      'mcp-server:.cursor/mcp.json#cursor-extra',
+      'mcp-server:.mcp.json#legalithm',
+    ]);
+    expect(result.inferred.hasAgentCapability).toBe(true);
+  });
+
+  it('a repo with no MCP configs yields no agent_capability signals', () => {
+    const result = detectStack({ packageJson: { dependencies: { next: '15' } }, filePaths: ['app/page.tsx'] });
+    expect(result.signals.filter((s) => s.kind === 'agent_capability')).toHaveLength(0);
+    expect(result.inferred.hasAgentCapability).toBeUndefined();
+  });
+
+  it('emits one signal per configured mcpServers entry inside a single file', () => {
+    const result = detectStack({
+      mcpConfigs: {
+        '.mcp.json': JSON.stringify({
+          mcpServers: {
+            legalithm: { type: 'stdio', command: 'npx' },
+            filesystem: { type: 'stdio', command: 'npx' },
+          },
+        }),
+      },
+    });
+    expect(result.signals.filter((s) => s.kind === 'agent_capability')).toHaveLength(2);
+  });
+});
+
 // Cross-language detection: Python / Go / Rust / Java / .NET / PHP / Ruby.
 const mani = (files: Record<string, string>): StackInput => ({ manifests: files });
 
@@ -138,5 +181,31 @@ describe('detectStack — cross-language manifests (≥90% gate)', () => {
   it('never emits raw manifest contents — evidence names only the matched token', () => {
     const r = detectStack(mani({ 'requirements.txt': 'openai==1.30\nSECRET_KEY=do-not-leak' }));
     expect(JSON.stringify(r)).not.toContain('do-not-leak');
+  });
+});
+
+describe('detectStack — CI/IaC manifests (G3.2)', () => {
+  it('flags AI SDK / model endpoints in workflow and Dockerfile contents', () => {
+    const r = detectStack({
+      ciManifests: {
+        '.github/workflows/ci.yml': 'jobs:\n  test:\n    steps:\n      - run: npx openai\n',
+        Dockerfile: 'FROM node\nENV OPENAI_BASE_URL=https://api.openai.com/v1\n',
+        'docker-compose.yml': 'services:\n  app:\n    image: ollama/ollama\n',
+      },
+    });
+    const ci = r.signals.filter((s) => s.evidence.startsWith('ci-iac:'));
+    expect(ci.length).toBeGreaterThanOrEqual(2);
+    expect(r.inferred.usesGenAI).toBe(true);
+    expect(JSON.stringify(r)).not.toContain('SECRET');
+  });
+
+  it('yields no ci-iac signals when CI files have no AI tokens', () => {
+    const r = detectStack({
+      ciManifests: {
+        '.github/workflows/ci.yml': 'jobs:\n  test:\n    runs-on: ubuntu-latest\n',
+        Dockerfile: 'FROM node:20\nRUN npm ci\n',
+      },
+    });
+    expect(r.signals.filter((s) => s.evidence.startsWith('ci-iac:'))).toHaveLength(0);
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "legalithm",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "description": "EU AI Act compliance in your coding loop: detect AI deps, generate a dated compliance record, mark and verify AI-generated content (Article 50), and gate CI/agents on it.",
   "bin": {
     "legalithm": "dist/index.js"
@@ -48,11 +48,11 @@
   "homepage": "https://www.legalithm.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PedramMadani/legalithm.git",
+    "url": "git+https://github.com/legalithm-org/legalithm.git",
     "directory": "packages/cli"
   },
   "bugs": {
-    "url": "https://github.com/PedramMadani/legalithm/issues"
+    "url": "https://github.com/legalithm-org/legalithm/issues"
   },
   "publishConfig": {
     "access": "public"

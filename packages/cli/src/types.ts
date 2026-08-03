@@ -6,10 +6,13 @@ export type ProviderRole = 'provider' | 'deployer';
 export type Domain =
   | 'biometrics'
   | 'employment'
-  | 'credit'
+  | 'essential-services'
   | 'medical'
   | 'education'
   | 'law-enforcement'
+  | 'critical-infrastructure'
+  | 'migration-asylum'
+  | 'justice-democratic'
   | 'other';
 export type Audience = 'general' | 'workers' | 'children' | 'vulnerable-groups' | 'other';
 
@@ -32,13 +35,24 @@ export interface StackInput {
   envKeys?: string[];
   /** Relative repo paths sampled for routing heuristics. */
   filePaths?: string[];
+  /**
+   * Raw JSON contents of MCP config files keyed by relative path
+   * (.mcp.json, .cursor/mcp.json, .claude/settings.json). Used to emit one
+   * agent_capability signal per configured mcpServers entry.
+   */
+  mcpConfigs?: Record<string, string>;
   /** Raw contents of non-Node dependency manifests, keyed by filename
    *  (requirements.txt, pyproject.toml, go.mod, Cargo.toml, pom.xml,
    *  build.gradle, composer.json, *.csproj). Drives cross-language detection. */
   manifests?: Record<string, string>;
+  /**
+   * CI / IaC file contents keyed by relative path
+   * (.github/workflows/*.yml, Dockerfile*, docker-compose*.yml).
+   */
+  ciManifests?: Record<string, string>;
 }
 
-export type SignalKind = 'llm_sdk' | 'pii_handling' | 'framework' | 'vector_db' | 'auth';
+export type SignalKind = 'llm_sdk' | 'pii_handling' | 'framework' | 'vector_db' | 'auth' | 'agent_capability';
 export type AiActHint = 'article_50' | 'gpai' | 'none';
 export type Confidence = 'high' | 'medium' | 'low';
 export type Framework = 'next' | 'vite' | 'remix' | 'express' | 'other';
@@ -56,6 +70,8 @@ export interface StackInference {
   likelyArticle50: boolean;
   handlesPII: boolean;
   framework?: Framework;
+  /** True when MCP / agent-capability configs were found. */
+  hasAgentCapability?: boolean;
 }
 
 export interface StackDetectionResult {
@@ -74,12 +90,29 @@ export const AI_SYSTEM_CATEGORIES = [
   'recommender',
   'hr_screening',
   'biometric',
+  'agent',
   'other',
 ] as const;
 export type AiSystemCategory = (typeof AI_SYSTEM_CATEGORIES)[number];
 
 export const AI_SYSTEM_ROLES = ['provider', 'deployer', 'importer', 'distributor'] as const;
 export type AiSystemRole = (typeof AI_SYSTEM_ROLES)[number];
+
+/**
+ * AgentProfile stub for discover → registry. Fields discover cannot know stay
+ * null (rendered as "not yet declared"). Never invent a principal.
+ */
+export interface AgentProfileStub {
+  principalName: null;
+  principalType: null;
+  authorityScope: null;
+  tools: string[];
+  externalActions: string[];
+  connectedSystems: string[];
+  affectedPersonCategories: string[];
+  autonomyLevel: null;
+  composition: null;
+}
 
 /** One proposed AI-system record, shaped for POST /api/v1/ai-systems. */
 export interface InventoryItem {
@@ -89,6 +122,8 @@ export interface InventoryItem {
   purpose?: string;
   description?: string;
   dataCategories?: string[];
+  /** Present when category is agent — honest nulls for undeclared Art 50 fields. */
+  agentProfile?: AgentProfileStub;
 }
 
 // ---- the compliance record (only the fields the CLI reads for drift) ----

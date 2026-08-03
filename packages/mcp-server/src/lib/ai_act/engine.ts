@@ -38,13 +38,16 @@ const LIMITED_CLAUSE: Record<string, string> = {
  * in risk_map.json. Medical maps to the Article 6(1)/Annex I safety-component
  * path; other domains map to Annex III categories under Article 6(2).
  */
-const DOMAIN_TO_HIGH_RISK_CATEGORY: Record<Domain, string | null> = {
+export const DOMAIN_TO_HIGH_RISK_CATEGORY: Record<Domain, string | null> = {
   biometrics: 'biometric_identification',
   employment: 'employment',
-  credit: 'essential_services',
+  'essential-services': 'essential_services',
   medical: 'medical',
   education: 'education',
   'law-enforcement': 'law_enforcement',
+  'critical-infrastructure': 'critical_infrastructure',
+  'migration-asylum': 'migration_asylum',
+  'justice-democratic': 'justice_democratic',
   other: null,
 };
 
