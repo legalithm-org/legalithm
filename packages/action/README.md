@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: legalithm/legalithm/packages/action@v1
+      - uses: legalithm-org/legalithm/packages/action@v1
         with:
           api-key: ${{ secrets.LEGALITHM_API_KEY }}
           # fail-on: risk-or-rule   # risk-or-rule (default) | risk | any | never

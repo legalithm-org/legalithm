@@ -1,8 +1,8 @@
 {
   "name": "legalithm-mcp-server",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "EU AI Act compliance MCP server for Claude Code / Cursor — classify, explain obligations, generate Article 50 disclosures. Offline by default.",
-  "mcpName": "io.github.legalithm/legalithm-mcp-server",
+  "mcpName": "io.github.PedramMadani/legalithm-mcp-server",
   "type": "module",
   "bin": {
     "legalithm-mcp": "dist/index.js"
@@ -32,11 +32,11 @@
   "homepage": "https://www.legalithm.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/legalithm/legalithm.git",
+    "url": "git+https://github.com/PedramMadani/legalithm.git",
     "directory": "packages/mcp-server"
   },
   "bugs": {
-    "url": "https://github.com/legalithm/legalithm/issues"
+    "url": "https://github.com/PedramMadani/legalithm/issues"
   },
   "publishConfig": {
     "access": "public"
@@ -49,8 +49,8 @@
     "zod": "^3.23.0"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^20",
     "tsup": "^8.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5"
   }
 }

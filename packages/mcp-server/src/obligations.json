@@ -18,11 +18,11 @@
       "risk": "high",
       "article": "10",
       "title": "Data Governance and Quality Management",
-      "description": "Design and develop high-risk AI systems in such a way that they achieve, an appropriate level of accuracy, robustness and cybersecurity.",
+      "description": "Training, validation and testing data sets shall be subject to data governance and management practices covering design choices, collection processes, preparation operations, assumptions, assessment of availability, quantity and suitability, examination for bias, and identification of gaps. Data sets shall be relevant, sufficiently representative, and to the best extent possible free of errors and complete.",
       "evidence_type": "process",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-10",
       "priority": "high",
-      "guidance": "Document data collection, preparation and governance procedures. Ensure relevance, representativeness and quality."
+      "guidance": "Document design choices, collection processes, preparation operations, assumptions, availability/quantity/suitability assessments, bias examination, and identified gaps. Ensure training, validation and testing data sets are relevant, sufficiently representative, and to the best extent possible free of errors and complete."
     },
     {
       "id": "technical_documentation",
@@ -43,11 +43,11 @@
       "risk": "high",
       "article": "12",
       "title": "Record-Keeping",
-      "description": "Affix the CE marking to indicate conformity with this Regulation and keep, for a period ending 10 years after the high-risk AI system has been placed on the market, the technical documentation.",
+      "description": "High-risk AI systems shall technically allow for the automatic recording of events (logs) over the lifetime of the system. Logging capabilities shall enable a level of traceability appropriate to the intended purpose of the system, covering (a) situations that may result in the AI system presenting a risk within the meaning of Article 79(1) or that may lead to a substantial modification, (b) facilitation of post-market monitoring referred to in Article 72, and (c) monitoring of the operation of the high-risk AI system referred to in Article 26(5).",
       "evidence_type": "record",
       "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-12",
       "priority": "high",
-      "guidance": "Maintain logs for 10 years. Include date of conformity, name and address of provider, and technical documentation."
+      "guidance": "Ensure the system can automatically record events (logs) over its lifetime with traceability appropriate to the intended purpose. Logs must support risk situations under Article 79(1) or substantial modification, post-market monitoring under Article 72, and operational monitoring under Article 26(5). Article 19 sets a six-month minimum retention period for automatically generated logs for providers."
     },
     {
       "id": "transparency_provider",
@@ -173,13 +173,13 @@
       "id": "transparency_deployer",
       "role": "deployer",
       "risk": "high",
-      "article": "13",
+      "article": "26(11)",
       "title": "Provide Information to Affected Persons",
-      "description": "Inform natural persons that they are subject to high-risk AI systems unless the deployer does not have access to the information.",
+      "description": "Inform natural persons that they are subject to the use of the high-risk AI system, unless the deployer does not have access to the information.",
       "evidence_type": "document",
-      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-13",
+      "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-26",
       "priority": "medium",
-      "guidance": "Notify individuals when AI system decisions affect them. Provide meaningful information about the logic."
+      "guidance": "Inform affected natural persons of the use of the high-risk AI system (Article 26(11)). Where individual decision-making is involved, also consider the right to explanation under Article 86."
     },
     {
       "id": "chatbot_disclosure",

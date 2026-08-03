@@ -65,6 +65,32 @@ export interface StackDetectionResult {
   disclaimer: string;
 }
 
+// ---- inventory (P2-B1: auto-discovery → /api/v1/ai-systems) ----
+// Kept in sync with the web app's AI_SYSTEM_CATEGORIES / AI_SYSTEM_ROLES
+// (lib/aiact/ai-systems.ts). The CLI package is isolated, so the literals live here.
+export const AI_SYSTEM_CATEGORIES = [
+  'chatbot',
+  'content_generation',
+  'recommender',
+  'hr_screening',
+  'biometric',
+  'other',
+] as const;
+export type AiSystemCategory = (typeof AI_SYSTEM_CATEGORIES)[number];
+
+export const AI_SYSTEM_ROLES = ['provider', 'deployer', 'importer', 'distributor'] as const;
+export type AiSystemRole = (typeof AI_SYSTEM_ROLES)[number];
+
+/** One proposed AI-system record, shaped for POST /api/v1/ai-systems. */
+export interface InventoryItem {
+  name: string;
+  role: AiSystemRole;
+  category: AiSystemCategory;
+  purpose?: string;
+  description?: string;
+  dataCategories?: string[];
+}
+
 // ---- the compliance record (only the fields the CLI reads for drift) ----
 export interface StoredRecord {
   schemaVersion: string;

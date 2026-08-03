@@ -1,7 +1,11 @@
 import riskMap from './risk_map.json';
 import type { Citation, Domain, RiskResult, RiskLevel, UseCase } from './types';
+import { ENFORCEMENT_MILESTONES_BY_ID } from './enforcement-dates';
+import { buildCitation } from './citation';
 
 const EURLEX_BASE = 'https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689';
+const ANNEX_I_DEADLINE = ENFORCEMENT_MILESTONES_BY_ID['high-risk-annex-i'].date!;
+const ANNEX_III_DEADLINE = ENFORCEMENT_MILESTONES_BY_ID['high-risk-annex-iii'].date!;
 
 /** Below this numeric confidence the engine abstains: it flags reviewRequired and
  *  defers to legal review instead of asserting a classification. */
@@ -30,11 +34,9 @@ const LIMITED_CLAUSE: Record<string, string> = {
 };
 
 /**
- * Maps the STRUCTURED domain a user selects to its Annex III high-risk category id
- * in risk_map.json. Without this, classifyUseCase only matched free-text patterns and
- * ignored the explicit domain — so e.g. an "employment / hiring" system was misclassified
- * as minimal risk unless the description happened to contain a keyword like "recruitment".
- * Selecting a high-risk domain is itself a strong Annex III signal (Article 6(2)).
+ * Maps the STRUCTURED domain a user selects to its high-risk category id
+ * in risk_map.json. Medical maps to the Article 6(1)/Annex I safety-component
+ * path; other domains map to Annex III categories under Article 6(2).
  */
 const DOMAIN_TO_HIGH_RISK_CATEGORY: Record<Domain, string | null> = {
   biometrics: 'biometric_identification',
@@ -46,6 +48,16 @@ const DOMAIN_TO_HIGH_RISK_CATEGORY: Record<Domain, string | null> = {
   other: null,
 };
 
+interface RiskCategory {
+  id: string;
+  title: string;
+  patterns: string[];
+  examples?: string[];
+  annex_area?: number | string;
+  article?: string;
+  annex?: string;
+}
+
 interface RiskRule {
   level?: RiskLevel;
   article?: string;
@@ -53,12 +65,7 @@ interface RiskRule {
   title: string;
   url: string;
   patterns?: string[];
-  categories?: Array<{
-    id: string;
-    title: string;
-    patterns: string[];
-    examples?: string[];
-  }>;
+  categories?: RiskCategory[];
 }
 
 // Negators that, when they appear just before a matched phrase, flip a positive
@@ -73,7 +80,7 @@ const NEGATION_RE = /\b(not|never|without|excludes|excluding|rather than|instead
  *
  * Only the START boundary is enforced (char before the match must be a
  * non-word char). The END is intentionally left open so inflections still
- * match ("biometric identifications" → "biometric identification") — for a
+ * match ("biometric identifications" → "biometric identification"), for a
  * compliance classifier a false negative (missing real risk) is worse than a
  * mild false positive.
  */
@@ -169,11 +176,11 @@ export function classifyUseCase(useCase: UseCase): RiskResult {
   const unacceptableRule = riskMap.unacceptable as RiskRule;
   if (checkPatterns(text, unacceptableRule.patterns || [])) {
     matchedRules.push('unacceptable_practices');
-    citations.push({
+    citations.push(buildCitation({
       article: '5',
       url: `${EURLEX_BASE}#article-5`,
       label: 'Article 5 - Prohibited AI Practices',
-    });
+    }));
 
     return finalize(
       {
@@ -200,56 +207,92 @@ export function classifyUseCase(useCase: UseCase): RiskResult {
         matchedRules.push('high_risk_domain_selected');
       }
 
-      const exceptions = deriveArticle6_3Exceptions(text, useCase.article6_3_exceptions);
-      if (exceptions) {
-        const appliedExceptions: string[] = [];
-        if (exceptions.narrowProceduralTask) {
-          appliedExceptions.push('performs a narrow procedural task');
-        }
-        if (exceptions.improvesHumanActivity) {
-          appliedExceptions.push('improves the result of a previously completed human activity');
-        }
-        if (exceptions.detectsPatternsOnly) {
-          appliedExceptions.push('detects decision-making patterns without replacing human assessment');
-        }
-        if (exceptions.preparatoryTask) {
-          appliedExceptions.push('performs a preparatory task for an assessment');
-        }
+      const isAnnexI =
+        category.annex === 'I' || category.article === '6(1)';
 
-        if (appliedExceptions.length > 0) {
-          matchedRules.push('article_6_3_exception');
-          citations.push({
-            article: '6(3)',
-            url: `${EURLEX_BASE}#article-6`,
-            label: 'Article 6(3) - Exception from High-Risk Classification',
-          });
+      // Article 6(3) exceptions apply only to Annex III / Article 6(2) systems.
+      if (!isAnnexI) {
+        const exceptions = deriveArticle6_3Exceptions(text, useCase.article6_3_exceptions);
+        if (exceptions) {
+          const appliedExceptions: string[] = [];
+          if (exceptions.narrowProceduralTask) {
+            appliedExceptions.push('performs a narrow procedural task');
+          }
+          if (exceptions.improvesHumanActivity) {
+            appliedExceptions.push('improves the result of a previously completed human activity');
+          }
+          if (exceptions.detectsPatternsOnly) {
+            appliedExceptions.push('detects decision-making patterns without replacing human assessment');
+          }
+          if (exceptions.preparatoryTask) {
+            appliedExceptions.push('performs a preparatory task for an assessment');
+          }
 
-          return finalize(
-            {
-              risk: 'limited',
-              confidence: 'medium',
-              rationale: `This AI system matches Annex III category "${category.title}", but may qualify for an Article 6(3) exception because it ${appliedExceptions.join(' and ')}. The exception is inferred and NOT certain — the provider must document and legally verify this assessment. Transparency obligations under Article 50 may still apply.`,
-              citations,
-              matchedRules,
-              obligationsHint: {
-                count: 2,
-                topTitles: [
-                  'Document Article 6(3) Exception Assessment',
-                  'Transparency Obligations (Article 50)',
-                ],
+          if (appliedExceptions.length > 0) {
+            matchedRules.push('article_6_3_exception');
+            citations.push(buildCitation({
+              article: '6(3)',
+              url: `${EURLEX_BASE}#article-6`,
+              label: 'Article 6(3) - Exception from High-Risk Classification',
+            }));
+
+            return finalize(
+              {
+                risk: 'limited',
+                confidence: 'medium',
+                rationale: `This AI system matches Annex III category "${category.title}", but may qualify for an Article 6(3) exception because it ${appliedExceptions.join(' and ')}. The exception is inferred and NOT certain, the provider must document and legally verify this assessment. Transparency obligations under Article 50 may still apply.`,
+                citations,
+                matchedRules,
+                obligationsHint: {
+                  count: 2,
+                  topTitles: [
+                    'Document Article 6(3) Exception Assessment',
+                    'Transparency Obligations (Article 50)',
+                  ],
+                },
               },
-            },
-            SCORE.article6_3Exception,
-          );
+              SCORE.article6_3Exception,
+            );
+          }
         }
       }
 
-      citations.push({
+      if (isAnnexI) {
+        citations.push(buildCitation({
+          article: '6(1)',
+          annex: 'I',
+          url: `${EURLEX_BASE}#article-6`,
+          label: 'Article 6(1) & Annex I - High-Risk AI Systems (Product Safety Components)',
+        }));
+
+        return finalize(
+          {
+            risk: 'high',
+            confidence: 'high',
+            rationale: `This AI system is classified as high-risk under Article 6(1) because it is (or is a safety component of) a product covered by Union harmonisation legislation listed in Annex I (e.g. medical devices). It is not an Annex III standalone system. High-risk obligations for this path apply from ${ANNEX_I_DEADLINE}.`,
+            citations,
+            matchedRules,
+            applicableDeadline: ANNEX_I_DEADLINE,
+            obligationsHint: {
+              count: 10,
+              topTitles: [
+                'Quality Management System (Article 17)',
+                'Data Governance (Article 10)',
+                'Technical Documentation (Article 11)',
+                'Human Oversight (Article 14)',
+              ],
+            },
+          },
+          patternMatched ? SCORE.highRiskPattern : SCORE.highRiskDomainOnly,
+        );
+      }
+
+      citations.push(buildCitation({
         article: '6(2)',
         annex: 'III',
         url: `${EURLEX_BASE}#article-6`,
         label: 'Article 6(2) & Annex III - High-Risk AI Systems',
-      });
+      }));
 
       return finalize(
         {
@@ -258,6 +301,7 @@ export function classifyUseCase(useCase: UseCase): RiskResult {
           rationale: `This AI system is classified as high-risk under Article 6(2) as it falls into the category of ${category.title} as specified in Annex III. It requires compliance with Article 8-51 obligations including quality management systems, data governance, technical documentation, and human oversight.`,
           citations,
           matchedRules,
+          applicableDeadline: ANNEX_III_DEADLINE,
           obligationsHint: {
             count: 10,
             topTitles: [
@@ -274,7 +318,7 @@ export function classifyUseCase(useCase: UseCase): RiskResult {
   }
 
   // GPAI / Chapter V (Articles 51-56). Obligations sit on the PROVIDER of a
-  // general-purpose model — a deployer merely USING an LLM is not a GPAI provider
+  // general-purpose model, a deployer merely USING an LLM is not a GPAI provider
   // (it gets Article 50 transparency below). So gate on role === 'provider'.
   const gpaiRule = riskMap.gpai as RiskRule;
   if (useCase.role === 'provider') {
@@ -286,17 +330,17 @@ export function classifyUseCase(useCase: UseCase): RiskResult {
 
     if (isSystemic || isStandard) {
       matchedRules.push(isSystemic ? 'gpai_systemic' : 'gpai_standard');
-      citations.push({
+      citations.push(buildCitation({
         article: '53',
         url: `${EURLEX_BASE}#chapter-V`,
         label: 'Article 53 - GPAI Model Obligations (Chapter V)',
-      });
+      }));
       if (isSystemic) {
-        citations.push({
+        citations.push(buildCitation({
           article: '55',
           url: `${EURLEX_BASE}#chapter-V`,
           label: 'Article 55 - GPAI Models with Systemic Risk',
-        });
+        }));
       }
 
       return finalize(
@@ -335,11 +379,11 @@ export function classifyUseCase(useCase: UseCase): RiskResult {
   for (const category of limitedRiskRule.categories || []) {
     if (checkPatterns(text, category.patterns)) {
       matchedRules.push(`limited_risk_${category.id}`);
-      citations.push({
+      citations.push(buildCitation({
         article: '50',
         url: `${EURLEX_BASE}#article-50`,
         label: 'Article 50 - Transparency Obligations',
-      });
+      }));
 
       return finalize(
         {
@@ -363,7 +407,7 @@ export function classifyUseCase(useCase: UseCase): RiskResult {
       risk: 'minimal',
       confidence: 'low',
       rationale:
-        'No prohibited, high-risk, GPAI, or limited-risk transparency trigger matched the current rules, so this AI system appears minimal-risk. This is a preliminary, low-confidence result — the rules are keyword-based and may miss a novel or implicitly-described use case, so it is flagged for legal review rather than asserted.',
+        'No prohibited, high-risk, GPAI, or limited-risk transparency trigger matched the current rules, so this AI system appears minimal-risk. This is a preliminary, low-confidence result, the rules are keyword-based and may miss a novel or implicitly-described use case, so it is flagged for legal review rather than asserted.',
       citations: [],
       matchedRules,
       obligationsHint: { count: 0, topTitles: [] },

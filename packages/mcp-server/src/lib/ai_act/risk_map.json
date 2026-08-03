@@ -1,4 +1,10 @@
 {
+  "meta": {
+    "version": "1.1.0",
+    "updatedAt": "2026-08-03",
+    "regulation": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
+    "notes": "Medical AI safety-component systems classify under Article 6(1) / Annex I (application 2028-08-02), not under Annex III."
+  },
   "unacceptable": {
     "article": "5",
     "title": "Prohibited AI Practices",
@@ -204,13 +210,15 @@
       {
         "id": "medical",
         "title": "Safety Components in Medical Devices",
-        "annex_area": "5a",
+        "article": "6(1)",
+        "annex": "I",
         "patterns": [
           "medical diagnosis",
           "medical device",
           "treatment recommendation",
           "clinical decision support",
           "radiology analysis",
+          "radiology image analysis",
           "pathology analysis",
           "surgical planning",
           "patient triage",

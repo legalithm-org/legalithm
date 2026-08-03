@@ -113,7 +113,7 @@ export interface UseCase {
   use_case: string;
   audience: Audience;
   deployment_context?: DeploymentContext;
-  /** Article 6(3) exceptions — if any apply, high-risk may be downgraded */
+  /** Article 6(3) exceptions, if any apply, high-risk may be downgraded */
   article6_3_exceptions?: Article6_3Exceptions;
 }
 
@@ -122,6 +122,10 @@ export interface Citation {
   annex?: string;
   url: string;
   label: string;
+  /** Corpus / rules-engine as-of date (ISO YYYY-MM-DD). */
+  asOf: string;
+  /** When the cited article's obligations apply, from enforcement-dates.ts. */
+  appliesFrom?: string;
 }
 
 export interface RiskResult {
@@ -137,6 +141,8 @@ export interface RiskResult {
   rationale: string;
   citations: Citation[];
   matchedRules: string[];
+  /** ISO application date for this classification path, when known. */
+  applicableDeadline?: string | null;
   obligationsHint?: {
     count: number;
     topTitles: string[];

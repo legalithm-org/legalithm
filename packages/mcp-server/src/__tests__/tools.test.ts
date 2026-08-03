@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { classifyUseCase } from '../lib/ai_act/engine';
 import type { UseCase } from '../lib/ai_act/types';
+import { RULES_ENGINE_META } from '../lib/ai_act/version';
 import {
   classifyTool,
   explainObligationTool,
@@ -21,6 +22,8 @@ describe('classifyTool', () => {
     const r = classifyTool(INPUT);
     expect(r.risk).toBe(classifyUseCase(INPUT).risk);
     expect(r.disclaimer).toBe(DISCLAIMER);
+    expect(r.asOf).toBe(RULES_ENGINE_META.updatedAt);
+    expect(r.engineVersion).toBe(RULES_ENGINE_META.version);
   });
 });
 
@@ -31,6 +34,8 @@ describe('explainObligationTool', () => {
     expect(r.items[0]!.citation.article).toBeTruthy();
     expect(r.items[0]!.citation.url).toContain('eur-lex');
     expect(r.disclaimer).toBe(DISCLAIMER);
+    expect(r.asOf).toBe(RULES_ENGINE_META.updatedAt);
+    expect(r.engineVersion).toBe(RULES_ENGINE_META.version);
   });
 
   it('returns an empty list gracefully for a tier with no obligations', () => {
@@ -66,6 +71,8 @@ describe('generateDisclosureTool', () => {
     expect(r.article).toBe('Article 50');
     expect(r.citationUrl).toContain('eur-lex');
     expect(r.disclaimer).toBe(DISCLAIMER);
+    expect(r.asOf).toBe(RULES_ENGINE_META.updatedAt);
+    expect(r.engineVersion).toBe(RULES_ENGINE_META.version);
   });
 
   it('defaults to English', () => {

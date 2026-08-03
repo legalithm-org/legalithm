@@ -1,0 +1,34 @@
+[
+  {
+    "version": "1.1.0",
+    "date": "2026-08-03",
+    "summary": "Reclassify medical safety-component AI under Article 6(1) / Annex I.",
+    "changes": [
+      "Removed fabricated Annex III medical area that did not exist in the Act.",
+      "Medical diagnosis / device safety-component patterns now cite Article 6(1) and Annex I.",
+      "Applicable deadline for that path is 2028-08-02 (Annex I embedded), not the Annex III track.",
+      "Annex III point 5 remains access to and enjoyment of essential private and public services and benefits."
+    ],
+    "sources": [
+      "https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng",
+      "Regulation (EU) 2026/1744 (Digital Omnibus on AI)"
+    ],
+    "notes": "Depends on lib/ai_act/enforcement-dates.ts for the Annex I calendar date."
+  },
+  {
+    "version": "1.0.0",
+    "date": "2026-07-17",
+    "summary": "Baseline EU AI Act rules corpus.",
+    "changes": [
+      "Article 5 prohibited practices (subliminal/manipulative, social scoring, real-time remote biometric ID, etc.).",
+      "Article 6(2) / Annex III high-risk domains: biometrics, employment, education, essential services, law enforcement, migration, justice.",
+      "Article 6(3) exceptions (narrow procedural task, improves human activity, pattern-detection, preparatory task).",
+      "Chapter V GPAI obligations, standard (Article 53) and systemic-risk (Article 55).",
+      "Article 50 transparency: chatbot disclosure and synthetic-content (deepfake) labelling."
+    ],
+    "sources": [
+      "https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng"
+    ],
+    "notes": "Enacted application dates apply. The Digital Omnibus (provisional) may defer Annex III high-risk and Annex I product dates; tracked here and applied in a future version once final."
+  }
+]

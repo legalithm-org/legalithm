@@ -12,6 +12,8 @@ import type {
   Confidence,
   SignalKind,
   AiActHint,
+  AiSystemCategory,
+  InventoryItem,
 } from './types.js';
 
 interface DependencyRule {
@@ -174,4 +176,40 @@ export function toUseCaseSeed(inferred: StackInference): Partial<UseCase> {
     return { role: 'deployer', domain: 'other', audience: 'general', use_case: 'Generative-AI feature' };
   }
   return {};
+}
+
+/**
+ * P2-B1: map detection signals to a conservative AI-system category. A chat/assistant
+ * route is the strongest signal (chatbot); a generative SDK without one is treated as
+ * content generation; otherwise "other". Heuristic — the user confirms.
+ */
+export function inferSystemCategory(signals: DetectedSignal[]): AiSystemCategory {
+  const usesGenAI = signals.some((s) => s.kind === 'llm_sdk');
+  const hasChatRoute = signals.some((s) => s.kind === 'llm_sdk' && s.evidence.startsWith('path:'));
+  if (hasChatRoute) return 'chatbot';
+  if (usesGenAI) return 'content_generation';
+  return 'other';
+}
+
+/**
+ * P2-B1: turn a stack detection into a proposed AI-system record for
+ * POST /api/v1/ai-systems. One record per repo (the app itself); the signals are the
+ * evidence. Deployer by default (using an AI SDK = deploying someone else's model);
+ * the user adjusts role/category before relying on it.
+ */
+export function buildInventory(result: StackDetectionResult, name: string): InventoryItem {
+  const aiEvidence = result.signals
+    .filter((s) => s.kind === 'llm_sdk' || s.kind === 'vector_db')
+    .map((s) => s.evidence);
+  const description = aiEvidence.length
+    ? `Auto-detected AI stack: ${aiEvidence.join(', ')}.`
+    : 'No AI SDK detected in the manifest; registered for completeness.';
+  return {
+    name: name.trim() || 'app',
+    role: 'deployer',
+    category: inferSystemCategory(result.signals),
+    purpose: result.useCaseSeed.use_case ?? 'AI feature shipped to EU users',
+    description,
+    ...(result.inferred.handlesPII ? { dataCategories: ['personal data'] } : {}),
+  };
 }

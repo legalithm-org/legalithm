@@ -1,7 +1,7 @@
 {
   "name": "legalithm",
-  "version": "0.1.2",
-  "description": "EU AI Act compliance in your coding loop — detect AI deps, generate a dated compliance record, and gate CI/agents on it.",
+  "version": "0.4.4",
+  "description": "EU AI Act compliance in your coding loop: detect AI deps, generate a dated compliance record, mark and verify AI-generated content (Article 50), and gate CI/agents on it.",
   "bin": {
     "legalithm": "dist/index.js"
   },
@@ -9,11 +9,21 @@
   "main": "./dist/index.js",
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "ROBUSTNESS.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "sharp": "^0.35.3",
+    "typescript": "^5"
+  },
+  "optionalDependencies": {
+    "c2pa-node": "^0.5.26",
+    "sharp": "^0.35.3"
   },
   "keywords": [
     "eu-ai-act",
@@ -24,27 +34,30 @@
     "regulation",
     "ai-governance",
     "cursor",
-    "claude-code"
+    "claude-code",
+    "article-50",
+    "c2pa",
+    "content-credentials",
+    "watermark",
+    "content-marking",
+    "ai-detection",
+    "provenance"
   ],
   "license": "MIT",
   "author": "Legalithm",
   "homepage": "https://www.legalithm.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/legalithm/legalithm.git",
+    "url": "git+https://github.com/PedramMadani/legalithm.git",
     "directory": "packages/cli"
   },
   "bugs": {
-    "url": "https://github.com/legalithm/legalithm/issues"
+    "url": "https://github.com/PedramMadani/legalithm/issues"
   },
   "publishConfig": {
     "access": "public"
   },
   "engines": {
     "node": ">=18"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
   }
 }

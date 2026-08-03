@@ -1,27 +1,32 @@
 #!/usr/bin/env node
 /**
  * legalithm — ship EU-AI-Act-compliant by default.
+ *   legalithm discover  Scan the repo for AI SDKs/models, print an inventory; --push registers it
  *   legalithm init    Detect the stack, generate compliance/legalithm.json (+ Annex IV, checklist)
  *   legalithm check   Re-verify the record; fail CI on drift (risk/rule)
  *   legalithm classify  Quick risk hint for the current repo
  *   legalithm login --key lgl_...   Save an API key
  * Output is informational — not legal advice, never "compliant by default".
  */
-import { readFileSync, existsSync, readdirSync, writeFileSync, mkdirSync } from 'fs';
-import { join, dirname } from 'path';
+import { readFileSync, existsSync, readdirSync, statSync, writeFileSync, mkdirSync } from 'fs';
+import { join, dirname, relative } from 'path';
 import { parseArgs, flagString, flagBool } from './args.js';
 import { detectStack } from './detect.js';
 import { resolveApiUrl, resolveApiKey } from './config.js';
 import { postJson } from './http.js';
 import { runInit } from './commands/init.js';
 import { runCheck } from './commands/check.js';
+import { runDiscover } from './commands/discover.js';
 import { runLogin } from './commands/login.js';
 import { runGuard, type HookMode } from './commands/guard.js';
 import { mergeClaudeSettings, mergeMcpConfig, CURSOR_RULE, CLAUDE_MD_SNIPPET, SETUP_FILES, DEFAULT_CLI } from './commands/setup.js';
-import { emitSurfaceActive } from './telemetry.js';
+import { runMark, mimeForFile } from './commands/mark.js';
+import { runVerify } from './commands/verify.js';
+import { emitSurfaceActive, flushTelemetry, CLI_TELEMETRY_COMMANDS } from './telemetry.js';
+import { maybePromptSaveShare } from './save-share-prompt.js';
 import type { StackInput, UseCase, StoredRecord, ProviderRole, Domain, Audience } from './types.js';
 
-const VERSION = '0.1.0';
+const VERSION = '0.4.4';
 const DISCLAIMER = 'Checked against Regulation (EU) 2024/1689 — not legal advice.';
 
 interface PackageJson {
@@ -63,6 +68,37 @@ function readManifests(cwd: string): Record<string, string> {
       }
     }
   } catch { /* ignore */ }
+  return out;
+}
+
+// Bounded, shallow walk of the repo's source files (relative paths) so chat/assistant
+// route files can be detected (P2-B1). Skips vendored/build dirs; capped in depth + count.
+const WALK_SKIP = new Set(['node_modules', '.git', '.next', 'dist', 'build', 'coverage', '.turbo', 'vendor']);
+function readSourcePaths(cwd: string, maxFiles = 4000): string[] {
+  const out: string[] = [];
+  const walk = (dir: string, depth: number) => {
+    if (depth > 7 || out.length >= maxFiles) return;
+    let entries: string[];
+    try {
+      entries = readdirSync(dir);
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      if (out.length >= maxFiles) return;
+      if (WALK_SKIP.has(e) || e.startsWith('.')) continue;
+      const abs = join(dir, e);
+      let isDir = false;
+      try {
+        isDir = statSync(abs).isDirectory();
+      } catch {
+        continue;
+      }
+      if (isDir) walk(abs, depth + 1);
+      else out.push(relative(cwd, abs));
+    }
+  };
+  walk(cwd, 0);
   return out;
 }
 
@@ -140,20 +176,42 @@ Commands:
   init     Detect the stack and generate compliance/legalithm.json (+ annex-iv.md, checklist.md)
   check    Re-verify the committed record; exit non-zero on drift (for CI)
   classify Quick risk hint for the current repo
+  mark     Mark an AI-generated image (Art 50(2)); --watermark adds a second, distribution-proof layer (no key)
+  verify   Detect AI content marking on an asset: C2PA credential + pixel watermark; --check scans a directory (no key)
   login    Save an API key:  legalithm login --key lgl_...
 
 Flags:
   --role provider|deployer   --domain <annex-iii area>   --use-case "..."   --audience <...>
   --json                     machine-readable check output
   --fail-on risk-or-rule|risk|any|never   (check; default risk-or-rule)
+  --no-prompt                skip the post-init/check save-or-share prompt
 
 Env: LEGALITHM_API_KEY, LEGALITHM_API_URL (default https://www.legalithm.com)
 Telemetry: anonymous { surface, command, repoHash } ping; opt out with DO_NOT_TRACK=1.
 ${DISCLAIMER}`);
 }
 
+// Recursively collect image files under a directory, skipping common build/vendor dirs.
+function walkImages(dir: string, acc: string[] = []): string[] {
+  const SKIP = new Set(['node_modules', '.git', 'dist', '.next', 'build', 'coverage', 'out']);
+  let entries: import('fs').Dirent[];
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return acc;
+  }
+  for (const e of entries) {
+    if (e.isDirectory()) {
+      if (!SKIP.has(e.name) && !e.name.startsWith('.')) walkImages(join(dir, e.name), acc);
+    } else if (mimeForFile(e.name)) {
+      acc.push(join(dir, e.name));
+    }
+  }
+  return acc;
+}
+
 export async function main(argv: string[]): Promise<number> {
-  const { command, flags } = parseArgs(argv);
+  const { command, flags, positionals } = parseArgs(argv);
   const cwd = process.cwd();
   const apiUrl = resolveApiUrl();
   const apiKey = resolveApiKey();
@@ -162,6 +220,14 @@ export async function main(argv: string[]): Promise<number> {
     help();
     return 0;
   }
+
+  // Anonymous surface_active ping — above the API-key gate so unauthenticated
+  // commands (setup/guard/mark/verify/discover/login) and authenticated ones
+  // (init/check) are all measurable. Fire-and-forget; never blocks.
+  if (command && (CLI_TELEMETRY_COMMANDS as readonly string[]).includes(command)) {
+    emitSurfaceActive(apiUrl, command, cwd);
+  }
+
   if (command === 'login') {
     return runLogin(flagString(flags, 'key'));
   }
@@ -206,6 +272,95 @@ export async function main(argv: string[]): Promise<number> {
     );
   }
 
+  if (command === 'mark') {
+    const { markImage, hasManifest, buildLocalSigner } = await import('./mark/c2pa.js');
+    const checkActive = flagBool(flags, 'check') || typeof flags.check === 'string';
+    return runMark(
+      {
+        readFile: (p) => readFileSync(p),
+        writeFile: (p, b) => {
+          mkdirSync(dirname(p), { recursive: true });
+          writeFileSync(p, b);
+        },
+        exists: (p) => existsSync(p),
+        listImages: (d) => walkImages(d),
+        mark: (buffer, mime, opts) =>
+          markImage({ buffer, format: mime, title: opts.title, softwareAgent: opts.softwareAgent, signer: opts.signer }),
+        hasManifest: (buffer, mime) => hasManifest(buffer, mime),
+        buildSigner: (cert, key) => buildLocalSigner(cert, key),
+        embedWatermark: async (buffer, mime) => {
+          const { embedWatermark } = await import('./mark/watermark.js');
+          return embedWatermark({ buffer, format: mime });
+        },
+        log: (m) => console.log(m),
+        error: (m) => console.error(m),
+      },
+      {
+        file: positionals[0],
+        out: flagString(flags, 'out'),
+        agent: flagString(flags, 'agent'),
+        certPath: flagString(flags, 'cert'),
+        keyPath: flagString(flags, 'key'),
+        check: checkActive ? flagString(flags, 'check') ?? positionals[0] ?? '.' : undefined,
+        warnOnly: flagBool(flags, 'warn'),
+        watermark: flagBool(flags, 'watermark'),
+      },
+    );
+  }
+
+  if (command === 'verify') {
+    const { hasManifest, isC2paAvailable } = await import('./mark/c2pa.js');
+    const { readWatermark } = await import('./mark/watermark.js');
+    const checkActive = flagBool(flags, 'check') || typeof flags.check === 'string';
+    return runVerify(
+      {
+        readFile: (p) => readFileSync(p),
+        exists: (p) => existsSync(p),
+        listImages: (d) => walkImages(d),
+        isC2paAvailable: () => isC2paAvailable(),
+        hasManifest: (buffer, mime) => hasManifest(buffer, mime),
+        readWatermark: (buffer) => readWatermark(buffer),
+        log: (m) => console.log(m),
+        error: (m) => console.error(m),
+      },
+      {
+        file: positionals[0],
+        json: flagBool(flags, 'json'),
+        check: checkActive ? flagString(flags, 'check') ?? positionals[0] ?? '.' : undefined,
+        warnOnly: flagBool(flags, 'warn'),
+      },
+    );
+  }
+
+  // Auto-discovery (P2-B1). Offline by default; --push needs an API key.
+  if (command === 'discover') {
+    const pkg = readPackageJson(cwd);
+    const stack: StackInput = {
+      packageJson: { name: pkg.name, version: pkg.version, dependencies: pkg.dependencies, devDependencies: pkg.devDependencies },
+      envKeys: Object.keys(process.env),
+      manifests: readManifests(cwd),
+      filePaths: readSourcePaths(cwd),
+    };
+    const wantPush = flagBool(flags, 'push');
+    if (wantPush && !apiKey) {
+      console.error('`legalithm discover --push` needs an API key. Run `legalithm login --key lgl_...` first.');
+      return 2;
+    }
+    const result = await runDiscover({
+      detect: () => detectStack(stack),
+      name: pkg.name ?? 'app',
+      push: wantPush
+        ? (item) =>
+            postJson(`${apiUrl}/api/v1/ai-systems/import`, item, apiKey as string).then((r) => {
+              const res = r as { system?: { id?: string }; assessment?: { riskTier?: string } };
+              return { id: res.system?.id, riskTier: res.assessment?.riskTier };
+            })
+        : undefined,
+      json: flagBool(flags, 'json'),
+    });
+    return result.exitCode;
+  }
+
   if (!apiKey) {
     console.error(
       [
@@ -246,7 +401,14 @@ export async function main(argv: string[]): Promise<number> {
         generate: (sys, input) =>
           postJson<StoredRecord>(`${apiUrl}/api/v1/record/generate`, { system: sys, input, cliVersion: VERSION }, apiKey),
       });
-      if (res.exitCode === 0) emitSurfaceActive(apiUrl, 'init', cwd);
+      if (res.exitCode === 0) {
+        await maybePromptSaveShare({
+          apiUrl,
+          command: 'init',
+          cwd,
+          noPrompt: flagBool(flags, 'no-prompt'),
+        });
+      }
       return res.exitCode;
     }
     case 'check': {
@@ -261,8 +423,16 @@ export async function main(argv: string[]): Promise<number> {
             apiKey,
           ),
       });
-      // Ran on a real repo (in-sync or drift). Skip on no-record (2) / error (3).
-      if (res.exitCode === 0 || res.exitCode === 1) emitSurfaceActive(apiUrl, 'check', cwd);
+      // Successful check = we produced a report (exit 0 in-sync, 1 drift). Skip on 2/3.
+      if (res.exitCode === 0 || res.exitCode === 1) {
+        await maybePromptSaveShare({
+          apiUrl,
+          command: 'check',
+          cwd,
+          // --json is for machines; never mix a prompt into the stream.
+          noPrompt: flagBool(flags, 'no-prompt') || flagBool(flags, 'json'),
+        });
+      }
       return res.exitCode;
     }
     default:
@@ -274,9 +444,14 @@ export async function main(argv: string[]): Promise<number> {
 // Bin entry — guarded so importing { main } in tests has no side effects.
 if (!process.env.VITEST) {
   main(process.argv.slice(2)).then(
-    (code) => process.exit(code),
-    (e) => {
+    async (code) => {
+      // Let the fire-and-forget ping land before hard-exit kills the socket.
+      await flushTelemetry();
+      process.exit(code);
+    },
+    async (e) => {
       console.error(e);
+      await flushTelemetry();
       process.exit(1);
     },
   );

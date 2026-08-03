@@ -1,5 +1,6 @@
 // Article 50 transparency disclosure snippets (EN/DE). Offline templates — the
 // operational layer the free LLM can't reliably produce on demand with citations.
+// asOf / engineVersion are stamped by tools.ts (RULES_ENGINE_META) on every MCP response.
 
 export type DisclosureScenario = 'chatbot' | 'genai-content' | 'deepfake' | 'emotion';
 
