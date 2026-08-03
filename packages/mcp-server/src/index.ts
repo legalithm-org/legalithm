@@ -52,8 +52,13 @@ export function createServer(): McpServer {
   server.registerTool(
     'classify',
     {
+      title: 'Classify AI risk (EU AI Act)',
       description: 'Classify an AI use case under the EU AI Act — risk tier + cited rationale. Offline; checked against Regulation (EU) 2024/1689, not legal advice.',
       inputSchema: { role, domain, use_case: z.string().min(1), audience },
+      // Directory review (Anthropic, OpenAI) requires every tool to declare a
+      // title and a readOnlyHint/destructiveHint. This one is a pure function
+      // over the bundled corpus: no writes, no host outside this process.
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     },
     async (args) => {
       emitSurfaceActive(API_URL, 'classify');
@@ -64,8 +69,10 @@ export function createServer(): McpServer {
   server.registerTool(
     'explain_obligation',
     {
+      title: 'Explain EU AI Act obligations',
       description: 'List the EU AI Act obligations for a role + risk tier, each with its Article citation. Offline.',
       inputSchema: { role, risk },
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     },
     async (args) => {
       emitSurfaceActive(API_URL, 'explain_obligation');
@@ -76,8 +83,10 @@ export function createServer(): McpServer {
   server.registerTool(
     'generate_disclosure',
     {
+      title: 'Generate an Article 50 disclosure',
       description: 'Generate an Article 50 transparency disclosure snippet (chatbot / genai-content / deepfake / emotion), EN or DE. Offline.',
       inputSchema: { scenario: z.enum(['chatbot', 'genai-content', 'deepfake', 'emotion']), locale: z.enum(['en', 'de']).optional() },
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     },
     async (args) => {
       emitSurfaceActive(API_URL, 'generate_disclosure');
@@ -88,8 +97,12 @@ export function createServer(): McpServer {
   server.registerTool(
     'check_record',
     {
+      title: 'Check a public Trust Center record',
       description: 'Fetch a published Legalithm Trust Center compliance record by org slug. Online (reads the public API).',
       inputSchema: { slug: z.string().min(1) },
+      // Read-only like the others, but openWorldHint: it is the one tool that
+      // reaches a network host (the public Trust Center API).
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: true },
     },
     async (args) => {
       emitSurfaceActive(API_URL, 'check_record');
