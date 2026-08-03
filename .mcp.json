@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "legalithm": {
+      "command": "npx",
+      "args": ["-y", "legalithm-mcp-server"]
+    }
+  }
+}

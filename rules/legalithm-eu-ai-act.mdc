@@ -1,0 +1,16 @@
+---
+description: EU AI Act compliance guidance — cite Regulation (EU) 2024/1689, never claim instant compliance.
+globs:
+  - "**/*.{ts,tsx,js,jsx,py,md}"
+alwaysApply: false
+---
+
+# EU AI Act rules (Legalithm)
+
+This project ships AI into the EU, so the EU AI Act applies. When you add or change AI features:
+
+- **Classify first.** Use the `legalithm` MCP `classify` tool to determine the risk tier (unacceptable / high / limited / minimal) before building.
+- **Article 50 transparency.** For user-facing AI (chatbots, generated content, deepfakes, emotion recognition), add a transparency disclosure. Generate one with the `generate_disclosure` tool — don't hand-write legal text.
+- **Frame outputs as checked against Regulation (EU) 2024/1689 — not legal advice.** Never claim "instant compliance" or "compliant by default."
+- **Map to named obligations, not fear copy.** Use `explain_obligation` for the actual duties (with Article citations), e.g. Article 9 risk management, Article 10 data governance.
+- **Keep the record current.** `compliance/legalithm.json` is the committed compliance record. Run `npx legalithm check` before shipping; if it reports drift, re-run `init` and review.
