@@ -1,0 +1,22 @@
+{
+  "name": "legalithm",
+  "displayName": "Legalithm — EU AI Act",
+  "version": "0.2.1",
+  "description": "EU AI Act risk classification, obligations and Article 50 disclosures, cited to Regulation (EU) 2024/1689. Runs offline, no API key.",
+  "author": {
+    "name": "Pedram Madani",
+    "email": "hello@legalithm.com",
+    "url": "https://github.com/PedramMadani"
+  },
+  "homepage": "https://www.legalithm.com",
+  "repository": "https://github.com/legalithm-org/legalithm",
+  "license": "MIT",
+  "keywords": [
+    "eu-ai-act",
+    "ai-act",
+    "compliance",
+    "legal",
+    "ai-governance",
+    "mcp"
+  ]
+}
