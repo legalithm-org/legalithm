@@ -11,6 +11,18 @@ describe('telemetryEnabled', () => {
     expect(telemetryEnabled({ DO_NOT_TRACK: '1' })).toBe(false);
     expect(telemetryEnabled({ LEGALITHM_TELEMETRY: '0' })).toBe(false);
   });
+
+  // Kept identical to the MCP server's contract; the two are documented as one
+  // privacy promise, so they must not diverge on what counts as opting out.
+  it.each(['false', 'FALSE', ' false ', 'no', 'off', '0'])('treats %j as opt-out', (value) => {
+    expect(telemetryEnabled({ LEGALITHM_TELEMETRY: value })).toBe(false);
+  });
+
+  it('stays on for enabled-looking values', () => {
+    for (const value of ['true', 'TRUE', '1', 'yes', '']) {
+      expect(telemetryEnabled({ LEGALITHM_TELEMETRY: value })).toBe(true);
+    }
+  });
 });
 
 describe('repoHash', () => {

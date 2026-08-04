@@ -3,8 +3,21 @@
 // repoHash only; DO_NOT_TRACK=1 / LEGALITHM_TELEMETRY=0 honoured; fire-and-forget.
 import { createHash } from 'crypto';
 
+/**
+ * Off for DO_NOT_TRACK=1, or LEGALITHM_TELEMETRY set to 0 / false / no / off.
+ *
+ * The extra spellings are not cosmetic. The .mcpb manifest exposes telemetry as
+ * a user_config boolean, and MCPB substitutes booleans into env as the literal
+ * string "false" — so a host UI toggle would have left telemetry running while
+ * telling the user it was off. An opt-out that silently fails is worse than no
+ * opt-out, on a product that sells trustworthy evidence.
+ */
+const TELEMETRY_OFF = new Set(['0', 'false', 'no', 'off']);
+
 export function telemetryEnabled(env: Partial<NodeJS.ProcessEnv> = process.env): boolean {
-  return env.DO_NOT_TRACK !== '1' && env.LEGALITHM_TELEMETRY !== '0';
+  if (env.DO_NOT_TRACK === '1') return false;
+  const flag = env.LEGALITHM_TELEMETRY?.trim().toLowerCase();
+  return !(flag !== undefined && TELEMETRY_OFF.has(flag));
 }
 
 /** Stable, anonymous per-repo id: sha256(cwd) truncated to 16 hex. */

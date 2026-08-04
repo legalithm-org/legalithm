@@ -80,6 +80,13 @@ function toolsFromRunningServer(serverEntry) {
       continue;
     }
     if (msg.id === 2 && msg.result?.tools) {
+      // Do NOT add inputSchema here to satisfy Smithery. Tried 2026-08-04 and
+      // it cannot work: `mcpb pack` validates the manifest strictly and fails
+      // with "Unrecognized key(s) in object: 'inputSchema'". MCPB forbids the
+      // very field the Smithery registry requires, which is the actual shape
+      // of smithery-ai/cli#787 — the two schemas are incompatible, so no
+      // manifest satisfies both. Until they synthesise a default schema on
+      // their side, publishing to Smithery means --no-tools.
       return msg.result.tools.map((t) => ({ name: t.name, description: t.description }));
     }
   }
@@ -132,13 +139,37 @@ const manifest = {
   repository: { type: 'git', url: 'https://github.com/legalithm-org/legalithm' },
   license: pkg.license ?? 'MIT',
   keywords: ['eu-ai-act', 'ai-act', 'compliance', 'legal', 'ai-governance', 'mcp'],
+  /**
+   * user_config is what turns the privacy claim into something a user can
+   * actually operate, and it is load-bearing for Smithery besides.
+   *
+   * Their CLI builds the publish payload as
+   *   { type, runtime, serverCard:{serverInfo, ...tools?}, ...configSchema? }
+   * where configSchema is derived from user_config. With tools stripped for
+   * #787 and no user_config, the payload carries only identity and the registry
+   * answers `400 {"error":"No values to set"}` — after creating the server, so
+   * it reads like a worse failure than it is.
+   *
+   * MCPB substitutes booleans into env as the literal "true"/"false", which is
+   * why src/telemetry.ts accepts "false" and not only "0".
+   */
+  user_config: {
+    telemetry: {
+      type: 'boolean',
+      title: 'Anonymous usage telemetry',
+      description:
+        'Sends the tool name and a one-way hash of the working directory. Never source code, prompts or results. Turn off to disable, equivalent to LEGALITHM_TELEMETRY=0.',
+      default: true,
+      required: false,
+    },
+  },
   server: {
     type: 'node',
     entry_point: 'server/index.js',
     mcp_config: {
       command: 'node',
       args: ['${__dirname}/server/index.js'],
-      env: {},
+      env: { LEGALITHM_TELEMETRY: '${user_config.telemetry}' },
     },
   },
   ...(tools.length ? { tools } : {}),
@@ -155,4 +186,12 @@ execFileSync('npx', ['-y', '@anthropic-ai/mcpb', 'pack', STAGE, join(OUT_DIR, 'l
   stdio: 'inherit',
 });
 
-console.log(`\n✓ ${join(OUT_DIR, 'legalithm.mcpb')}`);
+console.log(`\n✓ ${join(OUT_DIR, 'legalithm.mcpb')}\n`);
+console.log('publish with:');
+console.log(
+  `  npx -y @smithery/cli mcp publish "${join(OUT_DIR, 'legalithm.mcpb')}" -n legalithm/legalithm-mcp-server`,
+);
+console.log(
+  '\nNote: --config-schema is rejected for bundles (URL publishes only). The\n' +
+    'registry gets its configSchema from the manifest user_config block above.',
+);

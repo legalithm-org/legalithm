@@ -11,6 +11,25 @@ describe('mcp telemetryEnabled', () => {
     expect(telemetryEnabled({ DO_NOT_TRACK: '1' })).toBe(false);
     expect(telemetryEnabled({ LEGALITHM_TELEMETRY: '0' })).toBe(false);
   });
+
+  /**
+   * The .mcpb manifest exposes telemetry as a user_config boolean, and MCPB
+   * substitutes booleans into env as the literal string "false". Before this,
+   * only "0" disabled telemetry, so a host UI toggle would have reported itself
+   * off while the server kept reporting.
+   */
+  it.each(['false', 'FALSE', 'False', ' false ', 'no', 'off', '0'])(
+    'treats %j as opt-out, so a host toggle cannot silently fail',
+    (value) => {
+      expect(telemetryEnabled({ LEGALITHM_TELEMETRY: value })).toBe(false);
+    },
+  );
+
+  it('stays on for the values a host emits when the toggle is left enabled', () => {
+    for (const value of ['true', 'TRUE', '1', 'yes', '']) {
+      expect(telemetryEnabled({ LEGALITHM_TELEMETRY: value })).toBe(true);
+    }
+  });
 });
 
 describe('mcp repoHash', () => {
