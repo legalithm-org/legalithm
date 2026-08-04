@@ -1,0 +1,28 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+#
+# Source of truth lives here in the monorepo; scripts/sync-mirror.mjs copies it
+# to the public mirror root, which is what Smithery actually scans.
+#
+# The server is stdio and fully offline for classify / explain_obligation /
+# generate_disclosure. Nothing is required to run it, so configSchema has no
+# `required` block — the one option exposed is turning telemetry off, which
+# matches the DO_NOT_TRACK / LEGALITHM_TELEMETRY=0 contract in src/telemetry.ts.
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      telemetry:
+        type: boolean
+        default: true
+        description: >-
+          Anonymous usage telemetry (tool name plus a hashed working-directory
+          id, never source code, prompts or results). Set false to disable, the
+          same as exporting LEGALITHM_TELEMETRY=0.
+    additionalProperties: false
+  commandFunction: |-
+    (config) => ({
+      command: 'npx',
+      args: ['-y', 'legalithm-mcp-server'],
+      env: config && config.telemetry === false ? { LEGALITHM_TELEMETRY: '0' } : {}
+    })
