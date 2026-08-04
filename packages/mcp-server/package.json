@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "build:mcpb": "npm run build && node scripts/build-mcpb.mjs",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
