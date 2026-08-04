@@ -5,7 +5,9 @@
 
 Shipping an AI feature to EU users? **Article 50 transparency duties have applied since 2 August 2026.** Content marking for systems placed before that date is due 2 December 2026, and Annex III high-risk obligations follow on 2 December 2027. Catch it where you code, in seconds.
 
-<img src="docs/assets/demo-classify.svg" alt="Asking Claude Code whether the EU AI Act applies to a CV screening feature. Legalithm classifies it high-risk, citing Article 6(2) and Annex III, with matched rules, an asOf date and a confidence score." width="100%">
+<img src="docs/assets/hero.png" alt="Source code on the left, connected by four branching lines to a sealed legal document on the right." width="100%">
+
+<sub>This image is AI-generated, and it is marked as such with our own tool: `legalithm mark --watermark` added a C2PA content credential and a pixel watermark, which is what Article 50(2) asks for. Download it and run `legalithm verify` on it. The credential is signed with the CLI's test certificate, so it is valid but not trust-listed.</sub>
 
 ## Quickstart
 
@@ -68,9 +70,12 @@ Note `matchedRules`, `asOf` and `confidenceScore`. You can see which rule fired,
 Content marking for Article 50(2), also no key:
 
 ```bash
-npx legalithm mark ./out.png --watermark   # C2PA + pixel watermark
-npx legalithm verify ./out.png             # detect both layers
+npm i -g legalithm
+legalithm mark ./out.png --watermark   # writes out.signed.png
+legalithm verify ./out.signed.png      # detect both layers
 ```
+
+Install it rather than using `npx` for these two: C2PA and the watermark come from `c2pa-node` and `sharp`, which are optional native dependencies that `npx` does not reliably fetch. Without them `mark` warns and marks nothing. Everything else in this README works fine under `npx`.
 
 ### The compliance record (needs a free key)
 
