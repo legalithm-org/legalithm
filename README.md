@@ -5,6 +5,8 @@
 
 Shipping an AI feature to EU users? **Article 50 transparency duties have applied since 2 August 2026.** Content marking for systems placed before that date is due 2 December 2026, and Annex III high-risk obligations follow on 2 December 2027. Catch it where you code, in seconds.
 
+<img src="docs/assets/demo-classify.svg" alt="Asking Claude Code whether the EU AI Act applies to a CV screening feature. Legalithm classifies it high-risk, citing Article 6(2) and Annex III, with matched rules, an asOf date and a confidence score." width="100%">
+
 ## Quickstart
 
 Install the offline server in your editor. No API key, and nothing leaves your machine.
