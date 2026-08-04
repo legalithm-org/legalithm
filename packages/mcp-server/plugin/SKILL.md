@@ -19,16 +19,23 @@ Article for every claim.
 
 ## How to work
 
-**1. Classify before building.** Call `classify` with the role (`provider` or
-`deployer`), the domain, a plain-sentence description of the use case, and the
-audience. It returns a risk tier — unacceptable, high, limited, or minimal —
-with a cited rationale. The tier determines everything downstream, so do it
-first rather than retrofitting.
+**Rule, before anything else: `classify` runs first.** Every `risk` argument you
+pass to another tool must come from a `classify` result in this conversation,
+never from your own reading of the case. If you have not called `classify` yet,
+you do not know the tier, and calling `explain_obligation` with a guessed tier
+returns a confident list of the wrong duties. Guessing "high" and being right is
+not the same as knowing.
+
+**1. Classify.** Call `classify` with the role (`provider` or `deployer`), the
+domain, a plain-sentence description of the use case, and the audience. It
+returns a risk tier — unacceptable, high, limited, or minimal — with a cited
+rationale and a confidence. The tier determines everything downstream.
 
 **2. Get the actual duties.** Call `explain_obligation` with the role and the
-tier from step 1. Each obligation comes back with its Article citation, for
-example Article 9 risk management or Article 10 data governance. Use those named
-duties. Do not paraphrase the Act from memory and do not write fear copy.
+tier **as returned by `classify`**. Each obligation comes back with its Article
+citation, for example Article 9 risk management or Article 10 data governance.
+Use those named duties. Do not paraphrase the Act from memory and do not write
+fear copy.
 
 **3. Article 50 transparency.** If the feature is user-facing AI, generate the
 disclosure with `generate_disclosure` rather than hand-writing legal text.

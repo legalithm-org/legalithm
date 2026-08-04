@@ -35,4 +35,33 @@ describe('MCP server version', () => {
       if (entry.version) expect(entry.version).toBe(pkg.version);
     }
   });
+
+  /**
+   * Both plugin manifests pin a version. Installed users only receive an update
+   * when that pinned version changes, so a manifest left behind at an older
+   * version silently strands everyone who installed from the marketplace. Lock
+   * them to package.json so a release bump cannot forget one.
+   */
+  it.each([
+    ['Claude Code', 'plugin.json'],
+    ['Codex', 'codex-plugin.json'],
+  ])('the %s plugin manifest pins the same version as package.json', (_client, file) => {
+    const manifest = JSON.parse(readFileSync(join(pkgDir, 'plugin', file), 'utf8'));
+    expect(manifest.version).toBe(pkg.version);
+  });
+
+  /**
+   * The Codex manifest points at skills/ and .mcp.json, which sync-mirror places
+   * at the mirror root rather than next to the manifest. Paths are relative to
+   * the plugin root, so they must start with './' and must not reach upward.
+   */
+  it('the Codex manifest uses plugin-root-relative component paths', () => {
+    const manifest = JSON.parse(readFileSync(join(pkgDir, 'plugin', 'codex-plugin.json'), 'utf8'));
+    for (const field of ['skills', 'mcpServers']) {
+      const value = manifest[field];
+      expect(value, `codex-plugin.json is missing ${field}`).toBeTypeOf('string');
+      expect(value.startsWith('./'), `${field} must start with './'`).toBe(true);
+      expect(value.includes('..'), `${field} must not escape the plugin root`).toBe(false);
+    }
+  });
 });

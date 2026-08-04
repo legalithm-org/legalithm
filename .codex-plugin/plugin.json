@@ -1,0 +1,39 @@
+{
+  "name": "legalithm",
+  "version": "0.2.1",
+  "description": "EU AI Act risk classification, obligations and Article 50 disclosures, cited to Regulation (EU) 2024/1689. Runs offline, no API key.",
+  "author": {
+    "name": "Pedram Madani",
+    "email": "hello@legalithm.com",
+    "url": "https://github.com/PedramMadani"
+  },
+  "homepage": "https://www.legalithm.com",
+  "repository": "https://github.com/legalithm-org/legalithm",
+  "license": "MIT",
+  "keywords": [
+    "eu-ai-act",
+    "ai-act",
+    "compliance",
+    "legal",
+    "ai-governance",
+    "mcp"
+  ],
+  "skills": "./skills",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Legalithm — EU AI Act",
+    "shortDescription": "Classify EU AI Act risk, cite obligations, draft Article 50 disclosures. Offline, no API key.",
+    "longDescription": "Four MCP tools over stdio. classify, explain_obligation and generate_disclosure run fully offline with the rule engine bundled, so no source code, prompt or result leaves the machine and no API key is needed. check_record reads a published Trust Center record. Every answer carries an Article citation and an asOf date from a versioned corpus checked against Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744. A cited starting point, not legal advice.",
+    "developerName": "Legalithm",
+    "category": "developer-tools",
+    "websiteURL": "https://www.legalithm.com/en/developers",
+    "privacyPolicyURL": "https://www.legalithm.com/en/legal/privacy",
+    "termsOfServiceURL": "https://www.legalithm.com/en/legal/terms",
+    "brandColor": "#222226",
+    "defaultPrompt": [
+      "Does the EU AI Act apply to the AI feature in this repo, and what tier is it?",
+      "We are the provider of a customer-support chatbot for the EU. What obligations apply?",
+      "Draft the Article 50 transparency disclosure for our AI-generated content, in German."
+    ]
+  }
+}
