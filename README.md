@@ -25,6 +25,44 @@ Cursor: use the **Add to Cursor** badge above.
 
 Then ask your agent *"does the EU AI Act apply to this feature, and what tier?"*
 
+<details open>
+<summary>What comes back (real output, CV screening as the provider)</summary>
+
+```json
+{
+  "risk": "high",
+  "confidence": "high",
+  "rationale": "This AI system is classified as high-risk under Article 6(2) as it falls into the category of Employment, Workers Management and Access to Self-employment as specified in Annex III...",
+  "citations": [
+    {
+      "article": "6(2)",
+      "annex": "III",
+      "label": "Article 6(2) & Annex III - High-Risk AI Systems",
+      "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-6",
+      "asOf": "2026-08-03",
+      "appliesFrom": "2027-12-02"
+    }
+  ],
+  "matchedRules": ["high_risk_employment", "high_risk_domain_selected"],
+  "applicableDeadline": "2027-12-02",
+  "obligationsHint": {
+    "count": 10,
+    "topTitles": [
+      "Quality Management System (Article 17)",
+      "Data Governance (Article 10)",
+      "Technical Documentation (Article 11)",
+      "Human Oversight (Article 14)"
+    ]
+  },
+  "confidenceScore": 0.72,
+  "reviewRequired": false
+}
+```
+
+Note `matchedRules`, `asOf` and `confidenceScore`. You can see which rule fired, how old the corpus is, and how sure the engine was. Below the abstention threshold it sets `reviewRequired` and tells you to get a human instead of guessing.
+
+</details>
+
 Content marking for Article 50(2), also no key:
 
 ```bash
@@ -74,7 +112,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: legalithm/legalithm/packages/action@v1
+      - uses: legalithm-org/legalithm/packages/action@v1
         with:
           api-key: ${{ secrets.LEGALITHM_API_KEY }}
 ```
