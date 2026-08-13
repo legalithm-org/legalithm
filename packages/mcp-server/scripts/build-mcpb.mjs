@@ -1,197 +1,203 @@
 /**
- * Build the .mcpb bundle.
+ * Assemble the MCPB bundle staging directory.
  *
- *   node scripts/build-mcpb.mjs [--no-tools] [--out <dir>]
+ *   npm run build:mcpb        # then: cd mcpb && npx @anthropic-ai/mcpb pack
  *
- * Why this exists: Smithery publishes local stdio servers as a hosted .mcpb
- * bundle, which is the only route that does not require us to run a public
- * HTTPS endpoint. The same artifact is what Claude Desktop installs.
+ * WHY A STAGING DIRECTORY RATHER THAN PACKING THE PACKAGE.
  *
- * The bundle must be self-contained. `tsup` externalises
- * @modelcontextprotocol/sdk and zod rather than inlining them, so dist/index.js
- * alone does not run — the bundle carries a production node_modules.
+ * `mcpb pack` zips the directory holding manifest.json. Run from the package
+ * root that is src/, dist/, tsconfig, and a 67 MB node_modules containing tsup
+ * and typescript — all of it shipped to anyone who installs the bundle. `mcpb/`
+ * holds exactly two files, so there is nothing to pack wrong.
  *
- * --no-tools omits the `tools` array. It is spec-valid to include it (MCPB
- * tools are {name, description}), and Claude Desktop shows it, but Smithery's
- * CLI casts MCPB tools to registry Tool objects, which require `inputSchema`,
- * and rejects the bundle with "expected object, received undefined"
- * (smithery-ai/cli#787, open as of 2026-08-04). If publish fails that way,
- * rebuild with --no-tools. Keep it a flag: nobody should be hand-editing a
- * generated manifest under time pressure.
+ * WHY THE ENTRY POINT IS REWRITTEN.
+ *
+ * `mcpb init` wrote `./dist/index.js`, correct relative to the package root and
+ * wrong inside the bundle, where the server sits beside the manifest. A bundle
+ * with a dangling entry point installs cleanly and fails at launch — the
+ * failure lands on the user's machine, days later, with no way to trace it.
+ *
+ * The tools list and description are taken from manifest.json as authored, so
+ * this script formats and relocates; it does not invent metadata.
  */
-import { readFileSync, writeFileSync, mkdirSync, rmSync, cpSync, existsSync } from 'node:fs';
-import { join, dirname, resolve } from 'node:path';
+
+import { spawnSync } from 'node:child_process';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { execFileSync } from 'node:child_process';
-
-const PKG_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const args = process.argv.slice(2);
-const INCLUDE_TOOLS = !args.includes('--no-tools');
-const outIdx = args.indexOf('--out');
-const OUT_DIR = resolve(outIdx === -1 ? join(PKG_DIR, 'build') : args[outIdx + 1]);
-const STAGE = join(OUT_DIR, 'mcpb-stage');
-
-const pkg = JSON.parse(readFileSync(join(PKG_DIR, 'package.json'), 'utf8'));
-
-const ENTRY = join(PKG_DIR, 'dist', 'index.js');
-if (!existsSync(ENTRY)) {
-  console.error('dist/index.js missing — run `npm run build` in packages/mcp-server first.');
-  process.exit(1);
-}
 
 /**
- * Tool metadata is not duplicated here. The staged server is actually started
- * and asked, over a real stdio handshake, so the manifest cannot disagree with
- * what tools/list returns at runtime. Parsing the bundle with a regex was the
- * first attempt and it silently matched nothing once esbuild reformatted the
- * output, which is exactly the drift this is meant to prevent.
+ * Ask the built server what tools it has, over the real MCP protocol.
+ *
+ * Smithery rejects a bundle whose tools carry no `inputSchema` — six tools gave
+ * six "expected object, received undefined" and a 400. `mcpb init` never asks
+ * for schemas, so a hand-authored manifest cannot have them.
+ *
+ * They are read from the server rather than written by hand because they
+ * already exist: each tool declares zod shapes that the MCP SDK converts to
+ * JSON Schema. Copying that into a manifest by hand creates a second source of
+ * truth which is wrong the first time a parameter changes — and the manifest is
+ * what renders the public page, so nobody would notice.
  */
-function toolsFromRunningServer(serverEntry) {
+function toolsFromServer(entry) {
   const rpc = [
-    {
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'initialize',
-      params: {
-        protocolVersion: '2025-06-18',
-        capabilities: {},
-        clientInfo: { name: 'build-mcpb', version: '1' },
-      },
-    },
-    { jsonrpc: '2.0', method: 'notifications/initialized' },
+    { jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2024-11-05', capabilities: {}, clientInfo: { name: 'build-mcpb', version: '0' } } },
     { jsonrpc: '2.0', id: 2, method: 'tools/list' },
-  ]
-    .map((m) => JSON.stringify(m))
-    .join('\n');
+  ].map((m) => JSON.stringify(m)).join('\n');
 
-  const out = execFileSync('node', [serverEntry], {
-    input: rpc + '\n',
+  const r = spawnSync(process.execPath, [entry], {
+    input: `${rpc}\n`,
     encoding: 'utf8',
-    stdio: ['pipe', 'pipe', 'ignore'],
-    env: { ...process.env, LEGALITHM_TELEMETRY: '0' },
+    // The build must not emit a usage event. Telemetry from a build step would
+    // show up as adoption in the product's own metrics.
+    env: { ...process.env, LEGALITHM_TELEMETRY: '0', DO_NOT_TRACK: '1' },
   });
 
-  for (const line of out.split('\n')) {
+  for (const line of (r.stdout ?? '').split('\n')) {
     if (!line.trim()) continue;
-    let msg;
     try {
-      msg = JSON.parse(line);
-    } catch {
-      continue;
-    }
-    if (msg.id === 2 && msg.result?.tools) {
-      // Do NOT add inputSchema here to satisfy Smithery. Tried 2026-08-04 and
-      // it cannot work: `mcpb pack` validates the manifest strictly and fails
-      // with "Unrecognized key(s) in object: 'inputSchema'". MCPB forbids the
-      // very field the Smithery registry requires, which is the actual shape
-      // of smithery-ai/cli#787 — the two schemas are incompatible, so no
-      // manifest satisfies both. Until they synthesise a default schema on
-      // their side, publishing to Smithery means --no-tools.
-      return msg.result.tools.map((t) => ({ name: t.name, description: t.description }));
-    }
+      const msg = JSON.parse(line);
+      if (msg.id === 2 && Array.isArray(msg.result?.tools)) return msg.result.tools;
+    } catch { /* not every line is a complete message */ }
   }
-  return [];
+  console.error(
+    'build-mcpb: the built server did not answer tools/list, so its schemas cannot be read.\n'
+    + `  exit ${r.status}${r.stderr ? `\n  ${r.stderr.trim().split('\n')[0]}` : ''}`,
+  );
+  process.exit(2);
 }
 
-rmSync(STAGE, { recursive: true, force: true });
-mkdirSync(join(STAGE, 'server'), { recursive: true });
-cpSync(ENTRY, join(STAGE, 'server', 'index.js'));
+const PKG = join(dirname(fileURLToPath(import.meta.url)), '..');
+const OUT = join(PKG, 'mcpb');
+const ENTRY = 'index.js';
 
-// Production-only manifest for the staged install: the bundle must not carry
-// tsup, vitest or anything else from the monorepo dev tree.
+const bundled = join(OUT, ENTRY);
+if (!existsSync(bundled)) {
+  console.error(
+    `build-mcpb: ${bundled} is missing.\n`
+    + 'Run `npx tsup --config tsup.mcpb.config.ts` first — that is the build that\n'
+    + 'inlines the dependencies. Packing the npm build instead produces a server\n'
+    + 'that cannot start away from this machine.',
+  );
+  process.exit(2);
+}
+
+const manifest = JSON.parse(readFileSync(join(PKG, 'manifest.json'), 'utf8'));
+
+// The server's own answer is the source of truth for what tools exist and what
+// they accept. The hand-authored manifest supplies only the short descriptions,
+// which are editorial and better than the long protocol ones on a listing page.
+const live = toolsFromServer(bundled);
+const authored = new Map((manifest.tools ?? []).map((t) => [t.name, t.description]));
+
+const tools = live.map((t) => ({
+  name: t.name,
+  description: authored.get(t.name) ?? t.description,
+  inputSchema: t.inputSchema,
+}));
+
+// Smithery rejects a tool with no inputSchema, and rejects it with a message
+// that names no tool — six tools produced six identical errors. Fail here,
+// where the offending name can still be printed.
+const schemaless = tools.filter((t) => !t.inputSchema || typeof t.inputSchema !== 'object');
+if (schemaless.length) {
+  console.error(`build-mcpb: no inputSchema for: ${schemaless.map((t) => t.name).join(', ')}`);
+  process.exit(2);
+}
+
+// A tool the author described that the server does not serve. "classif" was
+// typed into `mcpb init` once in this session; a typo there is invisible until
+// a client asks for a tool that has never existed.
+const bogus = [...authored.keys()].filter((n) => !live.some((t) => t.name === n));
+if (bogus.length) {
+  console.error(`build-mcpb: manifest describes tools the server does not register: ${bogus.join(', ')}`);
+  process.exit(2);
+}
+
+// Version drift between package.json and the manifest would publish a bundle
+// labelled as a release it is not.
+const pkgVersion = JSON.parse(readFileSync(join(PKG, 'package.json'), 'utf8')).version;
+if (manifest.version !== pkgVersion) {
+  console.error(`build-mcpb: manifest version ${manifest.version} != package.json ${pkgVersion}`);
+  process.exit(2);
+}
+
+mkdirSync(OUT, { recursive: true });
 writeFileSync(
-  join(STAGE, 'package.json'),
-  JSON.stringify(
+  join(OUT, 'manifest.json'),
+  `${JSON.stringify(
     {
-      name: pkg.name,
-      version: pkg.version,
-      private: true,
-      type: 'module',
-      dependencies: pkg.dependencies,
+      ...manifest,
+      server: {
+        ...manifest.server,
+        entry_point: `./${ENTRY}`,
+        mcp_config: { ...manifest.server.mcp_config, args: [`\${__dirname}/${ENTRY}`] },
+      },
+      // NO inputSchema here. See below — the two consumers disagree.
+      tools: tools.map(({ name, description }) => ({ name, description })),
     },
     null,
     2,
-  ) + '\n',
+  )}\n`,
 );
 
-console.log('installing production dependencies into the bundle…');
-execFileSync('npm', ['install', '--omit=dev', '--no-audit', '--no-fund', '--silent'], {
-  cwd: STAGE,
-  stdio: 'inherit',
-});
+/**
+ * THE SMITHERY BUNDLE, BUILT BY HAND, BECAUSE THE TWO SPECS CONTRADICT.
+ *
+ * Smithery's CLI validates each tool against the MCP `Tool` type, where
+ * `inputSchema` is required — not optional. Publishing without it returns
+ *
+ *   400 Invalid input: expected object, received undefined   (x6, one per tool)
+ *
+ * naming no tool and no field.
+ *
+ * `mcpb pack` refuses the same field:
+ *
+ *   tools.0: Unrecognized key(s) in object: 'inputSchema'
+ *   ERROR: Cannot pack extension with invalid manifest
+ *
+ * So no single manifest satisfies both, and this is an ecosystem gap rather
+ * than a mistake in this repo. An .mcpb is a zip holding a manifest and a
+ * server, so the Smithery artifact is assembled directly and `mcpb pack` is
+ * left working for Claude Desktop, which is what item 8 of account-actions
+ * wants.
+ *
+ * If a later mcpb release accepts inputSchema, delete this and write one
+ * manifest. Check before assuming it still applies.
+ */
+const SMITHERY_ZIP = join(OUT, 'legalithm-eu-ai-act.mcpb');
+const stage = join(OUT, '.smithery-stage');
+mkdirSync(stage, { recursive: true });
+writeFileSync(
+  join(stage, 'manifest.json'),
+  `${JSON.stringify(
+    {
+      ...manifest,
+      server: {
+        ...manifest.server,
+        entry_point: `./${ENTRY}`,
+        mcp_config: { ...manifest.server.mcp_config, args: [`\${__dirname}/${ENTRY}`] },
+      },
+      tools,
+    },
+    null,
+    2,
+  )}\n`,
+);
+copyFileSync(bundled, join(stage, ENTRY));
 
-// Read from the STAGED copy, so what we advertise is what the bundle ships.
-const tools = INCLUDE_TOOLS ? toolsFromRunningServer(join(STAGE, 'server', 'index.js')) : [];
-if (INCLUDE_TOOLS && tools.length === 0) {
-  console.error('could not read any tools out of dist/index.js — refusing to ship a manifest that silently claims none.');
-  process.exit(1);
+rmSync(SMITHERY_ZIP, { force: true });
+const zip = spawnSync('zip', ['-q', '-r', '-X', SMITHERY_ZIP, 'manifest.json', ENTRY], { cwd: stage, encoding: 'utf8' });
+if (zip.status !== 0) {
+  console.error(`build-mcpb: zip failed (${zip.status})\n${zip.stderr ?? ''}`);
+  process.exit(2);
 }
+rmSync(stage, { recursive: true, force: true });
 
-const manifest = {
-  manifest_version: '0.3',
-  name: pkg.name,
-  display_name: 'Legalithm — EU AI Act',
-  version: pkg.version,
-  description: pkg.description,
-  author: { name: 'Pedram Madani', email: 'hello@legalithm.com', url: 'https://www.legalithm.com' },
-  homepage: 'https://www.legalithm.com',
-  documentation: 'https://www.legalithm.com/en/developers',
-  repository: { type: 'git', url: 'https://github.com/legalithm-org/legalithm' },
-  license: pkg.license ?? 'MIT',
-  keywords: ['eu-ai-act', 'ai-act', 'compliance', 'legal', 'ai-governance', 'mcp'],
-  /**
-   * user_config is what turns the privacy claim into something a user can
-   * actually operate, and it is load-bearing for Smithery besides.
-   *
-   * Their CLI builds the publish payload as
-   *   { type, runtime, serverCard:{serverInfo, ...tools?}, ...configSchema? }
-   * where configSchema is derived from user_config. With tools stripped for
-   * #787 and no user_config, the payload carries only identity and the registry
-   * answers `400 {"error":"No values to set"}` — after creating the server, so
-   * it reads like a worse failure than it is.
-   *
-   * MCPB substitutes booleans into env as the literal "true"/"false", which is
-   * why src/telemetry.ts accepts "false" and not only "0".
-   */
-  user_config: {
-    telemetry: {
-      type: 'boolean',
-      title: 'Anonymous usage telemetry',
-      description:
-        'Sends the tool name and a one-way hash of the working directory. Never source code, prompts or results. Turn off to disable, equivalent to LEGALITHM_TELEMETRY=0.',
-      default: true,
-      required: false,
-    },
-  },
-  server: {
-    type: 'node',
-    entry_point: 'server/index.js',
-    mcp_config: {
-      command: 'node',
-      args: ['${__dirname}/server/index.js'],
-      env: { LEGALITHM_TELEMETRY: '${user_config.telemetry}' },
-    },
-  },
-  ...(tools.length ? { tools } : {}),
-  compatibility: {
-    platforms: ['darwin', 'win32', 'linux'],
-    runtimes: { node: '>=18.0.0' },
-  },
-};
-
-writeFileSync(join(STAGE, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
-
-console.log(`packing (${tools.length} tools declared)…`);
-execFileSync('npx', ['-y', '@anthropic-ai/mcpb', 'pack', STAGE, join(OUT_DIR, 'legalithm.mcpb')], {
-  stdio: 'inherit',
-});
-
-console.log(`\n✓ ${join(OUT_DIR, 'legalithm.mcpb')}\n`);
-console.log('publish with:');
-console.log(
-  `  npx -y @smithery/cli mcp publish "${join(OUT_DIR, 'legalithm.mcpb')}" -n legalithm/legalithm-mcp-server`,
-);
-console.log(
-  '\nNote: --config-schema is rejected for bundles (URL publishes only). The\n' +
-    'registry gets its configSchema from the manifest user_config block above.',
-);
+const kb = (statSync(bundled).size / 1024).toFixed(0);
+const zkb = (statSync(SMITHERY_ZIP).size / 1024).toFixed(0);
+console.log(`  mcpb/ ready — manifest.json + ${ENTRY} (${kb} KB)`);
+console.log(`  ${tools.length} tools, each with an inputSchema read from the running server`);
+console.log('');
+console.log(`  Smithery:       mcpb/legalithm-eu-ai-act.mcpb (${zkb} KB) — tools carry inputSchema`);
+console.log('  Claude Desktop: cd mcpb && npx -y @anthropic-ai/mcpb pack  — tools do not, per its spec');

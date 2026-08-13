@@ -291,6 +291,255 @@ export function getLegalInstrument(
 }
 
 /**
+ * Commission guidance interpreting a milestone's articles.
+ *
+ * Kept out of LEGAL_INSTRUMENTS deliberately: that map is the corpus — the
+ * Regulation and what amends it. Guidelines interpret the Regulation without
+ * changing it, and conflating the two would let a surface cite guidance as
+ * though it were binding text.
+ */
+export interface InterpretiveGuidance {
+  id: string;
+  title: string;
+  /** Milestone whose articles this guidance interprets. */
+  milestone: EnforcementMilestoneId;
+  /** ISO date the Commission adopted it. */
+  adopted: string;
+  sourceUrl: string;
+  evidence: readonly string[];
+}
+
+export const INTERPRETIVE_GUIDANCE: readonly InterpretiveGuidance[] = Object.freeze([
+  {
+    id: 'ec-art-50-transparency-guidelines',
+    title:
+      'Commission Guidelines on the implementation of the transparency obligations for '
+      + 'certain AI systems under Article 50 of the AI Act',
+    milestone: 'art-50-transparency',
+    adopted: '2026-07-20',
+    sourceUrl:
+      'https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems',
+    evidence: ['ev_2026-08-08_b1_0001', 'ev_2026-08-08_a7_0006'],
+  },
+]);
+
+/** Guidance interpreting a given milestone, newest adoption first. */
+export function getGuidanceForMilestone(
+  id: EnforcementMilestoneId,
+): readonly InterpretiveGuidance[] {
+  return INTERPRETIVE_GUIDANCE.filter((g) => g.milestone === id)
+    .slice()
+    .sort((a, b) => b.adopted.localeCompare(a.adopted));
+}
+
+/* -------------------------------------------------------------------------- */
+/*  National implementation and competent authorities                          */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * WHO ENFORCES, as distinct from WHEN OBLIGATIONS APPLY.
+ *
+ * Everything above answers "from when". This answers "to whom do I answer",
+ * which is a different question with a different shape: the milestones are
+ * EU-wide and identical for everyone, while the authority depends on the member
+ * state AND on the sector the deployer operates in.
+ *
+ * THE TRAP THIS STRUCTURE EXISTS TO AVOID. Germany does not have one AI Act
+ * authority, it has three arrangements. A single answer of "Bundesnetzagentur"
+ * is wrong for a bank (BaFin) and wrong for a broadcaster (the Land). A product
+ * that answers "who regulates me" with one confident national name would be
+ * giving a wrong answer to two whole sectors while looking entirely correct.
+ *
+ * So `sector` is part of the lookup, never an afterthought, and an unmapped
+ * country returns nothing rather than a plausible default. See
+ * `getCompetentAuthorities`.
+ *
+ * Deliberately NOT folded into MILESTONE_LIST: these carry no deadline and must
+ * never reach the countdown.
+ */
+
+/**
+ * Sector of the deployer, where that changes which authority is competent.
+ * `general` means "no sectoral carve-out applies".
+ */
+export type DeployerSector = 'general' | 'financial_services' | 'media';
+
+export type AuthorityRole =
+  /** The authority a deployer in scope actually answers to. */
+  | 'market_surveillance'
+  /** Supports the authorities; a deployer does not report to it. */
+  | 'coordination';
+
+export interface CompetentAuthority {
+  id: string;
+  /** Official name, in the national language. */
+  name: string;
+  shortName: string;
+  /** ISO 3166-1 alpha-2. */
+  country: string;
+  role: AuthorityRole;
+  /** Sectors for which this authority is competent. */
+  sectors: readonly DeployerSector[];
+  /** Plain-English rule, for surfaces that must explain the answer. */
+  appliesWhen: string;
+  sourceUrl: string;
+  /** The sentence on `sourceUrl` that establishes the designation. */
+  sourceQuote: string;
+  /**
+   * `high` — an auditor re-fetched the source and confirmed this quote verbatim.
+   * `medium` — the designation holds, but some element was not reconfirmed
+   * word-for-word on re-fetch, so surfaces should not state it flatly.
+   */
+  confidence: 'high' | 'medium';
+  /** Evidence record ids in the agent store, for provenance. */
+  evidence: readonly string[];
+}
+
+export interface NationalImplementation {
+  country: string;
+  /** National implementing law, in the national language. */
+  law: string;
+  shortName: string;
+  /** ISO date the national law entered into force. */
+  inForce: string;
+  sourceUrl: string;
+  sourceQuote: string;
+  evidence: readonly string[];
+  authorities: readonly CompetentAuthority[];
+}
+
+/**
+ * Member states whose implementation has been evidenced.
+ *
+ * ONE ENTRY ONLY, ON PURPOSE. Germany is the single member state for which
+ * primary sources have been fetched and audited. Every other state is absent
+ * rather than guessed: "we have not mapped France" is a usable answer and
+ * "probably the national market surveillance authority" is not.
+ */
+export const NATIONAL_IMPLEMENTATIONS: Readonly<Record<string, NationalImplementation>> =
+  Object.freeze({
+    DE: {
+      country: 'DE',
+      law: 'KI-Marktüberwachungs- und Innovationsförderungsgesetz (KI-MIG)',
+      shortName: 'KI-MIG',
+      inForce: '2026-07-29',
+      sourceUrl: 'https://bmds.bund.de/aktuelles/pressemitteilungen/detail/neues-ki-gesetz-tritt-in-kraft',
+      sourceQuote:
+        'Heute tritt das KI-Marktüberwachungs-und-Innovationsförderungs-Gesetz (KI-MIG) in Kraft',
+      evidence: ['ev_2026-08-08_b1_0002', 'ev_2026-08-08_a7_0007'],
+      authorities: [
+        {
+          id: 'de-bnetza',
+          name: 'Bundesnetzagentur',
+          shortName: 'BNetzA',
+          country: 'DE',
+          role: 'market_surveillance',
+          sectors: ['general'],
+          appliesWhen:
+            'Default federal market surveillance authority, complaint office and contact point '
+            + 'for the AI Regulation, except where a Land designates its own authority or a '
+            + 'sectoral supervisor is competent.',
+          sourceUrl: 'https://bmds.bund.de/service/gesetzgebungsverfahren/gesetz-zur-durchfuehrung-der-ki-verordnung',
+          sourceQuote:
+            'wird die BNetzA zuständige Marktüberwachungsbehörde, soweit nicht die Länder die '
+            + 'zuständigen Behörden bestimmen',
+          confidence: 'high',
+          evidence: ['ev_2026-08-08_b1_0004', 'ev_2026-08-08_a7_0065', 'ev_2026-08-08_a7_0007'],
+        },
+        {
+          id: 'de-bafin',
+          name: 'Bundesanstalt für Finanzdienstleistungsaufsicht',
+          shortName: 'BaFin',
+          country: 'DE',
+          role: 'market_surveillance',
+          sectors: ['financial_services'],
+          appliesWhen:
+            'Market surveillance for AI systems directly connected to a regulated financial '
+            + 'activity, at companies in the financial sector.',
+          sourceUrl: 'https://www.bafin.de/SharedDocs/Veroeffentlichungen/DE/Pressemitteilung/2026/pm_2026_07_29_ki_verordnung.html',
+          sourceQuote: 'Die Bafin überwacht künftig KI-Systeme von Unternehmen des Finanzsektors.',
+          confidence: 'high',
+          evidence: ['ev_2026-08-09_b1_0001', 'ev_2026-08-09_a7_0001'],
+        },
+        {
+          id: 'de-laender',
+          name: 'Zuständige Landesbehörde',
+          shortName: 'Land',
+          country: 'DE',
+          role: 'market_surveillance',
+          sectors: ['media'],
+          appliesWhen:
+            'Where a Bundesland designates its own competent authority, that authority is '
+            + 'competent instead of BNetzA. Media is the example given in the legislative '
+            + 'materials. The specific body depends on the Land and is not named federally.',
+          sourceUrl: 'https://bmds.bund.de/service/gesetzgebungsverfahren/gesetz-zur-durchfuehrung-der-ki-verordnung',
+          sourceQuote:
+            'wird die BNetzA zuständige Marktüberwachungsbehörde, soweit nicht die Länder die '
+            + 'zuständigen Behörden bestimmen',
+          // `medium`, not `high`: the audit (ev_2026-08-08_a7_0065) confirmed the clause above
+          // verbatim but recorded that the trailing '(wie im Medienbereich)' parenthetical —
+          // the part naming MEDIA specifically — was not independently reconfirmed on
+          // re-fetch. The carve-out is established; media as its example is one source deep.
+          confidence: 'medium',
+          evidence: ['ev_2026-08-08_b1_0004', 'ev_2026-08-08_a7_0065'],
+        },
+        {
+          id: 'de-kokivo',
+          name: 'Koordinierungs- und Kompetenzzentrum für die KI-Verordnung',
+          shortName: 'KoKIVO',
+          country: 'DE',
+          role: 'coordination',
+          sectors: ['general', 'financial_services', 'media'],
+          appliesWhen:
+            'Service and advisory centre established at the Bundesnetzagentur, supporting '
+            + 'federal and Länder market surveillance and notifying authorities. A deployer '
+            + 'does not report to it.',
+          sourceUrl: 'https://bmds.bund.de/service/gesetzgebungsverfahren/gesetz-zur-durchfuehrung-der-ki-verordnung',
+          sourceQuote:
+            'Bei der Bundesnetzagentur (BNetzA) wird daher ein Koordinierungs- und '
+            + 'Kompetenzzentrum für die KI-Verordnung (KoKIVO) geschaffen',
+          confidence: 'high',
+          evidence: ['ev_2026-08-08_b1_0003', 'ev_2026-08-08_b1_0004', 'ev_2026-08-08_a7_0065'],
+        },
+      ],
+    },
+  });
+
+/**
+ * The authorities a deployer in `country` actually answers to, for `sector`.
+ *
+ * Returns `[]` for an unmapped country — the caller must render that as "not
+ * mapped", never fall back to a neighbouring state's answer.
+ *
+ * Coordination bodies are excluded: KoKIVO supports the authorities and a
+ * deployer does not report to it, so returning it alongside BNetzA would invite
+ * a UI that lists two places to file the same notification. Use
+ * `getSupportBodies` when you want it.
+ */
+export function getCompetentAuthorities(
+  country: string,
+  sector: DeployerSector = 'general',
+): readonly CompetentAuthority[] {
+  const impl = NATIONAL_IMPLEMENTATIONS[country.toUpperCase()];
+  if (!impl) return [];
+  return impl.authorities.filter(
+    (a) => a.role === 'market_surveillance' && a.sectors.includes(sector),
+  );
+}
+
+/** Coordination and advisory bodies for a country. Not who you report to. */
+export function getSupportBodies(country: string): readonly CompetentAuthority[] {
+  const impl = NATIONAL_IMPLEMENTATIONS[country.toUpperCase()];
+  if (!impl) return [];
+  return impl.authorities.filter((a) => a.role === 'coordination');
+}
+
+/** The national implementing law, or undefined when the state is unmapped. */
+export function getNationalImplementation(country: string): NationalImplementation | undefined {
+  return NATIONAL_IMPLEMENTATIONS[country.toUpperCase()];
+}
+
+/**
  * Calendar date when an article's obligations apply, derived only from milestone
  * articleRefs above (never a free-standing literal). Returns undefined when the
  * article is not listed on any dated milestone.

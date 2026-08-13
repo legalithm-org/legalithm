@@ -24,11 +24,13 @@ import { mergeClaudeSettings, mergeMcpConfig, CURSOR_RULE, CLAUDE_MD_SNIPPET, SE
 import { runMark, mimeForFile } from './commands/mark.js';
 import { runVerify } from './commands/verify.js';
 import { runVerifyRecord, signaturePath } from './commands/verify-record.js';
+import { runSignRecord } from './commands/sign-record.js';
+import { RECORD_DIR, VERIFICATION_KEYS_FILE } from './record-io.js';
 import { emitSurfaceActive, flushTelemetry, CLI_TELEMETRY_COMMANDS } from './telemetry.js';
 import { maybePromptSaveShare } from './save-share-prompt.js';
 import type { StackInput, UseCase, StoredRecord, ProviderRole, Domain, Audience } from './types.js';
 
-const VERSION = '0.5.0';
+const VERSION = '0.6.0';
 const DISCLAIMER = 'Checked against Regulation (EU) 2024/1689 — not legal advice.';
 
 interface PackageJson {
@@ -236,6 +238,7 @@ Commands:
   mark     Mark an AI-generated image (Art 50(2)); --watermark adds a second, distribution-proof layer (no key)
   verify   Detect AI content marking on an asset: C2PA credential + pixel watermark; --check scans a directory (no key)
   verify-record  Offline integrity check for compliance/legalithm.json (+ optional .sig) (no key)
+  sign-record    Sign the record with YOUR Ed25519 key, so a verifier learns who issued it (no key)
   login    Save an API key:  legalithm login --key lgl_...
 
 Flags:
@@ -244,6 +247,8 @@ Flags:
   --sarif <path>             write SARIF 2.1.0 results (check; default legalithm-results.sarif)
   --fail-on risk-or-rule|risk|any|never   (check; default risk-or-rule)
   --no-prompt                skip the post-init/check save-or-share prompt
+  --key <path> --key-id <id> (sign-record) your Ed25519 private key file, and the id an
+                             auditor looks it up by. Legalithm never holds a signing key.
 
 Env: LEGALITHM_API_KEY, LEGALITHM_API_URL (default https://www.legalithm.com)
 Telemetry: anonymous { surface, command, repoHash } ping; opt out with DO_NOT_TRACK=1.
@@ -401,11 +406,54 @@ export async function main(argv: string[]): Promise<number> {
           if (!existsSync(path)) return null;
           return readFileSync(path, 'utf8');
         },
+        readVerificationKeys: (d) => {
+          const path = join(d, RECORD_DIR, VERIFICATION_KEYS_FILE);
+          if (!existsSync(path)) return null;
+          return readFileSync(path, 'utf8');
+        },
         bundledEngineVersion,
         log: (m) => console.log(m),
         error: (m) => console.error(m),
       },
       { cwd, json: flagBool(flags, 'json') },
+    );
+  }
+
+  if (command === 'sign-record') {
+    const keysPath = join(cwd, RECORD_DIR, VERIFICATION_KEYS_FILE);
+    return runSignRecord(
+      {
+        readRecord: (d) => readRecord(d),
+        // A path, never the key material: an argument would land in shell
+        // history and in the process table.
+        readKeyFile: (p) => readFileSync(p, 'utf8'),
+        keyFileMode: (p) => {
+          try {
+            return statSync(p).mode;
+          } catch {
+            return null;
+          }
+        },
+        readVerificationKeys: () => (existsSync(keysPath) ? readFileSync(keysPath, 'utf8') : null),
+        writeSignature: (d, contents) => {
+          const path = signaturePath(d);
+          mkdirSync(dirname(path), { recursive: true });
+          writeFileSync(path, contents, 'utf8');
+        },
+        writeVerificationKeys: (d, contents) => {
+          const path = join(d, RECORD_DIR, VERIFICATION_KEYS_FILE);
+          mkdirSync(dirname(path), { recursive: true });
+          writeFileSync(path, contents, 'utf8');
+        },
+        log: (m) => console.log(m),
+        error: (m) => console.error(m),
+      },
+      {
+        cwd,
+        keyPath: flagString(flags, 'key') ?? process.env.LEGALITHM_SIGNING_KEY,
+        keyId: flagString(flags, 'key-id'),
+        json: flagBool(flags, 'json'),
+      },
     );
   }
 
@@ -531,6 +579,10 @@ export async function main(argv: string[]): Promise<number> {
 }
 
 // Bin entry — guarded so importing { main } in tests has no side effects.
+// The same guard makes this block unreachable under vitest by construction, so
+// it is excluded from coverage rather than left as a permanent shortfall that
+// no test could ever close.
+/* v8 ignore start */
 if (!process.env.VITEST) {
   main(process.argv.slice(2)).then(
     async (code) => {
@@ -545,3 +597,4 @@ if (!process.env.VITEST) {
     },
   );
 }
+/* v8 ignore stop */

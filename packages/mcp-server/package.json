@@ -1,7 +1,7 @@
 {
   "name": "legalithm-mcp-server",
   "version": "0.2.1",
-  "description": "EU AI Act compliance MCP server for Claude Code, Cursor and Codex — classify risk, explain obligations, generate Article 50 disclosures. Offline, no API key.",
+  "description": "EU AI Act compliance MCP server for Claude Code, Cursor and Codex \u2014 classify risk, explain obligations, generate Article 50 disclosures. Offline, no API key.",
   "mcpName": "io.github.PedramMadani/legalithm-mcp-server",
   "type": "module",
   "bin": {
@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "build:mcpb": "npm run build && node scripts/build-mcpb.mjs",
+    "build:mcpb": "tsup --config tsup.mcpb.config.ts && node scripts/build-mcpb.mjs",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

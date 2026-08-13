@@ -38,22 +38,50 @@ describe('tool parameter descriptions', () => {
     ['classify', 'audience'],
     ['explain_obligation', 'role'],
     ['explain_obligation', 'risk'],
+    ['explain_obligation', 'country'],
+    ['explain_obligation', 'sector'],
     ['generate_disclosure', 'scenario'],
     ['generate_disclosure', 'locale'],
     ['check_record', 'slug'],
+    ['generate_agent_disclosure', 'principal_name'],
+    ['generate_agent_disclosure', 'principal_type'],
+    ['generate_agent_disclosure', 'authority_scope'],
+    ['generate_agent_disclosure', 'autonomy_level'],
+    ['generate_agent_disclosure', 'composition'],
+    // agent_disclosure_taxonomy takes no parameters.
   ];
 
+  /**
+   * A parameter is either a shared const declared above createServer, or
+   * inline in an inputSchema. For the inline case, slice from its declaration
+   * to the next sibling declaration rather than matching a fixed indent — the
+   * earlier version assumed six spaces and silently stopped finding anything
+   * once a tool nested its schema one level deeper.
+   */
   const definitionOf = (param: string): string => {
-    // Either declared inline in the inputSchema, or as a shared const above.
-    const shared = src.match(new RegExp(`const ${param} = z[\\s\\S]*?;\\n`));
+    // `;\r?\n`, not `;\n`: a Windows checkout has CRLF endings and the shared
+    // consts stopped matching entirely, which failed this suite only on
+    // windows-latest.
+    const shared = src.match(new RegExp(`const ${param} = z[\\s\\S]*?;\\r?\\n`));
     if (shared) return shared[0];
-    const inline = src.match(new RegExp(`\\b${param}: z[\\s\\S]{0,900}?\\n\\s{6}[a-z_]+[,:]`));
-    return inline?.[0] ?? '';
+
+    const start = src.search(new RegExp(`\\b${param}:\\s*z\\b`));
+    if (start === -1) return '';
+    const rest = src.slice(start + param.length);
+    const nextSibling = rest.search(/\n\s*[a-z_]+:\s*z\b/);
+    return rest.slice(0, nextSibling === -1 ? 1600 : nextSibling);
   };
 
-  it('the four tools are all registered', () => {
+  it('every registered tool is accounted for', () => {
     const tools = [...src.matchAll(/registerTool\(\s*'([a-z_]+)'/g)].map((m) => m[1]).sort();
-    expect(tools).toEqual(['check_record', 'classify', 'explain_obligation', 'generate_disclosure']);
+    expect(tools).toEqual([
+      'agent_disclosure_taxonomy',
+      'check_record',
+      'classify',
+      'explain_obligation',
+      'generate_agent_disclosure',
+      'generate_disclosure',
+    ]);
   });
 
   it('every parameter carries a .describe()', () => {

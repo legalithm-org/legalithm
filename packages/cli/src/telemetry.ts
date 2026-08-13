@@ -30,6 +30,7 @@ export const CLI_TELEMETRY_COMMANDS = [
   'mark',
   'verify',
   'verify-record',
+  'sign-record',
   'discover',
   'init',
   'check',

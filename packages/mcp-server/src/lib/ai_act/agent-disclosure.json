@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "updatedAt": "2026-08-03",
+    "guidelines_adopted": "2026-07-20",
+    "regulation": "Regulation (EU) 2024/1689, Article 50",
+    "guidelines_title": "Commission Article 50 Guidelines",
+    "reference_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689#article-50"
+  },
+  "positive_dimensions": [
+    {
+      "id": "artificial_nature",
+      "article_limb": "50(1)",
+      "guideline_paragraph": "31",
+      "label": {
+        "en": "Artificial nature",
+        "de": "Künstliche Natur"
+      },
+      "description": {
+        "en": "Disclose that the agent is an AI system, not a natural person, when it can interact with persons instructing it or with other natural persons.",
+        "de": "Offenlegen, dass der Agent ein KI-System und keine natürliche Person ist, wenn er mit anweisenden Personen oder anderen natürlichen Personen interagieren kann."
+      }
+    },
+    {
+      "id": "principal_identity",
+      "article_limb": "50(1)",
+      "guideline_paragraph": "31",
+      "label": {
+        "en": "Principal identity",
+        "de": "Identität des Auftraggebers"
+      },
+      "description": {
+        "en": "Disclose the person on whose behalf the agent acts, reflecting delegation of authority and accountability for the consequences of its actions.",
+        "de": "Offenlegen, in wessen Auftrag der Agent handelt, einschließlich der delegierten Befugnis und Verantwortlichkeit für die Folgen seiner Handlungen."
+      }
+    },
+    {
+      "id": "delegated_authority_scope",
+      "article_limb": "50(1)",
+      "guideline_paragraph": "31",
+      "label": {
+        "en": "Scope of delegated authority",
+        "de": "Umfang der delegierten Befugnis"
+      },
+      "description": {
+        "en": "Disclose the authority delegated to the agent so instructors and affected natural persons understand what the agent may do on the principal's behalf.",
+        "de": "Den an den Agenten delegierten Befugnisumfang offenlegen, damit Anweisende und betroffene natürliche Personen verstehen, was der Agent im Auftrag des Auftraggebers tun darf."
+      }
+    },
+    {
+      "id": "multi_agent_composition",
+      "article_limb": "50(1)",
+      "guideline_paragraph": "31",
+      "label": {
+        "en": "Multi-agent composition",
+        "de": "Multi-Agenten-Architektur"
+      },
+      "description": {
+        "en": "Paragraph 31 covers complex multi-agent architectures; disclosure is not limited to a single chatbot process.",
+        "de": "Absatz 31 erfasst komplexe Multi-Agenten-Architekturen; die Offenlegung beschränkt sich nicht auf einen einzelnen Chatbot-Prozess."
+      }
+    },
+    {
+      "id": "architecture_level_disclosure",
+      "article_limb": "50(1)",
+      "guideline_paragraph": "31",
+      "label": {
+        "en": "Architecture-level disclosure when counterparty unpredictable",
+        "de": "Architekturweite Offenlegung bei unvorhersehbarem Gegenüber"
+      },
+      "description": {
+        "en": "Where the provider cannot reliably determine in advance whether the agent will interact with a natural person, the agent must be designed at architecture level to disclose itself in every situation where interaction is reasonably likely.",
+        "de": "Kann der Anbieter nicht zuverlässig im Voraus bestimmen, ob der Agent mit einer natürlichen Person interagiert, muss er architekturweit so gestaltet sein, dass er sich in jeder Situation offenlegt, in der eine Interaktion vernünftigerweise wahrscheinlich ist."
+      }
+    },
+    {
+      "id": "redisclosure_triggers",
+      "article_limb": "50(1)",
+      "guideline_paragraph": "31",
+      "label": {
+        "en": "Re-disclosure at key steps and each new interaction",
+        "de": "Erneute Offenlegung bei Schlüsselschritten und jeder neuen Interaktion"
+      },
+      "description": {
+        "en": "Agents must disclose to persons instructing them at authorisation, reporting, and validation, and at every new interaction.",
+        "de": "Agenten müssen gegenüber anweisenden Personen bei Autorisierung, Berichterstattung und Validierung sowie bei jeder neuen Interaktion offenlegen."
+      }
+    }
+  ],
+  "negative_scope": [
+    {
+      "id": "intermediate_reasoning",
+      "article_limb": "50(2)",
+      "guideline_paragraph": "63",
+      "label": {
+        "en": "Intermediate reasoning and chain of thought",
+        "de": "Zwischenschritte und Gedankenkette"
+      },
+      "description": {
+        "en": "Intermediate processing steps such as reasoning and chain of thought do not qualify as synthetic content under Article 50(2).",
+        "de": "Zwischenschritte wie Reasoning und Gedankenkette gelten nicht als synthetische Inhalte im Sinne von Artikel 50(2)."
+      }
+    },
+    {
+      "id": "unperceived_actions",
+      "article_limb": "50(2)",
+      "guideline_paragraph": "63",
+      "label": {
+        "en": "Unperceived web or browser actions",
+        "de": "Nicht wahrgenommene Web- oder Browseraktionen"
+      },
+      "description": {
+        "en": "AI-generated actions not intended to be directly perceived by natural persons, such as a web request or a browser action, do not qualify as synthetic content under Article 50(2).",
+        "de": "KI-generierte Handlungen, die nicht unmittelbar von natürlichen Personen wahrgenommen werden sollen, etwa Webanfragen oder Browseraktionen, gelten nicht als synthetische Inhalte im Sinne von Artikel 50(2)."
+      }
+    },
+    {
+      "id": "backend_m2m",
+      "article_limb": "50(2)",
+      "guideline_paragraph": "30(iv)",
+      "label": {
+        "en": "Backend machine-to-machine calls",
+        "de": "Backend-Maschine-zu-Maschine-Aufrufe"
+      },
+      "description": {
+        "en": "Backend machine-to-machine calls between AI systems are excluded from the interaction surface the Guidelines carve for agent transparency.",
+        "de": "Backend-Maschine-zu-Maschine-Aufrufe zwischen KI-Systemen liegen außerhalb der Interaktionsfläche, die die Leitlinien für Agenten-Transparenz abgrenzen."
+      }
+    },
+    {
+      "id": "agent_to_agent",
+      "article_limb": "50(2)",
+      "guideline_paragraph": "68",
+      "label": {
+        "en": "Agent-to-agent communication",
+        "de": "Agent-zu-Agent-Kommunikation"
+      },
+      "description": {
+        "en": "Agent-to-agent communication is excluded; the human-facing edge is where Paragraph 31 applies.",
+        "de": "Agent-zu-Agent-Kommunikation ist ausgenommen; die menschliche Schnittstelle ist der Ort, an dem Absatz 31 greift."
+      }
+    }
+  ],
+  "footnotes": [
+    {
+      "id": "footnote_21",
+      "label": {
+        "en": "EU Digital Identity Wallets and European Business Wallets",
+        "de": "EU-Digitalidentitäts-Wallets und European Business Wallets"
+      },
+      "description": {
+        "en": "Footnote 21 raises EU Digital Identity Wallets and European Business Wallets as means of identifying AI agents. Identification infrastructure pointer, not a standalone mandate in the Guidelines text cited here.",
+        "de": "Fußnote 21 verweist auf EU-Digitalidentitäts-Wallets und European Business Wallets als Mittel zur Identifikation von KI-Agenten. Hinweis auf Identifikationsinfrastruktur, keine eigenständige Pflicht im zitierten Leitlinientext."
+      }
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "manifest_version": "0.2",
+  "name": "legalithm-mcp-server",
+  "display_name": "Legalithm",
+  "version": "0.2.1",
+  "description": "EU AI Act compliance in your editor. Classify risk, cite obligations with their Articles, and draft Article 50 disclosures. Offline, no API key.",
+  "author": {
+    "name": "Legalithm"
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "./dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/./dist/index.js"
+      ],
+      "env": {}
+    }
+  },
+  "tools": [
+    {
+      "name": "classify",
+      "description": "Classify AI risk (EU AI Act)"
+    },
+    {
+      "name": "explain_obligation",
+      "description": "Explain EU AI Act obligations"
+    },
+    {
+      "name": "generate_disclosure",
+      "description": "Generate an Article 50 disclosure"
+    },
+    {
+      "name": "check_record",
+      "description": "Check a public Trust Center record"
+    },
+    {
+      "name": "generate_agent_disclosure",
+      "description": "Generate an AI agent disclosure (Article 50)"
+    },
+    {
+      "name": "agent_disclosure_taxonomy",
+      "description": "What an AI agent must disclose, and what it need not"
+    }
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/legalithm-org/legalithm.git"
+  }
+}

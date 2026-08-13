@@ -7,6 +7,8 @@ export const RECORD_DIR = 'compliance';
 export const RECORD_FILE = 'legalithm.json';
 export const ANNEX_FILE = 'annex-iv.md';
 export const CHECKLIST_FILE = 'checklist.md';
+/** keyId -> public key PEM, committed so an auditor gets the record and the key together. */
+export const VERIFICATION_KEYS_FILE = 'verification-keys.json';
 
 export function recordPath(cwd: string): string {
   return join(cwd, RECORD_DIR, RECORD_FILE);

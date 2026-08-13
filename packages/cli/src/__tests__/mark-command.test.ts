@@ -98,7 +98,12 @@ describe('mark sign mode (P2-C3)', () => {
     const { io, writes, logs } = fakeIo();
     const code = await runMark(io, { file: 'assets/pic.png' });
     expect(code).toBe(0);
-    expect(Object.keys(writes)).toEqual(['assets/pic.signed.png']);
+    // Normalise separators: the CLI builds this with path.join, so Windows
+    // produces 'assets\\pic.signed.png' and this assertion failed only on
+    // windows-latest. The separator is not what the test is about.
+    expect(Object.keys(writes).map((k) => k.replace(/\\/g, '/'))).toEqual([
+      'assets/pic.signed.png',
+    ]);
     expect(logs.some((l) => l.includes('test signing certificate'))).toBe(true);
   });
 

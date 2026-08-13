@@ -31,6 +31,8 @@ export const MCP_TELEMETRY_COMMANDS = [
   'explain_obligation',
   'generate_disclosure',
   'check_record',
+  'generate_agent_disclosure',
+  'agent_disclosure_taxonomy',
 ] as const;
 
 const pending: Promise<unknown>[] = [];

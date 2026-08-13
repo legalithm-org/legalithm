@@ -31,6 +31,18 @@ MCowBQYDK2VwAyEANCWKqS0RKGO/rS8Dq7QWxJGYIGe8ZBw4c8WT8/DQQ8M=
  */
 const additionalPublicKeys = new Map<string, string>();
 
+/**
+ * Key ids Legalithm ships as trust anchors. Nothing outside this repository can
+ * sign under one, because the matching private half does not exist here and
+ * never will — see docs/RECORD-SIGNING.md. Exported so the signing path can
+ * refuse them by name rather than by duplicating the list.
+ */
+export const BUILT_IN_KEY_IDS: readonly string[] = Object.freeze(Object.keys(PUBLIC_KEYS_PEM));
+
+export function isBuiltInKeyId(keyId: string): boolean {
+  return keyId in PUBLIC_KEYS_PEM;
+}
+
 export function registerVerificationKey(keyId: string, publicKeyPem: string): void {
   if (keyId in PUBLIC_KEYS_PEM) {
     throw new Error(`Refusing to override the built-in verification key: ${keyId}`);
@@ -76,6 +88,12 @@ export function verifyDetachedSignature(recordHash: string, sig: DetachedRecordS
   return verify(null, Buffer.from(recordHash, 'utf8'), key, Buffer.from(sig.signature, 'base64'));
 }
 
-// A signing helper deliberately does not live here: this module ships to users,
-// and anything in it that can produce a valid signature is a forgery kit. Tests
-// generate their own keypair — see __tests__/test-signing-key.ts.
+// The signing half lives in record-signing.ts, not here. Not because signing
+// code is dangerous — it signs with a key the user supplies, exactly as gpg and
+// ssh-keygen do — but because this module is the trust anchor, and the thing
+// that decides whether a signature is genuine should not also be the thing that
+// makes them. The original hazard was shipping OUR private key, which is a
+// different mistake and is now guarded by
+// __tests__/lib/no-private-keys-in-source.test.ts.
+//
+// Tests generate their own keypair — see __tests__/test-signing-key.ts.
