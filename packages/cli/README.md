@@ -11,7 +11,7 @@ dated, cited compliance record in your repo, and gate CI — and your AI coding 
 npx legalithm setup
 
 # 2. Generate the compliance record for this repo (needs a free API key).
-npx legalithm login --key lgl_...
+npx legalithm login       # prompts for the key; --key-file <path> or --stdin in CI
 npx legalithm init        # → compliance/legalithm.json (+ annex-iv.md, checklist.md)
 
 # 3. Re-verify in CI; non-zero exit on drift.
@@ -33,12 +33,74 @@ Get a key at <https://www.legalithm.com> → Settings → API Keys.
 | `verify` | no | Detect AI content marking on an asset (C2PA credential + pixel watermark); `--check` scans a directory. |
 | `verify-record` | no | **Offline** integrity check of `compliance/legalithm.json`: recomputes its hash and confirms which rule corpus produced it. |
 | `login` | — | Saves an API key. |
+| `eaa ingest` | yes | Posts a scanner's JSON onto the EAA record as **hypotheses**. Stores nothing locally. |
+| `eaa clock` | yes | What has gone stale and what is about to lapse; `--fail-on-lapsed` for CI. |
+| `cra watch` | yes | CRA Article 14 reporting clocks for an actively exploited vulnerability or a severe incident. Requires `--became-aware-at`; see below. |
+| `cra simulate` | no | The same clock engine on a hypothetical, marked as a simulation and writing nothing. Rehearse the filing before you need it. |
+
+### `--became-aware-at` is required, and it has no default
+
+Article 14(2) runs its deadlines from the moment the manufacturer **becomes aware**,
+which is almost never the moment a scan runs: you learn about a vulnerability, then
+you go and check. Until 0.8.0 `cra watch` computed the due dates from the command's
+own runtime, so a team that became aware on Tuesday at 10:15 and scanned on Thursday
+at 14:00 was told the 24-hour early warning was due Friday at 14:00. It was due
+Wednesday at 10:15, and they were already two days late.
+
+The flag has no default on purpose. Defaulting to now would reproduce that same wrong
+deadline behind a more explicit API, because a flag with a default is a flag that gets
+forgotten. Awareness is a fact only you hold.
+
+```bash
+npx legalithm cra simulate \
+  --scenario exploited-vulnerability \
+  --became-aware-at 2026-09-15T10:15:00Z
+```
+
+**If you are on 0.7.0 or earlier, upgrade before 11 September 2026.** The old
+behaviour is wrong in the dangerous direction: it reports time remaining when the
+window has already closed.
+
+## The EAA in CI
+
+`eaa` holds no state, unlike `cra`. The CRA record stays on your machine because
+the join of your SBOM against vulnerability data is a map of how to attack your
+product. Nothing about the EAA is like that: a contrast failure on a public page
+is not a secret, and the record lives where the advisor screens and the clock can
+read it.
+
+No browser is bundled and no scan is run here. Whatever you already use —
+axe, or any tool that emits EARL — produces the JSON, and this hands it over.
+
+```yaml
+- run: npx @axe-core/cli https://example.com --save axe.json
+- run: |
+    npx legalithm eaa ingest \
+      --subject "$EAA_SUBJECT_ID" \
+      --adapter axe-core \
+      --from axe.json \
+      --target https://example.com \
+      --fail-on-finding
+- run: npx legalithm eaa clock --subject "$EAA_SUBJECT_ID" --fail-on-lapsed
+```
+
+The second step is the one no other tool has. An Article 14 renewal lapses in
+silence: no build breaks and no scan fails, while the operator keeps relying on
+an exemption they no longer hold. `--fail-on-lapsed` turns that into a red
+pipeline on the day it happens.
+
+**Everything this writes is a hypothesis.** There is no flag that asserts
+conformance, because a conformance claim needs a named person and a clean scan
+means "these rules did not fire", not "the requirement is met".
+
+Exit codes: `0` fine · `1` gate tripped (findings, or a lapsed duty) ·
+`2` bad usage · `3` API unreachable or refused.
 
 ## Make it a mandatory step
 
 `legalithm setup` installs a Claude Code **`Stop` hook** that runs `legalithm guard`
 — the agent can't finish a turn while AI code lacks a compliance record — plus a
-non-blocking nudge after edits. Pair with the [GitHub Action](https://github.com/PedramMadani/legalithm)
+non-blocking nudge after edits. Pair with the [GitHub Action](https://github.com/legalithm-org/legalithm)
 as the CI backstop. `guard` is offline (no key, no network), only fires on a real AI
 signal, and warns rather than blocks when the classification is uncertain.
 
@@ -144,14 +206,19 @@ Article 50(2) requires providers to mark AI-generated content so it is detectabl
 artificial. `legalithm mark` embeds a verifiable [C2PA](https://c2pa.org) Content
 Credential declaring an image AI-generated, and flags unmarked assets in CI.
 
-Marking uses a native C2PA signer shipped as an **optionalDependency** (`c2pa-node`).
-A normal `npm install legalithm` (or install from a packed tarball) tries to resolve
-it; if the native build fails on your platform, marking degrades gracefully and you
-can install manually:
+Marking uses a native C2PA signer, `c2pa-node`, and the watermark layer uses `sharp`.
+Both are **optional peer dependencies**, so `npm install legalithm` installs neither
+and pulls in no transitive packages at all. Install them only if you mark content:
 
 ```bash
-npm i c2pa-node        # or `npm i -g c2pa-node`
+npm i c2pa-node sharp        # or add -g alongside a global legalithm
 ```
+
+They were `optionalDependencies` until 0.6.1. That reads as "optional", but npm
+installs optionalDependencies by default, and `c2pa-node` declares its own release
+tooling as runtime dependencies. Every install therefore pulled in **274 packages** for
+a feature most users never touch. Without them, `legalithm mark` and the robustness
+report stop with a message naming the package to install; nothing else is affected.
 
 ```bash
 # Sign one image → writes <name>.signed.<ext> (non-destructive; --out to override)

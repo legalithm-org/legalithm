@@ -19,8 +19,18 @@ import { readWatermark } from './watermark.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function loadSharp(): Promise<any> {
-  const mod = await import('sharp');
-  return (mod as { default?: unknown }).default ?? mod;
+  // Same contract as ./watermark.ts. `sharp` is an OPTIONAL PEER dependency, so
+  // on a default install it is genuinely absent rather than merely unbuilt, and
+  // an unguarded import surfaces ERR_MODULE_NOT_FOUND with a stack trace instead
+  // of telling the user the one thing they need to do.
+  try {
+    const mod = await import('sharp');
+    return (mod as { default?: unknown }).default ?? mod;
+  } catch {
+    throw new Error(
+      'The robustness report needs the optional dependency "sharp". Install it, e.g. `npm i sharp`.',
+    );
+  }
 }
 
 export interface TransformCase {

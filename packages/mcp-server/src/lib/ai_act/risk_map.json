@@ -392,6 +392,11 @@
       {
         "id": "chatbot",
         "title": "Chatbot Disclosure",
+        "regexes": [
+          "\\b(ai|a\\.i\\.|virtual|voice|digital|booking|support|customer|shopping)\\s+(agent|assistant|bot|concierge|receptionist)\\b",
+          "\\b(chat|chats|chatting|talk|talks|talking|speak|speaks|converse|conversing)\\b[^.;!?]{0,25}?\\b(with|to)\\b",
+          "\\b(answers|answering|replies to|replying to|responds to|responding to)\\b[^.;!?]{0,35}?\\b(question|questions|enquir|inquir|customer|customers|caller|callers|visitor|visitors|user|users|the phone)\\b"
+        ],
         "patterns": [
           "chatbot",
           "chat bot",
@@ -409,7 +414,17 @@
       },
       {
         "id": "deepfake",
-        "title": "Deepfake and Synthetic Content Disclosure",
+        "title": "Synthetic Content Marking and Deepfake Disclosure",
+        "regexes": [
+          "\\b(generat|creat|produc|writ|draft|compos|synthesi|render|authorin|author)\\w*\\b[^.;!?]{0,40}?\\b(image|images|picture|pictures|photo|photos|video|videos|audio|voice|speech|music|text|copy|content|article|articles|caption|captions|description|descriptions|post|posts|blog|newsletter|headline|headlines)\\b",
+          "\\b(turn|turns|turning|convert|converts|converting)\\b[^.;!?]{0,40}?\\binto\\b[^.;!?]{0,25}?\\b(image|images|video|videos|audio|speech|voice|text|copy)\\b",
+          "\\b(photorealistic|photo-realistic|hyper-?realistic|lifelike|life-like|synthetic|digital)\\s+(human|humans|person|people|model|models|face|faces|avatar|avatars|presenter|presenters|actor|actors)\\b",
+          "\\b(ai|virtual)\\s+(human|humans|avatar|avatars|presenter|presenters|influencer|influencers)\\b",
+          "\\b(read|reads|reading|narrat)\\w*\\b[^.;!?]{0,30}?\\b(aloud|natural voice|synthetic voice|audio|voice-over|voiceover)\\b",
+          "\\b(image|images|photo|photos|video|videos|audio|voice|speech|text|copy|content)\\b[^.;!?]{0,25}?\\bgenerat\\w*\\b",
+          "\\bsynthetic\\b[^.;!?]{0,20}?\\b(image|images|video|videos|audio|voice|speech|text|content|media)\\b",
+          "\\bai[- ]generated\\b"
+        ],
         "patterns": [
           "deepfake",
           "synthetic media",

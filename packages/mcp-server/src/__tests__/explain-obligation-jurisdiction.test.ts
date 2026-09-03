@@ -52,9 +52,7 @@ describe('the caller asked about Germany', () => {
   it('names the Bundesnetzagentur for an ordinary company', () => {
     const out = explainObligationTool('deployer', 'high', { country: 'DE' });
     expect(out.enforcement?.mapped).toBe(true);
-    const names = out.enforcement && 'competentAuthorities' in out.enforcement
-      ? out.enforcement.competentAuthorities.map((a) => a.shortName)
-      : [];
+    const names = out.enforcement?.competentAuthorities?.map((a) => a.shortName) ?? [];
     expect(names).toEqual(['BNetzA']);
   });
 
@@ -63,18 +61,14 @@ describe('the caller asked about Germany', () => {
       country: 'DE',
       sector: 'financial_services',
     });
-    const names = out.enforcement && 'competentAuthorities' in out.enforcement
-      ? out.enforcement.competentAuthorities.map((a) => a.shortName)
-      : [];
+    const names = out.enforcement?.competentAuthorities?.map((a) => a.shortName) ?? [];
     expect(names).toEqual(['BaFin']);
     expect(names).not.toContain('BNetzA');
   });
 
   it('sends a broadcaster to its Land, and not to the default authority', () => {
     const out = explainObligationTool('deployer', 'high', { country: 'DE', sector: 'media' });
-    const names = out.enforcement && 'competentAuthorities' in out.enforcement
-      ? out.enforcement.competentAuthorities.map((a) => a.shortName)
-      : [];
+    const names = out.enforcement?.competentAuthorities?.map((a) => a.shortName) ?? [];
     expect(names).toEqual(['Land']);
     expect(names).not.toContain('BNetzA');
   });
@@ -95,9 +89,10 @@ describe('the caller asked about Germany', () => {
 
   it('keeps KoKIVO out of the authorities and in support bodies', () => {
     const out = explainObligationTool('deployer', 'high', { country: 'DE' });
-    if (!out.enforcement || !('competentAuthorities' in out.enforcement)) throw new Error('no block');
-    expect(out.enforcement.competentAuthorities.map((a) => a.shortName)).not.toContain('KoKIVO');
-    expect(out.enforcement.supportBodies.map((a) => a.shortName)).toEqual(['KoKIVO']);
+    const { competentAuthorities, supportBodies } = out.enforcement ?? {};
+    if (!competentAuthorities || !supportBodies) throw new Error('no enforcement block');
+    expect(competentAuthorities.map((a) => a.shortName)).not.toContain('KoKIVO');
+    expect(supportBodies.map((a) => a.shortName)).toEqual(['KoKIVO']);
   });
 
   it('passes the quote and confidence through, so a caller can hedge', () => {
@@ -109,7 +104,7 @@ describe('the caller asked about Germany', () => {
       sector: 'financial_services',
     });
     const first = (o: typeof media) =>
-      o.enforcement && 'competentAuthorities' in o.enforcement
+      o.enforcement?.competentAuthorities
         ? o.enforcement.competentAuthorities[0]
         : undefined;
 

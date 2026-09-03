@@ -16,6 +16,23 @@ export function credentialsPath(home: string = homedir()): string {
 
 export function resolveApiKey(env: NodeJS.ProcessEnv = process.env, home: string = homedir()): string | undefined {
   if (env.LEGALITHM_API_KEY) return env.LEGALITHM_API_KEY;
+
+  /*
+   * A test run must never pick up the developer's real credentials.
+   *
+   * `project-scan.test.ts` asserted that `discover --push` fails without a key.
+   * It deleted LEGALITHM_API_KEY from the environment and stopped there, so on
+   * a machine where somebody had run `legalithm login` the fallback below
+   * returned a REAL key, the command authenticated, and the test pushed to
+   * production. Seven junk AI systems were created in the author's own account
+   * before anyone noticed, and the test failed only because the push succeeded.
+   *
+   * A test that needs a key sets LEGALITHM_API_KEY, which still works and is
+   * explicit. What cannot happen any more is a test silently borrowing the
+   * credentials of whoever is running it.
+   */
+  if (env.VITEST) return undefined;
+
   const path = credentialsPath(home);
   if (existsSync(path)) {
     try {

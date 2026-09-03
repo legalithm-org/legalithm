@@ -62,7 +62,12 @@ describe('mcp emitSurfaceActive', () => {
       metadata: {
         surface: 'mcp',
         command: 'classify',
+        // '/proj' is not a checkout, so the identity falls through to the cwd
+        // floor and the hash is unchanged from the pre-18-Aug behaviour. That
+        // equality IS the backwards-compatibility check: only callers actually
+        // inside a repository get a new identity.
         repoHash: repoHash('/proj'),
+        idBasis: 'cwd',
       },
     });
   });

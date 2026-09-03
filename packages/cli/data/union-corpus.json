@@ -1,0 +1,2498 @@
+{
+  "eu-cra": [
+    {
+      "ref": "Article 13(1)",
+      "title": "Article 13(1): Obligations of manufacturers",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 14(1)",
+      "title": "Article 14(1): Reporting obligations of manufacturers",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 14(2)",
+      "title": "Article 14(2): Reporting obligations of manufacturers",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 14(3)",
+      "title": "Article 14(3): Reporting obligations of manufacturers",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 14(4)",
+      "title": "Article 14(4): Reporting obligations of manufacturers",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 14(5)",
+      "title": "Article 14(5): Reporting obligations of manufacturers",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 14(6)",
+      "title": "Article 14(6): Reporting obligations of manufacturers",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 14(7)",
+      "title": "Article 14(7): Reporting obligations of manufacturers",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 14(8)",
+      "title": "Article 14(8): Reporting obligations of manufacturers",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 19(1)",
+      "title": "Article 19(1): Obligations of importers",
+      "evidenceType": "process",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 20(1)",
+      "title": "Article 20(1): Obligations of distributors",
+      "evidenceType": "process",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 24(1)",
+      "title": "Article 24(1): Obligations of open-source software stewards",
+      "evidenceType": "document",
+      "role": "open_source_steward"
+    },
+    {
+      "ref": "Article 27(1)",
+      "title": "Article 27(1): Presumption of conformity",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 28(1)",
+      "title": "Article 28(1): EU declaration of conformity",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 31(1)",
+      "title": "Article 31(1): Technical documentation",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 32(1)",
+      "title": "Article 32(1): Conformity assessment procedures for products with digital elements",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (1)",
+      "title": "Annex I Part I (1): Appropriate level of cybersecurity based on the risks",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(a)",
+      "title": "Annex I Part I (2)(a)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(b)",
+      "title": "Annex I Part I (2)(b)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(c)",
+      "title": "Annex I Part I (2)(c)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(d)",
+      "title": "Annex I Part I (2)(d)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(e)",
+      "title": "Annex I Part I (2)(e)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(f)",
+      "title": "Annex I Part I (2)(f)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(g)",
+      "title": "Annex I Part I (2)(g)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(h)",
+      "title": "Annex I Part I (2)(h)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(i)",
+      "title": "Annex I Part I (2)(i)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(j)",
+      "title": "Annex I Part I (2)(j)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(k)",
+      "title": "Annex I Part I (2)(k)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(l)",
+      "title": "Annex I Part I (2)(l)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part I (2)(m)",
+      "title": "Annex I Part I (2)(m)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part II (1)",
+      "title": "Annex I Part II (1)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part II (2)",
+      "title": "Annex I Part II (2)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part II (3)",
+      "title": "Annex I Part II (3)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part II (4)",
+      "title": "Annex I Part II (4)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part II (5)",
+      "title": "Annex I Part II (5)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part II (6)",
+      "title": "Annex I Part II (6)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part II (7)",
+      "title": "Annex I Part II (7)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Part II (8)",
+      "title": "Annex I Part II (8)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 32(2)",
+      "title": "Article 32(2): Conformity assessment for important products with digital elements, class I",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 32(3)",
+      "title": "Article 32(3): Conformity assessment for important products with digital elements, class II",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 32(4)",
+      "title": "Article 32(4): Conformity assessment for critical products with digital elements",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 32(5)",
+      "title": "Article 32(5): Conformity assessment for free and open-source software under Annex III",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part I (1)",
+      "title": "Annex VIII Part I (1)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part I (2)",
+      "title": "Annex VIII Part I (2)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part I (3)",
+      "title": "Annex VIII Part I (3)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part I (4)",
+      "title": "Annex VIII Part I (4)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part I (5)",
+      "title": "Annex VIII Part I (5)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part II (1)",
+      "title": "Annex VIII Part II (1)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part II (3)",
+      "title": "Annex VIII Part II (3)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part II (7)",
+      "title": "Annex VIII Part II (7)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part II (10)",
+      "title": "Annex VIII Part II (10)",
+      "evidenceType": "record",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part II (11)",
+      "title": "Annex VIII Part II (11)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part III (1)",
+      "title": "Annex VIII Part III (1)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part III (2)",
+      "title": "Annex VIII Part III (2)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part III (3)",
+      "title": "Annex VIII Part III (3)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part III (4)",
+      "title": "Annex VIII Part III (4)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part IV (1)",
+      "title": "Annex VIII Part IV (1)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part IV (2)",
+      "title": "Annex VIII Part IV (2)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part IV (3)",
+      "title": "Annex VIII Part IV (3)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part IV (4)",
+      "title": "Annex VIII Part IV (4)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part IV (5)",
+      "title": "Annex VIII Part IV (5)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part IV (6)",
+      "title": "Annex VIII Part IV (6)",
+      "evidenceType": "record",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VIII Part IV (8)",
+      "title": "Annex VIII Part IV (8)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VII",
+      "title": "Annex VII",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VII (1)",
+      "title": "Annex VII (1)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VII (2)",
+      "title": "Annex VII (2)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VII (3)",
+      "title": "Annex VII (3)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VII (4)",
+      "title": "Annex VII (4)",
+      "evidenceType": "record",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VII (5)",
+      "title": "Annex VII (5)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VII (6)",
+      "title": "Annex VII (6)",
+      "evidenceType": "record",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VII (7)",
+      "title": "Annex VII (7)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VII (8)",
+      "title": "Annex VII (8)",
+      "evidenceType": "record",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex V",
+      "title": "Annex V",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex V (1)",
+      "title": "Annex V (1)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex V (2)",
+      "title": "Annex V (2)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex V (3)",
+      "title": "Annex V (3)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex V (4)",
+      "title": "Annex V (4)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex V (5)",
+      "title": "Annex V (5)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex V (6)",
+      "title": "Annex V (6)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex V (7)",
+      "title": "Annex V (7)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex V (8)",
+      "title": "Annex V (8)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex II",
+      "title": "Annex II",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex II (1)",
+      "title": "Annex II (1)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex II (2)",
+      "title": "Annex II (2)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex II (3)",
+      "title": "Annex II (3)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex II (4)",
+      "title": "Annex II (4)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex II (5)",
+      "title": "Annex II (5)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex II (6)",
+      "title": "Annex II (6)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex II (7)",
+      "title": "Annex II (7)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex II (8)",
+      "title": "Annex II (8)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex II (9)",
+      "title": "Annex II (9)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex VI",
+      "title": "Annex VI",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 6",
+      "title": "Article 6: Requirements for products with digital elements",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 19(2)",
+      "title": "Article 19(2): Obligations of importers",
+      "evidenceType": "document",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 19(3)",
+      "title": "Article 19(3): Obligations of importers",
+      "evidenceType": "process",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 19(4)",
+      "title": "Article 19(4): Obligations of importers",
+      "evidenceType": "document",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 19(5)",
+      "title": "Article 19(5): Obligations of importers",
+      "evidenceType": "document",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 20(2)",
+      "title": "Article 20(2): Obligations of distributors",
+      "evidenceType": "document",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 20(3)",
+      "title": "Article 20(3): Obligations of distributors",
+      "evidenceType": "process",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 20(4)",
+      "title": "Article 20(4): Obligations of distributors",
+      "evidenceType": "process",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 20(5)",
+      "title": "Article 20(5): Obligations of distributors",
+      "evidenceType": "document",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 21",
+      "title": "Article 21: Cases in which obligations of manufacturers apply to importers and distributors",
+      "evidenceType": "record",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 21",
+      "title": "Article 21: Cases in which obligations of manufacturers apply to importers and distributors",
+      "evidenceType": "record",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 22(1)",
+      "title": "Article 22(1): Other cases in which obligations of manufacturers apply",
+      "evidenceType": "record",
+      "role": "substantial_modifier"
+    },
+    {
+      "ref": "Article 22(2)",
+      "title": "Article 22(2): Other cases in which obligations of manufacturers apply",
+      "evidenceType": "process",
+      "role": "substantial_modifier"
+    },
+    {
+      "ref": "Article 18(1)",
+      "title": "Article 18(1): Authorised representatives",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 18(2)",
+      "title": "Article 18(2): Authorised representatives",
+      "evidenceType": "document",
+      "role": "authorised_representative"
+    },
+    {
+      "ref": "Article 18(3)",
+      "title": "Article 18(3): Authorised representatives",
+      "evidenceType": "process",
+      "role": "authorised_representative"
+    },
+    {
+      "ref": "Article 23(1)",
+      "title": "Article 23(1): Identification of economic operators",
+      "evidenceType": "record",
+      "role": null
+    },
+    {
+      "ref": "Article 23(2)",
+      "title": "Article 23(2): Identification of economic operators",
+      "evidenceType": "record",
+      "role": null
+    },
+    {
+      "ref": "Article 30(1)",
+      "title": "Article 30(1): Rules and conditions for affixing the CE marking",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 30(2)",
+      "title": "Article 30(2): Rules and conditions for affixing the CE marking",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 30(3)",
+      "title": "Article 30(3): Rules and conditions for affixing the CE marking",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 30(4)",
+      "title": "Article 30(4): Rules and conditions for affixing the CE marking",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    }
+  ],
+  "eu-eaa": [
+    {
+      "ref": "Article 13(1)",
+      "title": "Article 13(1): Design and provide services in conformity",
+      "evidenceType": "process",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Article 13(2)",
+      "title": "Article 13(2): Prepare and publish the Annex V accessibility information",
+      "evidenceType": "document",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Article 13(3)",
+      "title": "Article 13(3): Keep procedures so conformity survives change",
+      "evidenceType": "process",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Article 13(4)",
+      "title": "Article 13(4): Correct non-conformity and notify the authority",
+      "evidenceType": "process",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Article 13(5)",
+      "title": "Article 13(5): Answer a reasoned request and cooperate",
+      "evidenceType": "record",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex V (1)",
+      "title": "Annex V (1): Assessment information in the terms and conditions",
+      "evidenceType": "document",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex V (1)(a)",
+      "title": "Annex V (1)(a): General description of the service in accessible formats",
+      "evidenceType": "document",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex V (1)(b)",
+      "title": "Annex V (1)(b): Explanations needed to understand the operation of the service",
+      "evidenceType": "document",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex V (1)(c)",
+      "title": "Annex V (1)(c): How the Annex I requirements are met",
+      "evidenceType": "document",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex V (2)",
+      "title": "Annex V (2): Harmonised standards may be applied, in full or in part",
+      "evidenceType": "document",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex V (3)",
+      "title": "Annex V (3): Evidence that delivery and monitoring ensure compliance",
+      "evidenceType": "record",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section III",
+      "title": "Annex I Section III: General accessibility requirements for services",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section III (a)",
+      "title": "Annex I Section III (a)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section III (b)",
+      "title": "Annex I Section III (b)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section III (b)(i)",
+      "title": "Annex I Section III (b)(i)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section III (b)(ii)",
+      "title": "Annex I Section III (b)(ii)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section III (b)(iii)",
+      "title": "Annex I Section III (b)(iii)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section III (b)(iv)",
+      "title": "Annex I Section III (b)(iv)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section III (b)(v)",
+      "title": "Annex I Section III (b)(v)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section III (b)(vi)",
+      "title": "Annex I Section III (b)(vi)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section III (b)(vii)",
+      "title": "Annex I Section III (b)(vii)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section III (c)",
+      "title": "Annex I Section III (c)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section III (d)",
+      "title": "Annex I Section III (d)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV",
+      "title": "Annex I Section IV: Additional accessibility requirements for specific services",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (a)",
+      "title": "Annex I Section IV (a)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (a)(i)",
+      "title": "Annex I Section IV (a)(i)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (a)(ii)",
+      "title": "Annex I Section IV (a)(ii)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (a)(iii)",
+      "title": "Annex I Section IV (a)(iii)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (b)",
+      "title": "Annex I Section IV (b)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (b)(i)",
+      "title": "Annex I Section IV (b)(i)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (b)(ii)",
+      "title": "Annex I Section IV (b)(ii)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (c)",
+      "title": "Annex I Section IV (c)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (c)(i)",
+      "title": "Annex I Section IV (c)(i)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (c)(ii)",
+      "title": "Annex I Section IV (c)(ii)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (d)",
+      "title": "Annex I Section IV (d)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (e)",
+      "title": "Annex I Section IV (e)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (e)(i)",
+      "title": "Annex I Section IV (e)(i)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (e)(ii)",
+      "title": "Annex I Section IV (e)(ii)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (f)",
+      "title": "Annex I Section IV (f)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (f)(i)",
+      "title": "Annex I Section IV (f)(i)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (f)(ii)",
+      "title": "Annex I Section IV (f)(ii)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (f)(iii)",
+      "title": "Annex I Section IV (f)(iii)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (f)(iv)",
+      "title": "Annex I Section IV (f)(iv)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (f)(v)",
+      "title": "Annex I Section IV (f)(v)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (f)(vi)",
+      "title": "Annex I Section IV (f)(vi)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (g)",
+      "title": "Annex I Section IV (g)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (g)(i)",
+      "title": "Annex I Section IV (g)(i)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (g)(ii)",
+      "title": "Annex I Section IV (g)(ii)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex I Section IV (g)(iii)",
+      "title": "Annex I Section IV (g)(iii)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Article 14(1)",
+      "title": "Article 14(1): Requirements apply only so far as they do not fundamentally alter or overburden",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 14(1)(a)",
+      "title": "Article 14(1)(a): Fundamental alteration limb",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 14(1)(b)",
+      "title": "Article 14(1)(b): Disproportionate burden limb",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 14(2)",
+      "title": "Article 14(2): Carry out the assessment against Annex VI",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 14(3)",
+      "title": "Article 14(3): Document the assessment and keep it five years",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Article 14(4)",
+      "title": "Article 14(4): Microenterprises dealing with products need not document",
+      "evidenceType": "record",
+      "role": null
+    },
+    {
+      "ref": "Article 14(5)",
+      "title": "Article 14(5): Service providers renew the assessment",
+      "evidenceType": "process",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Article 14(5)(a)",
+      "title": "Article 14(5)(a): Renewal trigger: the service is altered",
+      "evidenceType": "process",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Article 14(5)(b)",
+      "title": "Article 14(5)(b): Renewal trigger: the authority asks",
+      "evidenceType": "process",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Article 14(5)(c)",
+      "title": "Article 14(5)(c): Renewal trigger: at least every five years",
+      "evidenceType": "process",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Article 14(6)",
+      "title": "Article 14(6): External funding forfeits the disproportionate burden defence",
+      "evidenceType": "record",
+      "role": null
+    },
+    {
+      "ref": "Article 14(7)",
+      "title": "Article 14(7): Commission empowered to specify the Annex VI criteria",
+      "evidenceType": "record",
+      "role": null
+    },
+    {
+      "ref": "Article 14(8)",
+      "title": "Article 14(8): Notify the authority when relying on the exemption",
+      "evidenceType": "record",
+      "role": null
+    },
+    {
+      "ref": "Article 2(1)",
+      "title": "Article 2(1): Scope: the products covered",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(1)(a)",
+      "title": "Article 2(1)(a)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(1)(b)",
+      "title": "Article 2(1)(b)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(1)(c)",
+      "title": "Article 2(1)(c)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(1)(d)",
+      "title": "Article 2(1)(d)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(1)(e)",
+      "title": "Article 2(1)(e)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(2)",
+      "title": "Article 2(2): Scope: the services covered",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(2)(a)",
+      "title": "Article 2(2)(a)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(2)(b)",
+      "title": "Article 2(2)(b)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(2)(c)",
+      "title": "Article 2(2)(c)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(2)(d)",
+      "title": "Article 2(2)(d)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(2)(e)",
+      "title": "Article 2(2)(e)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(2)(f)",
+      "title": "Article 2(2)(f)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(3)",
+      "title": "Article 2(3): Scope: answering emergency communications to 112",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(4)",
+      "title": "Article 2(4): Scope: content excluded from websites and mobile applications",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(4)(a)",
+      "title": "Article 2(4)(a)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(4)(b)",
+      "title": "Article 2(4)(b)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(4)(c)",
+      "title": "Article 2(4)(c)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(4)(d)",
+      "title": "Article 2(4)(d)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(4)(e)",
+      "title": "Article 2(4)(e)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 2(5)",
+      "title": "Article 2(5): Scope: without prejudice to the Marrakesh acts",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 32(1)",
+      "title": "Article 32(1): Transitional measures: services may keep using products already in lawful use",
+      "evidenceType": "record",
+      "role": null
+    },
+    {
+      "ref": "Article 32(2)",
+      "title": "Article 32(2): Transitional measures: self-service terminals may run to the end of their economic life",
+      "evidenceType": "record",
+      "role": null
+    },
+    {
+      "ref": "Article 15(1)",
+      "title": "Article 15(1): Presumption of conformity from harmonised standards",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Article 15(2)",
+      "title": "Article 15(2): The Commission requests harmonised standards for products",
+      "evidenceType": "process",
+      "role": "commission"
+    },
+    {
+      "ref": "Article 15(3)",
+      "title": "Article 15(3): The Commission may adopt technical specifications instead",
+      "evidenceType": "process",
+      "role": "commission"
+    },
+    {
+      "ref": "Article 15(4)",
+      "title": "Article 15(4): Presumption of conformity from technical specifications",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI",
+      "title": "Annex VI: Criteria for assessment of disproportionate burden",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (1)",
+      "title": "Annex VI (1)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (1)(a)",
+      "title": "Annex VI (1)(a)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (1)(a)(i)",
+      "title": "Annex VI (1)(a)(i)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (1)(a)(ii)",
+      "title": "Annex VI (1)(a)(ii)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (1)(a)(iii)",
+      "title": "Annex VI (1)(a)(iii)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (1)(a)(iv)",
+      "title": "Annex VI (1)(a)(iv)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (1)(a)(v)",
+      "title": "Annex VI (1)(a)(v)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (1)(b)",
+      "title": "Annex VI (1)(b)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (1)(b)(i)",
+      "title": "Annex VI (1)(b)(i)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (1)(b)(ii)",
+      "title": "Annex VI (1)(b)(ii)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (1)(b)(iii)",
+      "title": "Annex VI (1)(b)(iii)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (1)(b)(iv)",
+      "title": "Annex VI (1)(b)(iv)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (2)",
+      "title": "Annex VI (2)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (3)",
+      "title": "Annex VI (3)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (3)(a)",
+      "title": "Annex VI (3)(a)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (3)(a)(i)",
+      "title": "Annex VI (3)(a)(i)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (3)(a)(ii)",
+      "title": "Annex VI (3)(a)(ii)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (3)(a)(iii)",
+      "title": "Annex VI (3)(a)(iii)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (3)(a)(iv)",
+      "title": "Annex VI (3)(a)(iv)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (3)(a)(v)",
+      "title": "Annex VI (3)(a)(v)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (3)(b)",
+      "title": "Annex VI (3)(b)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (3)(b)(i)",
+      "title": "Annex VI (3)(b)(i)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (3)(b)(ii)",
+      "title": "Annex VI (3)(b)(ii)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (3)(b)(iii)",
+      "title": "Annex VI (3)(b)(iii)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex VI (3)(b)(iv)",
+      "title": "Annex VI (3)(b)(iv)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Article 7(1)",
+      "title": "Article 7(1): Obligations of manufacturers",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 7(2)",
+      "title": "Article 7(2)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 7(3)",
+      "title": "Article 7(3)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 7(4)",
+      "title": "Article 7(4)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 7(5)",
+      "title": "Article 7(5)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 7(6)",
+      "title": "Article 7(6)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 7(7)",
+      "title": "Article 7(7)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 7(8)",
+      "title": "Article 7(8)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 7(9)",
+      "title": "Article 7(9)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 8(1)",
+      "title": "Article 8(1): Authorised representatives",
+      "evidenceType": "document",
+      "role": "authorised_representative"
+    },
+    {
+      "ref": "Article 8(2)",
+      "title": "Article 8(2)",
+      "evidenceType": "process",
+      "role": "authorised_representative"
+    },
+    {
+      "ref": "Article 8(2)(a)",
+      "title": "Article 8(2)(a)",
+      "evidenceType": "document",
+      "role": "authorised_representative"
+    },
+    {
+      "ref": "Article 8(2)(b)",
+      "title": "Article 8(2)(b)",
+      "evidenceType": "process",
+      "role": "authorised_representative"
+    },
+    {
+      "ref": "Article 8(2)(c)",
+      "title": "Article 8(2)(c)",
+      "evidenceType": "process",
+      "role": "authorised_representative"
+    },
+    {
+      "ref": "Article 9(1)",
+      "title": "Article 9(1): Obligations of importers",
+      "evidenceType": "process",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 9(2)",
+      "title": "Article 9(2)",
+      "evidenceType": "document",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 9(3)",
+      "title": "Article 9(3)",
+      "evidenceType": "process",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 9(4)",
+      "title": "Article 9(4)",
+      "evidenceType": "process",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 9(5)",
+      "title": "Article 9(5)",
+      "evidenceType": "process",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 9(6)",
+      "title": "Article 9(6)",
+      "evidenceType": "process",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 9(7)",
+      "title": "Article 9(7)",
+      "evidenceType": "document",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 9(8)",
+      "title": "Article 9(8)",
+      "evidenceType": "document",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 9(9)",
+      "title": "Article 9(9)",
+      "evidenceType": "process",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 10(1)",
+      "title": "Article 10(1): Obligations of distributors",
+      "evidenceType": "process",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 10(2)",
+      "title": "Article 10(2)",
+      "evidenceType": "process",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 10(3)",
+      "title": "Article 10(3)",
+      "evidenceType": "process",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 10(4)",
+      "title": "Article 10(4)",
+      "evidenceType": "process",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 10(5)",
+      "title": "Article 10(5)",
+      "evidenceType": "process",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 10(6)",
+      "title": "Article 10(6)",
+      "evidenceType": "process",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 11",
+      "title": "Article 11: Manufacturer obligations extended to importers and distributors",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 12(1)",
+      "title": "Article 12(1): Identification of economic operators",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 12(1)(a)",
+      "title": "Article 12(1)(a)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 12(1)(b)",
+      "title": "Article 12(1)(b)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 12(2)",
+      "title": "Article 12(2)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Article 12(3)",
+      "title": "Article 12(3)",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 16(1)",
+      "title": "Article 16(1): EU declaration of conformity",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 16(2)",
+      "title": "Article 16(2)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 16(3)",
+      "title": "Article 16(3)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 16(4)",
+      "title": "Article 16(4)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 17",
+      "title": "Article 17: General principles of the CE marking",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 18(1)",
+      "title": "Article 18(1): Rules and conditions for affixing the CE marking",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 18(2)",
+      "title": "Article 18(2)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Article 18(3)",
+      "title": "Article 18(3)",
+      "evidenceType": "process",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I",
+      "title": "Annex I Section I: General accessibility requirements for all products",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)",
+      "title": "Annex I Section I (1)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(a)",
+      "title": "Annex I Section I (1)(a)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(a)(i)",
+      "title": "Annex I Section I (1)(a)(i)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(a)(ii)",
+      "title": "Annex I Section I (1)(a)(ii)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(a)(iii)",
+      "title": "Annex I Section I (1)(a)(iii)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(a)(iv)",
+      "title": "Annex I Section I (1)(a)(iv)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(b)",
+      "title": "Annex I Section I (1)(b)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(b)(i)",
+      "title": "Annex I Section I (1)(b)(i)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(b)(ii)",
+      "title": "Annex I Section I (1)(b)(ii)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(b)(iii)",
+      "title": "Annex I Section I (1)(b)(iii)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(b)(iv)",
+      "title": "Annex I Section I (1)(b)(iv)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(b)(v)",
+      "title": "Annex I Section I (1)(b)(v)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(b)(vi)",
+      "title": "Annex I Section I (1)(b)(vi)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(b)(vii)",
+      "title": "Annex I Section I (1)(b)(vii)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(b)(viii)",
+      "title": "Annex I Section I (1)(b)(viii)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (1)(b)(ix)",
+      "title": "Annex I Section I (1)(b)(ix)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)",
+      "title": "Annex I Section I (2)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(a)",
+      "title": "Annex I Section I (2)(a)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(b)",
+      "title": "Annex I Section I (2)(b)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(c)",
+      "title": "Annex I Section I (2)(c)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(d)",
+      "title": "Annex I Section I (2)(d)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(e)",
+      "title": "Annex I Section I (2)(e)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(f)",
+      "title": "Annex I Section I (2)(f)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(g)",
+      "title": "Annex I Section I (2)(g)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(h)",
+      "title": "Annex I Section I (2)(h)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(h)(i)",
+      "title": "Annex I Section I (2)(h)(i)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(j)",
+      "title": "Annex I Section I (2)(j)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(k)",
+      "title": "Annex I Section I (2)(k)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(l)",
+      "title": "Annex I Section I (2)(l)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(m)",
+      "title": "Annex I Section I (2)(m)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(n)",
+      "title": "Annex I Section I (2)(n)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(o)",
+      "title": "Annex I Section I (2)(o)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(o)(i)",
+      "title": "Annex I Section I (2)(o)(i)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(o)(ii)",
+      "title": "Annex I Section I (2)(o)(ii)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(o)(iii)",
+      "title": "Annex I Section I (2)(o)(iii)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (2)(o)(iv)",
+      "title": "Annex I Section I (2)(o)(iv)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section I (3)",
+      "title": "Annex I Section I (3)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section II",
+      "title": "Annex I Section II: Packaging and instructions, products other than self-service terminals",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section II (a)",
+      "title": "Annex I Section II (a)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section II (b)",
+      "title": "Annex I Section II (b)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section II (b)(i)",
+      "title": "Annex I Section II (b)(i)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section II (b)(ii)",
+      "title": "Annex I Section II (b)(ii)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section II (b)(iii)",
+      "title": "Annex I Section II (b)(iii)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section II (b)(iv)",
+      "title": "Annex I Section II (b)(iv)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section II (b)(v)",
+      "title": "Annex I Section II (b)(v)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section II (b)(vi)",
+      "title": "Annex I Section II (b)(vi)",
+      "evidenceType": "control",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex IV (1)",
+      "title": "Annex IV (1): Internal production control",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex IV (2)",
+      "title": "Annex IV (2): Technical documentation",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex IV (2)(a)",
+      "title": "Annex IV (2)(a)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex IV (2)(b)",
+      "title": "Annex IV (2)(b)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex IV (3)",
+      "title": "Annex IV (3): Manufacturing",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex IV (4)",
+      "title": "Annex IV (4): CE marking and EU declaration of conformity",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex IV (4.1)",
+      "title": "Annex IV (4.1)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex IV (4.2)",
+      "title": "Annex IV (4.2)",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex IV (5)",
+      "title": "Annex IV (5): Authorised representative",
+      "evidenceType": "document",
+      "role": "manufacturer"
+    },
+    {
+      "ref": "Annex I Section VII",
+      "title": "Annex I Section VII: Functional performance criteria",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VII (a)",
+      "title": "Annex I Section VII (a): Usage without vision",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VII (b)",
+      "title": "Annex I Section VII (b): Usage with limited vision",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VII (c)",
+      "title": "Annex I Section VII (c): Usage without perception of colour",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VII (d)",
+      "title": "Annex I Section VII (d): Usage without hearing",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VII (e)",
+      "title": "Annex I Section VII (e): Usage with limited hearing",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VII (f)",
+      "title": "Annex I Section VII (f): Usage without vocal capability",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VII (g)",
+      "title": "Annex I Section VII (g): Usage with limited manipulation or strength",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VII (h)",
+      "title": "Annex I Section VII (h): Usage with limited reach",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VII (i)",
+      "title": "Annex I Section VII (i): Minimising the risk of triggering photosensitive seizures",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VII (j)",
+      "title": "Annex I Section VII (j): Usage with limited cognition",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VII (k)",
+      "title": "Annex I Section VII (k): Privacy",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Article 4(1)",
+      "title": "Article 4(1): Only compliant products and services may be placed or provided",
+      "evidenceType": "process",
+      "role": null
+    },
+    {
+      "ref": "Article 4(2)",
+      "title": "Article 4(2): Products comply with Annex I Sections I and II",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Article 4(3)",
+      "title": "Article 4(3): Services comply with Annex I Sections III and IV",
+      "evidenceType": "control",
+      "role": null
+    },
+    {
+      "ref": "Article 4(4)",
+      "title": "Article 4(4): Member States may extend to the built environment",
+      "evidenceType": "process",
+      "role": "member_state"
+    },
+    {
+      "ref": "Article 4(5)",
+      "title": "Article 4(5): Microenterprises providing services are exempt",
+      "evidenceType": "record",
+      "role": null
+    },
+    {
+      "ref": "Article 4(6)",
+      "title": "Article 4(6): Member States provide guidelines and tools to microenterprises",
+      "evidenceType": "process",
+      "role": "member_state"
+    },
+    {
+      "ref": "Article 4(7)",
+      "title": "Article 4(7): Member States may point operators at the Annex II examples",
+      "evidenceType": "process",
+      "role": "member_state"
+    },
+    {
+      "ref": "Article 4(8)",
+      "title": "Article 4(8): Member States ensure 112 answering meets Annex I Section V",
+      "evidenceType": "process",
+      "role": "member_state"
+    },
+    {
+      "ref": "Article 4(9)",
+      "title": "Article 4(9): Commission may supplement Annex I by delegated act",
+      "evidenceType": "record",
+      "role": "commission"
+    },
+    {
+      "ref": "Annex I Section V",
+      "title": "Annex I Section V: Accessibility of 112 emergency answering",
+      "evidenceType": "process",
+      "role": "member_state"
+    },
+    {
+      "ref": "Annex I Section V (2)",
+      "title": "Annex I Section V (2)",
+      "evidenceType": "process",
+      "role": "member_state"
+    },
+    {
+      "ref": "Annex I Section VI",
+      "title": "Annex I Section VI: Requirements for the Article 24(2) presumption",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VI (1)",
+      "title": "Annex I Section VI (1)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VI (1)(a)",
+      "title": "Annex I Section VI (1)(a)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VI (1)(b)",
+      "title": "Annex I Section VI (1)(b)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VI (1)(c)",
+      "title": "Annex I Section VI (1)(c)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex I Section VI (2)",
+      "title": "Annex I Section VI (2)",
+      "evidenceType": "document",
+      "role": null
+    },
+    {
+      "ref": "Annex III",
+      "title": "Annex III: Accessibility of the built environment where a service is provided",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex III (a)",
+      "title": "Annex III (a)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex III (b)",
+      "title": "Annex III (b)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex III (c)",
+      "title": "Annex III (c)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex III (d)",
+      "title": "Annex III (d)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex III (e)",
+      "title": "Annex III (e)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex III (f)",
+      "title": "Annex III (f)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex III (g)",
+      "title": "Annex III (g)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex III (h)",
+      "title": "Annex III (h)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex III (i)",
+      "title": "Annex III (i)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex III (j)",
+      "title": "Annex III (j)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex III (k)",
+      "title": "Annex III (k)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    },
+    {
+      "ref": "Annex III (l)",
+      "title": "Annex III (l)",
+      "evidenceType": "control",
+      "role": "service_provider"
+    }
+  ],
+  "eu-ai-act": [
+    {
+      "ref": "Article 9",
+      "title": "Risk Management System",
+      "evidenceType": "document",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 10",
+      "title": "Data Governance and Quality Management",
+      "evidenceType": "process",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 11",
+      "title": "Technical Documentation",
+      "evidenceType": "document",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 12",
+      "title": "Record-Keeping",
+      "evidenceType": "record",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 13",
+      "title": "Transparency and Provision of Information to Deployers",
+      "evidenceType": "document",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 14",
+      "title": "Human Oversight",
+      "evidenceType": "control",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 15",
+      "title": "Accuracy, Robustness and Cybersecurity",
+      "evidenceType": "control",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 17",
+      "title": "Quality Management System",
+      "evidenceType": "process",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 43",
+      "title": "Article 43: Conformity Assessment for High-Risk AI Systems",
+      "evidenceType": "document",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 72",
+      "title": "Post-Market Monitoring by Providers",
+      "evidenceType": "process",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 49",
+      "title": "EU Database Registration",
+      "evidenceType": "record",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 14",
+      "title": "Human Oversight",
+      "evidenceType": "process",
+      "role": "deployer"
+    },
+    {
+      "ref": "Article 26",
+      "title": "Data Quality and Governance",
+      "evidenceType": "process",
+      "role": "deployer"
+    },
+    {
+      "ref": "Article 27",
+      "title": "Fundamental Rights Impact Assessment",
+      "evidenceType": "document",
+      "role": "deployer"
+    },
+    {
+      "ref": "Article 26(11)",
+      "title": "Provide Information to Affected Persons",
+      "evidenceType": "document",
+      "role": "deployer"
+    },
+    {
+      "ref": "Article 50",
+      "title": "Chatbot Disclosure",
+      "evidenceType": "control",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 50",
+      "title": "Machine-Readable Marking of Synthetic Content",
+      "evidenceType": "control",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 50",
+      "title": "Marking Duty for Systems Already on the Market",
+      "evidenceType": "control",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 50",
+      "title": "Deepfake Disclosure",
+      "evidenceType": "control",
+      "role": "deployer"
+    },
+    {
+      "ref": "Article 50",
+      "title": "Emotion Recognition Disclosure",
+      "evidenceType": "control",
+      "role": "deployer"
+    },
+    {
+      "ref": "Article 50",
+      "title": "General Transparency Obligations",
+      "evidenceType": "control",
+      "role": "deployer"
+    },
+    {
+      "ref": "Article 16",
+      "title": "Article 16: Obligations of Providers of High-Risk AI Systems",
+      "evidenceType": "document",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 18",
+      "title": "Article 18: Documentation Keeping",
+      "evidenceType": "record",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 19",
+      "title": "Article 19: Automatically Generated Logs",
+      "evidenceType": "record",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 20",
+      "title": "Article 20: Corrective Actions and Duty of Information",
+      "evidenceType": "process",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 21",
+      "title": "Article 21: Cooperation with Competent Authorities",
+      "evidenceType": "process",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 22",
+      "title": "Article 22: Authorised Representatives of Providers of High-Risk AI Systems",
+      "evidenceType": "document",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 23",
+      "title": "Article 23: Obligations of Importers",
+      "evidenceType": "process",
+      "role": "importer"
+    },
+    {
+      "ref": "Article 24",
+      "title": "Article 24: Obligations of Distributors",
+      "evidenceType": "process",
+      "role": "distributor"
+    },
+    {
+      "ref": "Article 25",
+      "title": "Article 25: Responsibilities Along the AI Value Chain",
+      "evidenceType": "document",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 47",
+      "title": "Article 47: EU Declaration of Conformity",
+      "evidenceType": "document",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 48",
+      "title": "Article 48: CE Marking for High-Risk AI Systems",
+      "evidenceType": "control",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 53",
+      "title": "Article 53: Obligations for Providers of General-Purpose AI Models",
+      "evidenceType": "document",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 55",
+      "title": "Article 55: Obligations for Providers of GPAI Models with Systemic Risk",
+      "evidenceType": "process",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 73",
+      "title": "Article 73: Reporting of Serious Incidents",
+      "evidenceType": "process",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 85",
+      "title": "Article 85: Right to Lodge a Complaint with a Market Surveillance Authority",
+      "evidenceType": "process",
+      "role": "deployer"
+    },
+    {
+      "ref": "Article 4",
+      "title": "Article 4: AI literacy",
+      "evidenceType": "process",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 4",
+      "title": "Article 4: AI literacy",
+      "evidenceType": "process",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 4",
+      "title": "Article 4: AI literacy",
+      "evidenceType": "process",
+      "role": "deployer"
+    },
+    {
+      "ref": "Article 4",
+      "title": "Article 4: AI literacy",
+      "evidenceType": "process",
+      "role": "deployer"
+    },
+    {
+      "ref": "Article 5",
+      "title": "Article 5: Prohibited AI practices",
+      "evidenceType": "process",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 5",
+      "title": "Article 5: Prohibited AI practices",
+      "evidenceType": "process",
+      "role": "deployer"
+    },
+    {
+      "ref": "Article 8",
+      "title": "Article 8: Compliance with the requirements",
+      "evidenceType": "document",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 54",
+      "title": "Article 54: Authorised representatives of providers of general-purpose AI models",
+      "evidenceType": "document",
+      "role": "provider"
+    },
+    {
+      "ref": "Article 86",
+      "title": "Article 86: Right to explanation of individual decision-making",
+      "evidenceType": "process",
+      "role": "deployer"
+    }
+  ]
+}

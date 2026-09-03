@@ -1,0 +1,211 @@
+import {
+  ALL_RULES,
+  CALL_SITE_MARKERS,
+  INTERACTION_PATH_RE,
+  TOKEN_RULES,
+  isTextScanned,
+  ruleMatches,
+  type Confidence,
+} from './catalogue';
+import {
+  emptyFeature,
+  mapFeature,
+  type Capability,
+  type FeatureResult,
+} from '../ai_act/scope-map';
+
+/**
+ * The discovery engine, shared by every entry point.
+ *
+ * PURE AND ISOMORPHIC. It takes file CONTENT, never a path to read, so the same
+ * function serves the CLI (which has a filesystem), an HTTP route (which has a
+ * request body), an MCP tool (whose agent reads the files), and a web form
+ * (where somebody pastes a package.json). `packages/cli/src/detect.ts` is
+ * filesystem-bound, which is exactly why discovery has had one entry point.
+ *
+ * IT PRODUCES HYPOTHESES, NOT CLAIMS. Every finding says what it saw and where,
+ * and stops. docs/EVIDENCE-SUBSTRATE.md draws that boundary as a hard type
+ * rule, and a scanner sits on the machine side of it.
+ */
+
+export interface Evidence {
+  file: string;
+  /** 1-indexed, when the evidence is a line rather than a whole file. */
+  line?: number;
+  /** The matched text, trimmed. Lets a reader judge the finding without the repo. */
+  excerpt: string;
+}
+
+export interface CapabilityHypothesis {
+  capability: Capability;
+  confidence: Confidence;
+  because: string;
+  evidence: Evidence[];
+}
+
+export interface ScanInput {
+  /** path → content. Manifests, lockfiles and source all welcome; none required. */
+  files: Record<string, string>;
+  /** Article 3(3): is this placed on the market under your own name or trademark? */
+  ownBrand?: boolean;
+  /** Article 111(4): was it on the market before 2 August 2026? */
+  onMarketBefore2Aug2026?: boolean;
+  /** Whether you also run it yourself, for the deployer-side limbs. */
+  deploys?: boolean;
+}
+
+export interface ScanResult {
+  hypotheses: CapabilityHypothesis[];
+  /** The scope map for the union of hypothesised capabilities, or null if none. */
+  scope: FeatureResult | null;
+  filesScanned: number;
+  /** Always true. Present so a consumer cannot forget. */
+  requiresHumanConfirmation: true;
+}
+
+const MANIFEST_RE = /(^|\/)package\.json$/;
+const SOURCE_RE = /\.(ts|tsx|js|jsx|mjs|cjs|py|go|rb|php|java|cs)$/i;
+
+/**
+ * Tests, fixtures and examples are not what a product ships.
+ *
+ * Found by running the converged CLI against this very repository: a file named
+ * __tests__/ai-act/chatbot-disclosure.test.ts tripped the interaction heuristic.
+ * The finding was honest — it said `possible` and named the file — but a scanner
+ * that reports its own test suite as a compliance surface trains people to skim
+ * past its output, which is the failure mode that makes a scanner worthless.
+ */
+const NOT_SHIPPED_RE = /(^|\/)(__tests__|__mocks__|__fixtures__|test|tests|spec|e2e|examples?|fixtures?|stories)(\/|$)|\.(test|spec|stories)\.[a-z]+$/i;
+
+/** Dependency names from a package.json, across every dependency field. */
+function dependenciesOf(content: string): string[] {
+  try {
+    const pkg = JSON.parse(content) as Record<string, unknown>;
+    const fields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies'];
+    return fields.flatMap((f) => Object.keys((pkg[f] as Record<string, string>) ?? {}));
+  } catch {
+    return []; // A malformed manifest is not a finding.
+  }
+}
+
+function addEvidence(
+  into: Map<Capability, CapabilityHypothesis>,
+  capability: Capability,
+  confidence: Confidence,
+  because: string,
+  evidence: Evidence,
+) {
+  const existing = into.get(capability);
+  if (!existing) {
+    into.set(capability, { capability, confidence, because, evidence: [evidence] });
+    return;
+  }
+  existing.evidence.push(evidence);
+  // Confidence only ever rises, and only a call site can raise it.
+  if (confidence === 'likely' && existing.confidence === 'possible') {
+    existing.confidence = 'likely';
+    existing.because = because;
+  }
+}
+
+export function scan(input: ScanInput): ScanResult {
+  const found = new Map<Capability, CapabilityHypothesis>();
+  const entries = Object.entries(input.files);
+
+  for (const [path, content] of entries) {
+    // ── manifests: a capability is POSSIBLE ──
+    if (MANIFEST_RE.test(path)) {
+      const deps = dependenciesOf(content);
+      for (const rule of ALL_RULES) {
+        const hits = deps.filter((d) => ruleMatches(rule, d));
+        for (const hit of hits) {
+          for (const capability of rule.capabilities) {
+            addEvidence(found, capability, 'possible', rule.because, {
+              file: path,
+              excerpt: hit,
+            });
+          }
+        }
+      }
+    }
+
+    // ── other ecosystems and CI files: raw-text tokens, still POSSIBLE ──
+    // A token in a requirements.txt or a workflow says a provider is referenced
+    // somewhere in the build. It says nothing about which modality ships, so it
+    // can never do better than `possible`.
+    if (isTextScanned(path)) {
+      const haystack = content.toLowerCase();
+      for (const rule of TOKEN_RULES) {
+        for (const token of rule.tokens) {
+          if (!haystack.includes(token)) continue;
+          const idx = haystack.indexOf(token);
+          const line = content.slice(0, idx).split('\n').length;
+          for (const capability of rule.capabilities) {
+            addEvidence(found, capability, 'possible', rule.because, {
+              file: path,
+              line,
+              excerpt: token,
+            });
+          }
+        }
+      }
+    }
+
+    // ── source: a call site raises it to LIKELY ──
+    if (SOURCE_RE.test(path) && !NOT_SHIPPED_RE.test(path)) {
+      const lines = content.split('\n');
+      for (const marker of CALL_SITE_MARKERS) {
+        const needle = marker.marker.toLowerCase();
+        lines.forEach((text, i) => {
+          if (!text.toLowerCase().includes(needle)) return;
+          addEvidence(found, marker.capability, 'likely', `Source contains ${marker.because}.`, {
+            file: path,
+            line: i + 1,
+            excerpt: text.trim().slice(0, 160),
+          });
+        });
+      }
+
+      // Interaction stays POSSIBLE however strong the hint: a path name cannot
+      // establish that a natural person is on the other end, and Article 50(1)
+      // turns on exactly that.
+      if (INTERACTION_PATH_RE.test(path)) {
+        addEvidence(
+          found,
+          'interaction',
+          'possible',
+          'A route or component named for a conversational surface. Whether a natural person interacts with it is a judgement this scan cannot make.',
+          { file: path, excerpt: path },
+        );
+      }
+    }
+  }
+
+  const hypotheses = [...found.values()].sort((a, b) =>
+    a.confidence === b.confidence
+      ? a.capability.localeCompare(b.capability)
+      : a.confidence === 'likely'
+        ? -1
+        : 1,
+  );
+
+  const capabilities = hypotheses.map((h) => h.capability);
+  const scope = capabilities.length
+    ? mapFeature({
+        ...emptyFeature('discovered'),
+        product: 'Discovered from source',
+        feature: capabilities.join(', '),
+        capabilities,
+        ownBrand: input.ownBrand ?? true,
+        deploys: input.deploys ?? false,
+        onMarketBefore2Aug2026: input.onMarketBefore2Aug2026 ?? false,
+      })
+    : null;
+
+  return {
+    hypotheses,
+    scope,
+    filesScanned: entries.length,
+    requiresHumanConfirmation: true,
+  };
+}

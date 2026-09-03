@@ -48,6 +48,10 @@ describe('tool parameter descriptions', () => {
     ['generate_agent_disclosure', 'authority_scope'],
     ['generate_agent_disclosure', 'autonomy_level'],
     ['generate_agent_disclosure', 'composition'],
+    ['discover_ai_surfaces', 'files'],
+    ['discover_ai_surfaces', 'own_brand'],
+    ['discover_ai_surfaces', 'on_market_before_2_aug_2026'],
+    ['discover_ai_surfaces', 'deploys'],
     // agent_disclosure_taxonomy takes no parameters.
   ];
 
@@ -78,6 +82,7 @@ describe('tool parameter descriptions', () => {
       'agent_disclosure_taxonomy',
       'check_record',
       'classify',
+      'discover_ai_surfaces',
       'explain_obligation',
       'generate_agent_disclosure',
       'generate_disclosure',

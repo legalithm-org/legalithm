@@ -5,6 +5,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import type { UseCase, Domain } from './lib/ai_act/types';
+import { scan as discoveryScan } from './lib/discovery/scan';
 import {
   classifyTool,
   explainObligationTool,
@@ -247,6 +248,61 @@ export function createServer(): McpServer {
           composition: args.composition ?? null,
         }),
       );
+    },
+  );
+
+  server.registerTool(
+    'discover_ai_surfaces',
+    {
+      title: 'Discover the AI in a codebase, and which Article 50 limbs could attach',
+      description:
+        'Reads file CONTENT you pass in (a package.json, source files) and proposes which AI capabilities the code could ship, with the evidence for each, then resolves those into Article 50 limbs with their dates and duty-bearers. Returns HYPOTHESES, never findings: a dependency proves what code could do, never what it ships. Offline, no network, nothing stored.',
+      inputSchema: {
+        files: z
+          .record(z.string(), z.string())
+          .describe(
+            'A map of path to file content. Read the files yourself and pass their contents; the tool never touches the filesystem. A package.json yields "possible" capabilities; a source file containing a real call site raises one to "likely". Passing both is best.',
+          ),
+        own_brand: z
+          .boolean()
+          .nullable()
+          .optional()
+          .describe(
+            'Article 3(3): is this placed on the market under the user\'s own name or trademark? Ask them; do not infer it from the repository or the git author. If true they are the provider whatever model sits underneath, and a provider duty cannot be contracted back upstream. Defaults to true.',
+          ),
+        on_market_before_2_aug_2026: z
+          .boolean()
+          .nullable()
+          .optional()
+          .describe(
+            'Article 111(4): was it on the market before 2 August 2026? If yes, the 50(2) marking duty moves to 2 December 2026. If no, it applied the day it shipped, with no transition. Defaults to false, which is the stricter reading.',
+          ),
+        deploys: z
+          .boolean()
+          .nullable()
+          .optional()
+          .describe(
+            'Whether the user also runs the system themselves. Articles 50(3) and 50(4) bind the deployer, so if they only supply it to customers those duties land downstream. Defaults to false.',
+          ),
+      },
+      // Pure function over passed-in content: no reads, no writes, no network.
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+    },
+    async (args) => {
+      emitSurfaceActive(API_URL, 'discover_ai_surfaces');
+      const result = discoveryScan({
+        files: args.files,
+        ownBrand: args.own_brand ?? undefined,
+        onMarketBefore2Aug2026: args.on_market_before_2_aug_2026 ?? undefined,
+        deploys: args.deploys ?? undefined,
+      });
+      return asText({
+        ...result,
+        // Restated in the payload so an agent summarising this cannot quietly
+        // upgrade a hypothesis into a compliance statement.
+        note:
+          'These are hypotheses. Report them to the user as things to confirm, not as obligations they have. Only a person can decide what the system actually ships.',
+      });
     },
   );
 

@@ -1,5 +1,22 @@
 import { buildInventory } from '../detect.js';
 import type { StackDetectionResult, InventoryItem } from '../types.js';
+import type { ScanResult } from '../discovery/scan.js';
+import { daysBetween } from '../discovery/scope-map.js';
+
+/**
+ * CONVERGED ONTO THE SHARED ENGINE.
+ *
+ * `discover` used to answer entirely from detect.ts, whose Article 50 output
+ * was `likelyArticle50: boolean` — one flag for a provision that is five duties
+ * on two parties. lib/discovery/ answers the same question with capabilities,
+ * limbs, dates and duty-bearers, and is vendored here byte-identically by
+ * scripts/generate-cli-discovery.ts.
+ *
+ * detect.ts keeps the jobs the shared engine does not do: framework and PII
+ * signals, agent profiles, and the inventory shape the /ai-systems API expects.
+ * The split is by responsibility, not by history: one engine decides what
+ * Article 50 says, and one adapter decides what the inventory record looks like.
+ */
 
 /** The subset of the created AI-system the CLI reports back. */
 export interface CreatedSystem {
@@ -11,6 +28,10 @@ export interface CreatedSystem {
 export interface RunDiscoverDeps {
   /** Repo scan → detection (injected so it can be unit-tested without a filesystem). */
   detect: () => StackDetectionResult;
+  /** The shared discovery engine's view. Optional so existing callers still work. */
+  scan?: () => ScanResult;
+  /** Today, injected so the day counts are testable. */
+  asOf?: string;
   name: string;
   /** Present only when --push is set AND an API key exists. */
   push?: (item: InventoryItem) => Promise<CreatedSystem>;
@@ -21,6 +42,7 @@ export interface RunDiscoverDeps {
 export interface RunDiscoverResult {
   exitCode: number;
   item: InventoryItem;
+  scan?: ScanResult;
 }
 
 /**
@@ -32,6 +54,8 @@ export async function runDiscover(deps: RunDiscoverDeps): Promise<RunDiscoverRes
   const log = deps.log ?? ((m: string) => console.log(m));
   const detection = deps.detect();
   const item = buildInventory(detection, deps.name);
+  const scanResult = deps.scan?.();
+  const asOf = deps.asOf ?? new Date().toISOString().slice(0, 10);
 
   let created: CreatedSystem | null = null;
   let pushError: string | null = null;
@@ -50,6 +74,13 @@ export async function runDiscover(deps: RunDiscoverDeps): Promise<RunDiscoverRes
           signals: detection.signals,
           inferred: detection.inferred,
           proposed: item,
+          ...(scanResult
+            ? {
+                capabilities: scanResult.hypotheses,
+                article50: scanResult.scope?.duties ?? [],
+                requiresHumanConfirmation: true,
+              }
+            : {}),
           pushed: Boolean(created),
           ...(created ? { system: created } : {}),
           ...(pushError ? { error: pushError } : {}),
@@ -68,6 +99,31 @@ export async function runDiscover(deps: RunDiscoverDeps): Promise<RunDiscoverRes
         log(`  - ${s.kind}: ${s.evidence} (${s.confidence}${hint})`);
       }
     }
+    if (scanResult && scanResult.hypotheses.length > 0) {
+      log('');
+      log('AI capabilities this code could ship (hypotheses, not findings):');
+      for (const h of scanResult.hypotheses) {
+        const where = h.evidence[0];
+        const at = where ? ` — ${where.file}${where.line ? `:${where.line}` : ''}` : '';
+        log(`  - ${h.capability} (${h.confidence})${at}`);
+      }
+      const duties = scanResult.scope?.duties ?? [];
+      if (duties.length > 0) {
+        log('');
+        log('If confirmed, these Article 50 duties attach:');
+        for (const d of duties) {
+          const days = daysBetween(asOf, d.appliesFrom);
+          const when = days <= 0 ? 'live now' : `from ${d.appliesFrom} (${days} days)`;
+          const whose =
+            d.bearer === 'you' ? 'yours' : d.bearer === 'upstream_provider' ? "your vendor's" : "your customer's";
+          log(`  - Art. ${d.paragraph}: ${whose}, ${when}`);
+        }
+      }
+      log('');
+      log('  Confirm each capability against what you actually ship. A dependency');
+      log('  proves what this code could do, never what it does.');
+    }
+
     log('');
     log('Proposed AI system:');
     log(`  name:     ${item.name}`);
@@ -92,5 +148,5 @@ export async function runDiscover(deps: RunDiscoverDeps): Promise<RunDiscoverRes
     }
   }
 
-  return { exitCode: pushError ? 3 : 0, item };
+  return { exitCode: pushError ? 3 : 0, item, ...(scanResult ? { scan: scanResult } : {}) };
 }

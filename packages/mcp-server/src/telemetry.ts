@@ -1,7 +1,9 @@
 // Anonymous, opt-out usage telemetry for the MCP server.
 // Same privacy contract as packages/cli/src/telemetry.ts: surface + command +
-// repoHash only; DO_NOT_TRACK=1 / LEGALITHM_TELEMETRY=0 honoured; fire-and-forget.
+// repoHash + idBasis only; DO_NOT_TRACK=1 / LEGALITHM_TELEMETRY=0 honoured;
+// fire-and-forget. repoHash digests the project identity, not the cwd path.
 import { createHash } from 'crypto';
+import { spawnSync } from 'node:child_process';
 
 /**
  * Off for DO_NOT_TRACK=1, or LEGALITHM_TELEMETRY set to 0 / false / no / off.
@@ -20,9 +22,78 @@ export function telemetryEnabled(env: Partial<NodeJS.ProcessEnv> = process.env):
   return !(flag !== undefined && TELEMETRY_OFF.has(flag));
 }
 
-/** Stable, anonymous per-repo id: sha256(cwd) truncated to 16 hex. */
-export function repoHash(cwd: string): string {
-  return createHash('sha256').update(cwd).digest('hex').slice(0, 16);
+/** One-way 16-hex digest. The input never leaves the machine. */
+export function repoHash(value: string): string {
+  return createHash('sha256').update(value).digest('hex').slice(0, 16);
+}
+
+/** What the identity was derived from. Sent alongside the hash. */
+export type IdBasis = 'remote' | 'root' | 'cwd';
+
+/**
+ * Duplicated from packages/cli/src/telemetry.ts rather than imported: the two
+ * are independently published packages and mcp-server does not depend on the
+ * CLI. The privacy contract was already duplicated for that reason; this keeps
+ * the identity definition beside it. Change both or neither.
+ */
+export function normaliseRemote(url: string): string {
+  let s = url.trim();
+  if (!s) return '';
+  s = s.replace(/^[a-z+]+:\/\//i, '');
+  s = s.replace(/^[^@/]*@/, '');
+  s = s.replace(/^([^/:]+):(?!\d)/, '$1/');
+  s = s.replace(/^([^/]+):\d+\//, '$1/');
+  s = s.replace(/\/+$/, '').replace(/\.git$/i, '').replace(/\/+$/, '');
+  return s.toLowerCase();
+}
+
+function git(args: string[], cwd: string): string | null {
+  try {
+    const r = spawnSync('git', args, {
+      cwd,
+      encoding: 'utf8',
+      timeout: 500,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    if (r.status !== 0) return null;
+    const out = String(r.stdout ?? '').trim();
+    return out || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * A project identity that survives the directory the server was started in.
+ *
+ * Hashing cwd made every ephemeral working directory a new "repo". For the CLI
+ * that meant CI temp paths; for an MCP server it means whatever directory the
+ * host launched it from, which is not necessarily the user's project and may not
+ * be a repository at all.
+ *
+ * That last case is why `cwd` stays as a labelled floor rather than being
+ * dropped. An MCP population reporting mostly `cwd` is telling us the server is
+ * not running inside a checkout, which is a finding about who is calling it and
+ * not a gap in the data.
+ */
+export function projectIdentity(cwd: string): { hash: string; basis: IdBasis } {
+  const remote = git(['config', '--get', 'remote.origin.url'], cwd);
+  const normalised = remote ? normaliseRemote(remote) : '';
+  if (normalised) return { hash: repoHash(`remote:${normalised}`), basis: 'remote' };
+
+  const root = git(['rev-parse', '--show-toplevel'], cwd);
+  if (root) return { hash: repoHash(`root:${root}`), basis: 'root' };
+
+  return { hash: repoHash(cwd), basis: 'cwd' };
+}
+
+/**
+ * Resolved once per call site, so a tool invocation never shells out to git
+ * twice for one ping.
+ */
+function identityMetadata(cwd: string): { repoHash: string; idBasis: IdBasis } {
+  const { hash, basis } = projectIdentity(cwd);
+  return { repoHash: hash, idBasis: basis };
 }
 
 /** MCP tool names emitted as command (must match /^[a-z_-]{1,32}$/). */
@@ -64,7 +135,7 @@ export function emitSurfaceActive(
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       event: 'surface_active',
-      metadata: { surface: 'mcp', command, repoHash: repoHash(cwd) },
+      metadata: { surface: 'mcp', command, ...identityMetadata(cwd) },
     }),
   }).then(
     () => {},

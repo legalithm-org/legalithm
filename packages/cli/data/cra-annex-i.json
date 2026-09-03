@@ -1,0 +1,230 @@
+{
+  "_generated": "scripts/generate-cli-cra-data.ts — do not edit by hand",
+  "instrument": "Regulation (EU) 2024/2847",
+  "corpusVersion": "1.0.0",
+  "corpusUpdatedAt": "2026-08-13",
+  "requirements": [
+    {
+      "ref": "Annex I Part I (1)",
+      "part": "I",
+      "title": "Annex I Part I (1): Appropriate level of cybersecurity based on the risks",
+      "description": "Products with digital elements shall be designed, developed and produced in such a way that they ensure an appropriate level of cybersecurity based on the risks.",
+      "evidenceType": "document"
+    },
+    {
+      "ref": "Annex I Part I (2)(a)",
+      "part": "I",
+      "title": "Annex I Part I (2)(a)",
+      "description": "be made available on the market without known exploitable vulnerabilities;",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part I (2)(b)",
+      "part": "I",
+      "title": "Annex I Part I (2)(b)",
+      "description": "be made available on the market with a secure by default configuration, unless otherwise agreed between manufacturer and business user in relation to a tailor-made product with digital elements, including the possibility to reset the product to its original state;",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part I (2)(c)",
+      "part": "I",
+      "title": "Annex I Part I (2)(c)",
+      "description": "ensure that vulnerabilities can be addressed through security updates, including, where applicable, through automatic security updates that are installed within an appropriate timeframe enabled as a default setting, with a clear and easy-to-use opt-out mechanism, through the notification of available updates to users, and the option to temporarily postpone them;",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part I (2)(d)",
+      "part": "I",
+      "title": "Annex I Part I (2)(d)",
+      "description": "ensure protection from unauthorised access by appropriate control mechanisms, including but not limited to authentication, identity or access management systems, and report on possible unauthorised access;",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part I (2)(e)",
+      "part": "I",
+      "title": "Annex I Part I (2)(e)",
+      "description": "protect the confidentiality of stored, transmitted or otherwise processed data, personal or other, such as by encrypting relevant data at rest or in transit by state of the art mechanisms, and by using other technical means;",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part I (2)(f)",
+      "part": "I",
+      "title": "Annex I Part I (2)(f)",
+      "description": "protect the integrity of stored, transmitted or otherwise processed data, personal or other, commands, programs and configuration against any manipulation or modification not authorised by the user, and report on corruptions;",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part I (2)(g)",
+      "part": "I",
+      "title": "Annex I Part I (2)(g)",
+      "description": "process only data, personal or other, that are adequate, relevant and limited to what is necessary in relation to the intended purpose of the product with digital elements (data minimisation);",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part I (2)(h)",
+      "part": "I",
+      "title": "Annex I Part I (2)(h)",
+      "description": "protect the availability of essential and basic functions, also after an incident, including through resilience and mitigation measures against denial-of-service attacks;",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part I (2)(i)",
+      "part": "I",
+      "title": "Annex I Part I (2)(i)",
+      "description": "minimise the negative impact by the products themselves or connected devices on the availability of services provided by other devices or networks;",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part I (2)(j)",
+      "part": "I",
+      "title": "Annex I Part I (2)(j)",
+      "description": "be designed, developed and produced to limit attack surfaces, including external interfaces;",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part I (2)(k)",
+      "part": "I",
+      "title": "Annex I Part I (2)(k)",
+      "description": "be designed, developed and produced to reduce the impact of an incident using appropriate exploitation mitigation mechanisms and techniques;",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part I (2)(l)",
+      "part": "I",
+      "title": "Annex I Part I (2)(l)",
+      "description": "provide security related information by recording and monitoring relevant internal activity, including the access to or modification of data, services or functions, with an opt-out mechanism for the user;",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part I (2)(m)",
+      "part": "I",
+      "title": "Annex I Part I (2)(m)",
+      "description": "provide the possibility for users to securely and easily remove on a permanent basis all data and settings and, where such data can be transferred to other products or systems, ensure that this is done in a secure manner.",
+      "evidenceType": "control"
+    },
+    {
+      "ref": "Annex I Part II (1)",
+      "part": "II",
+      "title": "Annex I Part II (1)",
+      "description": "identify and document vulnerabilities and components contained in products with digital elements, including by drawing up a software bill of materials in a commonly used and machine-readable format covering at the very least the top-level dependencies of the products;",
+      "evidenceType": "process"
+    },
+    {
+      "ref": "Annex I Part II (2)",
+      "part": "II",
+      "title": "Annex I Part II (2)",
+      "description": "in relation to the risks posed to products with digital elements, address and remediate vulnerabilities without delay, including by providing security updates; where technically feasible, new security updates shall be provided separately from functionality updates;",
+      "evidenceType": "process"
+    },
+    {
+      "ref": "Annex I Part II (3)",
+      "part": "II",
+      "title": "Annex I Part II (3)",
+      "description": "apply effective and regular tests and reviews of the security of the product with digital elements;",
+      "evidenceType": "process"
+    },
+    {
+      "ref": "Annex I Part II (4)",
+      "part": "II",
+      "title": "Annex I Part II (4)",
+      "description": "once a security update has been made available, share and publicly disclose information about fixed vulnerabilities, including a description of the vulnerabilities, information allowing users to identify the product with digital elements affected, the impacts of the vulnerabilities, their severity and clear and accessible information helping users to remediate the vulnerabilities; in duly justified cases, where manufacturers consider the security risks of publication to outweigh the security benefits, they may delay making public information regarding a fixed vulnerability until after users have been given the possibility to apply the relevant patch;",
+      "evidenceType": "process"
+    },
+    {
+      "ref": "Annex I Part II (5)",
+      "part": "II",
+      "title": "Annex I Part II (5)",
+      "description": "put in place and enforce a policy on coordinated vulnerability disclosure;",
+      "evidenceType": "process"
+    },
+    {
+      "ref": "Annex I Part II (6)",
+      "part": "II",
+      "title": "Annex I Part II (6)",
+      "description": "take measures to facilitate the sharing of information about potential vulnerabilities in their product with digital elements as well as in third-party components contained in that product, including by providing a contact address for the reporting of the vulnerabilities discovered in the product with digital elements;",
+      "evidenceType": "process"
+    },
+    {
+      "ref": "Annex I Part II (7)",
+      "part": "II",
+      "title": "Annex I Part II (7)",
+      "description": "provide for mechanisms to securely distribute updates for products with digital elements to ensure that vulnerabilities are fixed or mitigated in a timely manner and, where applicable for security updates, in an automatic manner;",
+      "evidenceType": "process"
+    },
+    {
+      "ref": "Annex I Part II (8)",
+      "part": "II",
+      "title": "Annex I Part II (8)",
+      "description": "ensure that, where security updates are available to address identified security issues, they are disseminated without delay and, unless otherwise agreed between a manufacturer and a business user in relation to a tailor-made product with digital elements, free of charge, accompanied by advisory messages providing users with the relevant information, including on potential action to be taken.",
+      "evidenceType": "process"
+    }
+  ],
+  "annexVii": [
+    {
+      "ref": "Annex VII (1)",
+      "description": "a general description of the product with digital elements, including: (a) its intended purpose; (b) versions of software affecting compliance with essential cybersecurity requirements; (c) where the product with digital elements is a hardware product, photographs or illustrations showing external features, marking and internal layout; (d) user information and instructions as set out in Annex II;"
+    },
+    {
+      "ref": "Annex VII (2)",
+      "description": "a description of the design, development and production of the product with digital elements and vulnerability handling processes, including: (a) necessary information on the design and development of the product with digital elements, including, where applicable, drawings and schemes and a description of the system architecture explaining how software components build on or feed into each other and integrate into the overall processing; (b) necessary information and specifications of the vulnerability handling processes put in place by the manufacturer, including the software bill of materials, the coordinated vulnerability disclosure policy, evidence of the provision of a contact address for the reporting of the vulnerabilities and a description of the technical solutions chosen for the secure distribution of updates; (c) necessary information and specifications of the production and monitoring processes of the product with digital elements and the validation of those processes;"
+    },
+    {
+      "ref": "Annex VII (3)",
+      "description": "an assessment of the cybersecurity risks against which the product with digital elements is designed, developed, produced, delivered and maintained pursuant to Article 13, including how the essential cybersecurity requirements set out in Part I of Annex I are applicable;"
+    },
+    {
+      "ref": "Annex VII (4)",
+      "description": "relevant information that was taken into account to determine the support period pursuant to Article 13(8) of the product with digital elements;"
+    },
+    {
+      "ref": "Annex VII (5)",
+      "description": "a list of the harmonised standards applied in full or in part the references of which have been published in the Official Journal of the European Union, common specifications as set out in Article 27 of this Regulation or European cybersecurity certification schemes adopted pursuant to Regulation (EU) 2019/881 pursuant to Article 27(8) of this Regulation, and, where those harmonised standards, common specifications or European cybersecurity certification schemes have not been applied, descriptions of the solutions adopted to meet the essential cybersecurity requirements set out in Parts I and II of Annex I, including a list of other relevant technical specifications applied. In the event of partly applied harmonised standards, common specifications or European cybersecurity certification schemes, the technical documentation shall specify the parts which have been applied;"
+    },
+    {
+      "ref": "Annex VII (6)",
+      "description": "reports of the tests carried out to verify the conformity of the product with digital elements and of the vulnerability handling processes with the applicable essential cybersecurity requirements as set out in Parts I and II of Annex I;"
+    },
+    {
+      "ref": "Annex VII (7)",
+      "description": "a copy of the EU declaration of conformity;"
+    },
+    {
+      "ref": "Annex VII (8)",
+      "description": "where applicable, the software bill of materials, further to a reasoned request from a market surveillance authority provided that it is necessary in order for that authority to be able to check compliance with the essential cybersecurity requirements set out in Annex I."
+    }
+  ],
+  "annexV": [
+    {
+      "ref": "Annex V (1)",
+      "description": "Name and type and any additional information enabling the unique identification of the product with digital elements"
+    },
+    {
+      "ref": "Annex V (2)",
+      "description": "Name and address of the manufacturer or its authorised representative"
+    },
+    {
+      "ref": "Annex V (3)",
+      "description": "A statement that the EU declaration of conformity is issued under the sole responsibility of the provider"
+    },
+    {
+      "ref": "Annex V (4)",
+      "description": "Object of the declaration (identification of the product with digital elements allowing traceability, which may include a photograph, where appropriate)"
+    },
+    {
+      "ref": "Annex V (5)",
+      "description": "A statement that the object of the declaration described above is in conformity with the relevant Union harmonisation legislation"
+    },
+    {
+      "ref": "Annex V (6)",
+      "description": "References to any relevant harmonised standards used or any other common specification or cybersecurity certification in relation to which conformity is declared"
+    },
+    {
+      "ref": "Annex V (7)",
+      "description": "Where applicable, the name and number of the notified body, a description of the conformity assessment procedure performed and identification of the certificate issued"
+    },
+    {
+      "ref": "Annex V (8)",
+      "description": "Additional information: Signed for and on behalf of: (place and date of issue): (name, function) (signature):"
+    }
+  ]
+}

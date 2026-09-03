@@ -1,5 +1,16 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { telemetryEnabled, repoHash, emitSurfaceActive } from '../telemetry.js';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+
+import {
+  telemetryEnabled,
+  repoHash,
+  emitSurfaceActive,
+  normaliseRemote,
+  projectIdentity,
+} from '../telemetry.js';
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -26,12 +37,106 @@ describe('telemetryEnabled', () => {
 });
 
 describe('repoHash', () => {
-  it('is 16-hex, stable, path-dependent, and never leaks the path', () => {
+  it('is 16-hex, stable, input-dependent, and never leaks the input', () => {
     const h = repoHash('/home/me/secret-project');
     expect(h).toMatch(/^[0-9a-f]{16}$/);
     expect(repoHash('/home/me/secret-project')).toBe(h);
     expect(repoHash('/other')).not.toBe(h);
     expect(h).not.toContain('secret');
+  });
+});
+
+describe('normaliseRemote', () => {
+  /**
+   * Every clone of one repo must collapse to one identity. Without this, cloning
+   * over SSH instead of HTTPS counts as a second project and rotating an embedded
+   * token counts as a third.
+   */
+  const canonical = 'github.com/legalithm-org/legalithm';
+
+  it.each([
+    'git@github.com:legalithm-org/legalithm.git',
+    'https://github.com/legalithm-org/legalithm.git',
+    'https://github.com/legalithm-org/legalithm',
+    'ssh://git@github.com:22/legalithm-org/legalithm.git',
+    'https://x-access-token:ghs_SECRET@github.com/legalithm-org/legalithm.git',
+    'HTTPS://GitHub.com/Legalithm-Org/Legalithm.git/',
+  ])('collapses %s', (url) => {
+    expect(normaliseRemote(url)).toBe(canonical);
+  });
+
+  it('strips credentials, so nothing derived from a secret is hashed', () => {
+    const n = normaliseRemote('https://user:ghs_SUPERSECRET@github.com/a/b.git');
+    expect(n).not.toContain('SUPERSECRET');
+    expect(n).not.toContain('user');
+    // And a rotated token must not change the identity.
+    expect(n).toBe(normaliseRemote('https://user:ghs_ROTATED@github.com/a/b.git'));
+  });
+
+  it('keeps different repos apart', () => {
+    expect(normaliseRemote('git@github.com:a/b.git')).not.toBe(
+      normaliseRemote('git@github.com:a/c.git'),
+    );
+  });
+
+  it('returns empty for junk rather than inventing an identity', () => {
+    expect(normaliseRemote('')).toBe('');
+    expect(normaliseRemote('   ')).toBe('');
+  });
+});
+
+describe('projectIdentity', () => {
+  const tmp = () => mkdtempSync(join(tmpdir(), 'legalithm-tel-'));
+  const run = (args: string[], cwd: string) =>
+    spawnSync('git', args, { cwd, stdio: 'ignore' });
+
+  it('falls back to cwd, labelled, outside a git repo', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'legalithm-nogit-'));
+    const id = projectIdentity(dir);
+    // May legitimately resolve to `root` if the temp dir sits inside a checkout.
+    expect(['cwd', 'root']).toContain(id.basis);
+    expect(id.hash).toMatch(/^[0-9a-f]{16}$/);
+  });
+
+  it('THE BUG: two ephemeral clones of one repo now share an identity', () => {
+    // This is the regression that made 2,395 calls look like 2,340 repos. Each CI
+    // run gets a fresh temp directory; hashing cwd minted a new "repo" every time.
+    const a = tmp();
+    const b = tmp();
+    for (const d of [a, b]) {
+      run(['init', '-q'], d);
+      run(['remote', 'add', 'origin', 'git@github.com:acme/widget.git'], d);
+    }
+    const ia = projectIdentity(a);
+    const ib = projectIdentity(b);
+
+    if (ia.basis !== 'remote' || ib.basis !== 'remote') return; // git unavailable
+    expect(ia.hash).toBe(ib.hash);
+    // And the old behaviour would have disagreed, which is the point.
+    expect(repoHash(a)).not.toBe(repoHash(b));
+  });
+
+  it('separates two different repos checked out to sibling directories', () => {
+    const a = tmp();
+    const b = tmp();
+    run(['init', '-q'], a);
+    run(['remote', 'add', 'origin', 'git@github.com:acme/one.git'], a);
+    run(['init', '-q'], b);
+    run(['remote', 'add', 'origin', 'git@github.com:acme/two.git'], b);
+
+    const ia = projectIdentity(a);
+    const ib = projectIdentity(b);
+    if (ia.basis !== 'remote' || ib.basis !== 'remote') return;
+    expect(ia.hash).not.toBe(ib.hash);
+  });
+
+  it('uses the repository root when a checkout has no remote', () => {
+    const dir = tmp();
+    run(['init', '-q'], dir);
+    const id = projectIdentity(dir);
+    if (id.basis === 'cwd') return; // git unavailable
+    expect(id.basis).toBe('root');
+    expect(id.hash).toMatch(/^[0-9a-f]{16}$/);
   });
 });
 

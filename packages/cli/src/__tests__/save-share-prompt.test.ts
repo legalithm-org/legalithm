@@ -97,6 +97,9 @@ describe('maybePromptSaveShare', () => {
         command: 'check',
         answer: 'y',
         repoHash: expect.stringMatching(/^[0-9a-f]{16}$/),
+        // The identity now says what it was derived from. A fixture cwd is not a
+        // checkout, so it reports the labelled cwd floor.
+        idBasis: expect.stringMatching(/^(remote|root|cwd)$/),
       },
     });
   });

@@ -14,11 +14,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: legalithm-org/legalithm/packages/action@v1
+      - uses: legalithm-org/legalithm@v1
         with:
           api-key: ${{ secrets.LEGALITHM_API_KEY }}
           # fail-on: risk-or-rule   # risk-or-rule (default) | risk | any | never
 ```
+
+> `legalithm-org/legalithm/packages/action@v1` still resolves, so workflows
+> already pinned that way keep working. Prefer the short form above: it is what
+> the Marketplace listing shows, because Marketplace reads the `action.yml`
+> generated at the mirror root.
 
 First generate and commit the record locally:
 

@@ -12,10 +12,10 @@ import { join } from 'node:path';
 describe('CLI version', () => {
   it('matches package.json', () => {
     const pkg = JSON.parse(readFileSync(join(__dirname, '..', '..', 'package.json'), 'utf8'));
-    const src = readFileSync(join(__dirname, '..', 'index.ts'), 'utf8');
+    const src = readFileSync(join(__dirname, '..', 'version.ts'), 'utf8');
 
-    const match = src.match(/^const VERSION = '([^']+)';$/m);
-    expect(match, 'could not find `const VERSION = ...` in src/index.ts').not.toBeNull();
+    const match = src.match(/^export const VERSION = '([^']+)';$/m);
+    expect(match, 'could not find `export const VERSION = ...` in src/version.ts').not.toBeNull();
     expect(match![1]).toBe(pkg.version);
   });
 });

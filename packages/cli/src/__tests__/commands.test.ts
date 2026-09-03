@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { mkdtempSync, rmSync, existsSync, readFileSync } from 'fs';
+import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { runInit } from '../commands/init.js';
@@ -193,15 +193,130 @@ describe('runCheck', () => {
 });
 
 describe('runLogin', () => {
-  it('rejects a missing or malformed key (exit 2, no write)', () => {
-    expect(runLogin(undefined, () => {}, join(dir, 'creds.json'))).toBe(2);
-    expect(runLogin('not-a-key', () => {}, join(dir, 'creds.json'))).toBe(2);
-    expect(existsSync(join(dir, 'creds.json'))).toBe(false);
+  const KEY = `lgl_${'a'.repeat(64)}`;
+  const creds = () => join(dir, 'creds.json');
+
+  /** A terminal that never gets asked anything, unless a test supplies a prompt. */
+  const tty = (over: Partial<Parameters<typeof runLogin>[3]> = {}) => ({
+    isTty: () => true,
+    promptSecret: async () => {
+      throw new Error('unexpected prompt');
+    },
+    warn: () => {},
+    ...over,
   });
 
-  it('writes a valid key to the given path (exit 0)', () => {
+  it('rejects a missing or malformed key (exit 2, no write)', async () => {
+    expect(await runLogin({}, () => {}, creds(), tty({ promptSecret: async () => '' }))).toBe(2);
+    expect(await runLogin('not-a-key', () => {}, creds(), tty())).toBe(2);
+    expect(existsSync(creds())).toBe(false);
+  });
+
+  it('writes a valid key to the given path (exit 0)', async () => {
     const path = join(dir, 'nested', 'creds.json');
-    expect(runLogin(`lgl_${'a'.repeat(64)}`, () => {}, path)).toBe(0);
-    expect(JSON.parse(readFileSync(path, 'utf8')).apiKey).toBe(`lgl_${'a'.repeat(64)}`);
+    expect(await runLogin(KEY, () => {}, path, tty())).toBe(0);
+    expect(JSON.parse(readFileSync(path, 'utf8')).apiKey).toBe(KEY);
+  });
+
+  // R3, Article 13(2) risk assessment. --key still works, because removing it
+  // would break CI jobs already calling it, but it must never do so silently:
+  // the operator has to be told the key is now in their history and was in the
+  // process table. Delete the warning and this test goes red.
+  it('warns that --key exposed the key in shell history and the process table', async () => {
+    const warned: string[] = [];
+    expect(await runLogin({ key: KEY }, () => {}, creds(), tty({ warn: (m) => warned.push(m) }))).toBe(0);
+    const text = warned.join('\n');
+    expect(text).toMatch(/shell history/i);
+    expect(text).toMatch(/process table/i);
+    // Told, not blocked: the key is still saved.
+    expect(JSON.parse(readFileSync(creds(), 'utf8')).apiKey).toBe(KEY);
+  });
+
+  it('does not warn about argv when the key never went through argv', async () => {
+    for (const source of ['prompt', 'stdin'] as const) {
+      const warned: string[] = [];
+      const code = await runLogin(source === 'stdin' ? { stdin: true } : {}, () => {}, creds(), {
+        isTty: () => true,
+        warn: (m) => warned.push(m),
+        promptSecret: async () => KEY,
+        readStdin: () => `${KEY}\n`,
+      });
+      expect(code).toBe(0);
+      expect(warned.join('\n')).not.toMatch(/process table/i);
+    }
+  });
+
+  it('prompts when stdin is a terminal and no source flag is given', async () => {
+    let asked = '';
+    const code = await runLogin({}, () => {}, creds(), {
+      isTty: () => true,
+      warn: () => {},
+      promptSecret: async (p) => {
+        asked = p;
+        return `${KEY}\n`;
+      },
+    });
+    expect(code).toBe(0);
+    expect(asked).toMatch(/hidden/i);
+    expect(JSON.parse(readFileSync(creds(), 'utf8')).apiKey).toBe(KEY);
+  });
+
+  it('treats a pipe as --stdin, so `echo $KEY | legalithm login` works', async () => {
+    const code = await runLogin({}, () => {}, creds(), {
+      isTty: () => false,
+      warn: () => {},
+      readStdin: () => `${KEY}\n`,
+    });
+    expect(code).toBe(0);
+    expect(JSON.parse(readFileSync(creds(), 'utf8')).apiKey).toBe(KEY);
+  });
+
+  it('reads --key-file, trimming the trailing newline', async () => {
+    const keyPath = join(dir, 'key.txt');
+    writeFileSync(keyPath, `${KEY}\n`, { mode: 0o600 });
+    expect(await runLogin({ keyFile: keyPath }, () => {}, creds(), tty())).toBe(0);
+    expect(JSON.parse(readFileSync(creds(), 'utf8')).apiKey).toBe(KEY);
+  });
+
+  it('warns about a --key-file others can read, but still uses it', async () => {
+    const keyPath = join(dir, 'loose.txt');
+    writeFileSync(keyPath, KEY, { mode: 0o644 });
+    const warned: string[] = [];
+    expect(await runLogin({ keyFile: keyPath }, () => {}, creds(), tty({ warn: (m) => warned.push(m) }))).toBe(0);
+    expect(warned.join('\n')).toMatch(/chmod 600/);
+  });
+
+  it('exits 2 on a missing --key-file, and writes nothing', async () => {
+    expect(await runLogin({ keyFile: join(dir, 'nope.txt') }, () => {}, creds(), tty())).toBe(2);
+    expect(existsSync(creds())).toBe(false);
+  });
+
+  it('refuses two sources at once rather than picking one', async () => {
+    const warned: string[] = [];
+    const code = await runLogin({ key: KEY, stdin: true }, () => {}, creds(), tty({ warn: (m) => warned.push(m) }));
+    expect(code).toBe(2);
+    expect(warned.join('\n')).toMatch(/--key, --stdin/);
+    expect(existsSync(creds())).toBe(false);
+  });
+
+  it('exits 2 without writing when the prompt is cancelled', async () => {
+    const code = await runLogin({}, () => {}, creds(), {
+      isTty: () => true,
+      warn: () => {},
+      promptSecret: async () => {
+        throw new Error('cancelled');
+      },
+    });
+    expect(code).toBe(2);
+    expect(existsSync(creds())).toBe(false);
+  });
+
+  // The CLI must stop teaching the unsafe form. Its own usage text is the thing
+  // a confused user reads, so it is the thing asserted on.
+  it('never offers `--key <the key>` as the headline usage', async () => {
+    const lines: string[] = [];
+    await runLogin({ key: 'not-a-key' }, (m) => lines.push(m), creds(), tty());
+    expect(lines[0]).toBe('Usage: legalithm login            paste your key when asked');
+    expect(lines.join('\n')).toMatch(/see the warning/);
   });
 });

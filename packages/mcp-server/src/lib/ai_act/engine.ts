@@ -55,6 +55,16 @@ interface RiskCategory {
   id: string;
   title: string;
   patterns: string[];
+  /**
+   * Optional regular expressions, applied in addition to `patterns`.
+   *
+   * Substring patterns cannot bridge an adjective. "image generation" and
+   * "generated image" both miss "generates marketing images", which is how the
+   * most natural way to describe a generative product fell through to minimal
+   * risk and reported no Article 50 duty at all. A proximity regex spans the
+   * gap without loosening the literal patterns.
+   */
+  regexes?: string[];
   examples?: string[];
   annex_area?: number | string;
   article?: string;
@@ -106,6 +116,33 @@ function patternMatches(text: string, pattern: string): boolean {
 
 function checkPatterns(text: string, patterns: string[]): boolean {
   return patterns.some((pattern) => patternMatches(text, pattern));
+}
+
+/**
+ * Regex counterpart to patternMatches, carrying the same negation rule: a hit
+ * preceded by "not", "without", "rather than" and friends within 30 characters
+ * is not a hit. Without this, "does not generate images" would classify as a
+ * generative system.
+ */
+function regexMatches(text: string, source: string): boolean {
+  let re: RegExp;
+  try {
+    re = new RegExp(source, 'gi');
+  } catch {
+    return false; // A malformed rule must not take the classifier down.
+  }
+  for (const m of text.matchAll(re)) {
+    const i = m.index ?? 0;
+    const pre = text.slice(Math.max(0, i - 30), i);
+    if (!NEGATION_RE.test(pre)) return true;
+  }
+  return false;
+}
+
+/** A category matches on either its literal patterns or its regexes. */
+function categoryMatches(text: string, category: RiskCategory): boolean {
+  if (checkPatterns(text, category.patterns)) return true;
+  return (category.regexes ?? []).some((r) => regexMatches(text, r));
 }
 
 type CoreResult = Omit<RiskResult, 'confidenceScore' | 'reviewRequired'>;
@@ -379,30 +416,55 @@ export function classifyUseCase(useCase: UseCase): RiskResult {
   }
 
   const limitedRiskRule = riskMap.limited_risk as RiskRule;
-  for (const category of limitedRiskRule.categories || []) {
-    if (checkPatterns(text, category.patterns)) {
-      matchedRules.push(`limited_risk_${category.id}`);
-      citations.push(buildCitation({
-        article: '50',
-        url: `${EURLEX_BASE}#article-50`,
-        label: 'Article 50 - Transparency Obligations',
-      }));
 
-      return finalize(
-        {
-          risk: 'limited',
-          confidence: 'high',
-          rationale: `This AI system has limited-risk transparency obligations under Article 50: it is ${LIMITED_CLAUSE[category.id] ?? 'subject to Article 50, so users must be informed they are interacting with an AI system'}.`,
-          citations,
-          matchedRules,
-          obligationsHint: {
-            count: 2,
-            topTitles: ['User Notification', 'Transparent Communication'],
-          },
-        },
-        SCORE.limitedTransparency,
-      );
+  /**
+   * ALL matching limbs, not the first.
+   *
+   * This loop used to return inside the `if`, so a system that both interacts
+   * with people and generates synthetic content reported only whichever
+   * category happened to be listed first, and the other duty vanished. Article
+   * 50's limbs are independent: marking output under 50(2) does not discharge
+   * telling somebody they are talking to a machine under 50(1). Platform AI
+   * features routinely do both.
+   */
+  const limitedMatches = (limitedRiskRule.categories || []).filter((category) =>
+    categoryMatches(text, category),
+  );
+
+  if (limitedMatches.length > 0) {
+    for (const category of limitedMatches) {
+      matchedRules.push(`limited_risk_${category.id}`);
     }
+    citations.push(buildCitation({
+      article: '50',
+      url: `${EURLEX_BASE}#article-50`,
+      label: 'Article 50 - Transparency Obligations',
+    }));
+
+    const clauses = limitedMatches.map(
+      (category) =>
+        LIMITED_CLAUSE[category.id] ??
+        'subject to Article 50, so users must be informed they are interacting with an AI system',
+    );
+    const joined =
+      clauses.length === 1
+        ? clauses[0]
+        : `${clauses.slice(0, -1).join('; it is also ')}; and it is ${clauses[clauses.length - 1]}`;
+
+    return finalize(
+      {
+        risk: 'limited',
+        confidence: 'high',
+        rationale: `This AI system has limited-risk transparency obligations under Article 50: it is ${joined}.`,
+        citations,
+        matchedRules,
+        obligationsHint: {
+          count: limitedMatches.length,
+          topTitles: limitedMatches.map((category) => category.title),
+        },
+      },
+      SCORE.limitedTransparency,
+    );
   }
 
   return finalize(
