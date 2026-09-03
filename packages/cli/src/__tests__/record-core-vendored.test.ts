@@ -30,11 +30,22 @@ import {
   knownAsOf,
   nextVersion,
   verifyChain,
+  verifyRecordBundle,
   type Claim,
   type Hypothesis,
 } from '../record-core/index.js';
 
 describe('the vendored copy resolves and runs', () => {
+  it('verifies a record bundle through the vendored path, offline', () => {
+    // This is the exact import path `npx legalithm verify-record --bundle` uses.
+    // If the vendored verify.js failed to resolve, this throws; if it drifted
+    // from source, the byte-equality test below fails. Together they make
+    // "a third party runs the CLI with no network" a proven claim.
+    const verdict = verifyRecordBundle({ format: 'not-a-bundle' });
+    expect(verdict.ok).toBe(false);
+    expect(verdict.reason).toBeTruthy();
+  });
+
   it('re-exports every symbol the CLI relies on', () => {
     for (const fn of [canonicalize, canonicalJson, contentHash, shortHash, recordHash, contentId, isContentId]) {
       expect(typeof fn).toBe('function');

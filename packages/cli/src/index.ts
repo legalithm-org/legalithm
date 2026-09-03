@@ -264,7 +264,7 @@ Commands:
   classify Quick risk hint for the current repo
   mark     Mark an AI-generated image (Art 50(2)); --watermark adds a second, distribution-proof layer (no key)
   verify   Detect AI content marking on an asset: C2PA credential + pixel watermark; --check scans a directory (no key)
-  verify-record  Offline integrity check for compliance/legalithm.json (+ optional .sig) (no key)
+  verify-record  Offline integrity check. --bundle <file> verifies a portable server record; otherwise compliance/legalithm.json (no key, no network)
   sign-record    Sign the record with YOUR Ed25519 key, so a verifier learns who issued it (no key)
   login    Save an API key:  legalithm login  (prompts; --key-file <path> | --stdin)
   reset    Reset to the original state: remove credentials and cached settings (no key)
@@ -1052,6 +1052,60 @@ async function runCommand(argv: string[]): Promise<number> {
   }
 
   if (command === 'verify-record') {
+    // A portable server-record bundle, verified with no account and no network.
+    // This is the artifact a regulator or assessor is handed; the branch below
+    // (compliance/legalithm.json) is the local CLI record. Different objects,
+    // same command, told apart by --bundle.
+    const bundlePath = flagString(flags, 'bundle');
+    if (bundlePath) {
+      const { verifyRecordBundle } = await import('./record-core/verify.js');
+      if (!existsSync(bundlePath)) {
+        console.error(`No such bundle: ${bundlePath}`);
+        return 1;
+      }
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(readFileSync(bundlePath, 'utf8'));
+      } catch {
+        console.error('That file is not valid JSON, so it is not a record bundle.');
+        return 1;
+      }
+      const verdict = verifyRecordBundle(parsed);
+      if (flagBool(flags, 'json')) {
+        console.log(JSON.stringify(verdict, null, 2));
+        return verdict.ok ? 0 : 1;
+      }
+      console.log(`Record for: ${verdict.subjectName || '(unnamed)'}`);
+      console.log(`Signed version: ${verdict.signedVersion}`);
+      console.log(`Integrity: ${verdict.state === 'tampered' ? 'ALTERED' : 'intact'}`);
+      for (const [pack, hash] of Object.entries(verdict.corpusHashes)) {
+        console.log(`  pinned ${pack}: ${hash}`);
+      }
+      for (const sig of verdict.signatures) {
+        const who = sig.authority?.snapshot?.partnerSlug
+          ? `${sig.signerRole} for ${String(sig.authority.snapshot.partnerSlug)}`
+          : sig.signerRole;
+        console.log(
+          `  signature ${sig.keyId} (${who}): ${sig.valid ? 'valid' : 'INVALID'}` +
+            (sig.signerRole === 'advisor' && !sig.authorityRecorded ? ' — no recorded authority' : ''),
+        );
+      }
+      if (verdict.ok) {
+        console.log('VERIFIED: authentic record, validly signed.');
+      } else {
+        console.error(`NOT VERIFIED: ${verdict.reason ?? 'the record could not be verified'}`);
+      }
+      // The authority is the issuer's attestation, not covered by the signature.
+      if (verdict.signatures.some((sg) => sg.authority)) {
+        console.log(
+          'Note: the recorded authority is Legalithm\'s attestation. The signature ' +
+            'proves who signed and that the record is unaltered; it does not itself ' +
+            'prove the delegation.',
+        );
+      }
+      return verdict.ok ? 0 : 1;
+    }
+
     const { bundledEngineVersion } = await import('./engine-version.js');
     return runVerifyRecord(
       {

@@ -6,3 +6,4 @@ export * from './canonical.js';
 export * from './identity.js';
 export * from './status.js';
 export * from './chain.js';
+export * from './verify.js';
