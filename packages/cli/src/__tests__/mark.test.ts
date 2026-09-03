@@ -26,6 +26,13 @@ const hasC2pa = await import('c2pa-node')
   .catch(() => false);
 
 describe.skipIf(!hasC2pa)('C2PA sign + read roundtrip (P2-C1)', () => {
+  /*
+   * 30s, not the 5s default. C2PA signing is native code doing real cryptography,
+   * and under the full suite it competes with ~430 other test files for CPU. It
+   * passes alone every time and timed out once during a merge, which is the
+   * signature of a starved process rather than a broken one — so the timeout is
+   * the bug, not the code under test.
+   */
   it('a test image comes back with a valid manifest declaring AI-generated content', async () => {
     const { markImage, readManifest } = await import('../mark/c2pa.js');
     const jpeg = Buffer.from(TINY_JPEG_BASE64, 'base64');
@@ -41,5 +48,5 @@ describe.skipIf(!hasC2pa)('C2PA sign + read roundtrip (P2-C1)', () => {
     const actions = am.assertions?.find((a: { label: string }) => a.label === 'c2pa.actions')?.data?.actions;
     expect(actions?.[0]?.digitalSourceType).toBe(TRAINED_ALGORITHMIC_MEDIA);
     expect((read.validation_status ?? []).length).toBe(0);
-  });
+  }, 30_000);
 });
