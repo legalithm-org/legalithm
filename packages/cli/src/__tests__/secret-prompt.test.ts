@@ -8,13 +8,16 @@ import { PassThrough } from 'stream';
 import { promptSecret, stdinIsTty } from '../secret-prompt.js';
 
 function fakeTty(isTTY = true) {
-  const input = new PassThrough() as unknown as NodeJS.ReadStream & { setRawMode: (v: boolean) => void; isRaw: boolean };
+  const input = new PassThrough() as unknown as NodeJS.ReadStream;
   const rawCalls: boolean[] = [];
   (input as unknown as { isTTY: boolean }).isTTY = isTTY;
   input.isRaw = false;
+  // Node's real setRawMode returns the stream (this), not void, so the stub
+  // must too or its type conflicts with NodeJS.ReadStream.setRawMode.
   input.setRawMode = (v: boolean) => {
     rawCalls.push(v);
     input.isRaw = v;
+    return input;
   };
   const written: string[] = [];
   const output = { write: (s: string) => written.push(s) } as unknown as NodeJS.WriteStream;

@@ -24,7 +24,7 @@ const doc = (over: Partial<GeneratedDocument> = {}): GeneratedDocument =>
     product: { name: 'Acme Gateway', version: '2.4.0', productClass: 'default' },
     sections: [
       { ref: 'Annex VII (1)', requirement: 'a general description', content: 'Acme Gateway 2.4.0', source: 'cra product' },
-      { ref: 'Annex VII (6)', requirement: 'a copy of the EU declaration', content: null, source: null },
+      { ref: 'Annex VII (6)', requirement: 'a copy of the EU declaration', content: null, source: undefined },
     ],
     gaps: ['Annex VII (6)'],
     complete: false,
@@ -72,7 +72,7 @@ describe('the printable technical file', () => {
     const html = renderDocumentHtml(
       doc({
         sections: [
-          { ref: '<img src=x onerror=alert(1)>', requirement: 'r & r', content: '"<b>bold</b>"', source: null },
+          { ref: '<img src=x onerror=alert(1)>', requirement: 'r & r', content: '"<b>bold</b>"', source: undefined },
         ],
       } as Partial<GeneratedDocument>),
     );
