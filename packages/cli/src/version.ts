@@ -11,7 +11,7 @@
  * does not read package.json and tsc does not compare string values, so nothing
  * else can catch it.
  */
-export const VERSION = '0.8.0';
+export const VERSION = '0.8.1';
 
 /** What goes in a hypothesis's `provenance.tool`. */
 export const TOOL_ID = 'legalithm-cli';

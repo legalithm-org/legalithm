@@ -9,7 +9,7 @@
  * Output is informational — not legal advice, never "compliant by default".
  */
 import { readFileSync, existsSync, readdirSync, statSync, writeFileSync, mkdirSync } from 'fs';
-import { join, dirname, relative } from 'path';
+import { join, dirname, relative, basename, resolve } from 'path';
 import { createHash } from 'crypto';
 import { parseArgs, flagString, flagBool } from './args.js';
 import { detectStack } from './detect.js';
@@ -35,6 +35,7 @@ import { emitSurfaceActive, flushTelemetry, CLI_TELEMETRY_COMMANDS } from './tel
 import { craPush } from './cra/push.js';
 import { eaaIngest, eaaClock, ADAPTERS } from './eaa/commands.js';
 import { craMonitor } from './cra/monitor.js';
+import { craUsageLines } from './cra/usage.js';
 import { craSimulate } from './cra/simulate.js';
 import { craProduct, craIngest, craWatch, craRecord, craClaim, craClassify, craAssess, craDoc, craSupport, craReport, craAdvise, craSupplierRequest, craSupplierAttest, craSupplierVerify, craSupplierDiscover, craSupplierStatus, craRisk, craPolicy, recomputeRecordHash } from './cra/commands.js';
 import {
@@ -345,11 +346,188 @@ export async function main(argv: string[]): Promise<number> {
   return code;
 }
 
+
+/**
+ * Offline verification of compliance/cra/record.json under `root`, for someone
+ * who is not us. Reads only files: the record, the detached signature, the
+ * published public keys, the pinned documents. No network, no API key.
+ *
+ * Extracted from the `cra record --verify` branch so that `verify-record`,
+ * handed a CRA record, can run the same check instead of asking for a file
+ * that does not exist. Two verifiers that disagree about what a record is
+ * would be worse than one.
+ */
+function verifyCraRecordAt(cwd: string): number {
+      /*
+       * Offline verification, for someone who is not us.
+       *
+       * `cra record --sign` existed and there was no way to check its output.
+       * `verify-record` only ever looked at compliance/legalithm.json, the AI
+       * Act record, so a signed CRA record could not be verified by the tool
+       * that produced it, let alone by an auditor.
+       *
+       * Reads only files: the record, the detached signature, the published
+       * public keys. No streams, no network, no API key, and nothing that
+       * depends on Legalithm being reachable or solvent when someone looks.
+       */
+      const recPath = join(cwd, 'compliance', 'cra', 'record.json');
+      if (!existsSync(recPath)) {
+        console.error('No compliance/cra/record.json. Run: legalithm cra record');
+        return 1;
+      }
+      const stored = JSON.parse(readFileSync(recPath, 'utf8')) as Record<string, unknown>;
+      const recomputed = recomputeRecordHash(stored);
+      const intact = recomputed === stored.recordHash;
+
+      console.log(intact ? '✓ Record integrity OK.' : '✗ Record has been ALTERED since it was generated.');
+      console.log(`  stored     ${String(stored.recordHash)}`);
+      if (!intact) console.log(`  recomputed ${recomputed}`);
+
+      const sigPath = join(cwd, 'compliance', 'cra', 'record.signature.json');
+      if (!existsSync(sigPath)) {
+        console.log('  No detached signature. The hash proves the record is unaltered,');
+        console.log('  it does not say who issued it. Sign it with --sign to get that.');
+        return intact ? 0 : 1;
+      }
+
+      const sig = parseSignatureFile(readFileSync(sigPath, 'utf8'));
+      const keysPath = join(cwd, 'compliance', 'cra', VERIFICATION_KEYS_FILE);
+      if (existsSync(keysPath)) {
+        const published = parseVerificationKeys(readFileSync(keysPath, 'utf8'));
+        for (const [id, pem] of Object.entries(published.keys)) registerVerificationKey(id, pem);
+      } else if (!isBuiltInKeyId(sig.keyId)) {
+        console.error(`  Signature is under "${sig.keyId}" and no public key is published for it.`);
+        console.error(`  compliance/cra/${VERIFICATION_KEYS_FILE} is missing, so nobody can check this.`);
+        return 1;
+      }
+
+      const valid = verifyDetachedSignature(String(stored.recordHash), sig);
+
+      /*
+       * A signature over a hash the content no longer produces is NOT a valid
+       * record, and must never be printed as "valid" on its own line. The
+       * signature is genuine and it covers a document that no longer exists,
+       * which is the most dangerous thing to report loosely: someone skimming
+       * for the word "valid" would accept an altered record.
+       */
+      if (!intact) {
+        console.log(
+          valid
+            ? `  Detached signature: genuine (key "${sig.keyId}"), but it covers the ORIGINAL`
+            : `  Detached signature: INVALID (key "${sig.keyId}")`,
+        );
+        if (valid) {
+          console.log('  record, not this one. Someone signed a document, then the document');
+          console.log('  changed. Treat this record as untrusted.');
+        }
+        return 1;
+      }
+
+      console.log(
+        valid
+          ? `  Detached signature: valid (key "${sig.keyId}")`
+          : `  Detached signature: INVALID (key "${sig.keyId}")`,
+      );
+      if (valid) {
+        // Say exactly what it proves, and no more.
+        console.log('  This proves the record was signed by whoever holds that key.');
+        console.log('  It does not prove who that is: confirm the key out of band.');
+      }
+
+      /*
+       * The record pins the Article 13(2) risk assessment by content, and this
+       * is the one place an auditor looks. Verifying the signature and stopping
+       * would report "valid" over a record whose cited assessment has since been
+       * rewritten, which is exactly the failure the pin exists to prevent. Still
+       * file-only: the document sits next to the record.
+       *
+       * Absent is not a failure. A record and its signature can legitimately be
+       * handed over without the assessment attached. Present but DIFFERENT is a
+       * failure, because then the bundle contradicts itself.
+       */
+      const risk = stored.riskAssessment as { document?: string; sha256?: string } | null | undefined;
+      const policies = Array.isArray(stored.documents)
+        ? (stored.documents as { kind?: string; document?: string; sha256?: string }[])
+        : [];
+
+      /*
+       * Every pinned document, not just the risk assessment. Once Part II
+       * determinations rest on a disclosure policy and published advisories,
+       * checking one document and reporting "valid" over the rest would leave
+       * exactly the gap the pin exists to close.
+       */
+      const pinned = [
+        ...(risk && risk.document && risk.sha256
+          ? [{ label: 'risk assessment', document: risk.document, sha256: risk.sha256 }]
+          : []),
+        ...policies
+          .filter((p) => p.document && p.sha256)
+          .map((p) => ({ label: p.kind ?? 'document', document: p.document!, sha256: p.sha256! })),
+      ];
+
+      let drifted = false;
+      const absent: string[] = [];
+      if (valid) {
+        for (const doc of pinned) {
+          const docPath = join(cwd, doc.document);
+          if (!existsSync(docPath)) {
+            absent.push(`${doc.document} (${doc.label})`);
+            continue;
+          }
+          const actual = createHash('sha256').update(readFileSync(docPath)).digest('hex');
+          if (actual !== doc.sha256) {
+            if (!drifted) console.log('');
+            drifted = true;
+            console.log(`  ✗ ${doc.document} no longer matches the hash this record signed.`);
+            console.log(`    signed   ${doc.sha256}`);
+            console.log(`    on disk  ${actual}`);
+          }
+        }
+      }
+
+      if (absent.length) {
+        console.log(`  Note: ${absent.length} document(s) this record cites are not present here:`);
+        for (const a of absent) console.log(`    ${a}`);
+        console.log('  The signature covers their hashes, so it stays valid; you cannot check');
+        console.log('  what they said without the documents themselves.');
+      }
+
+      if (drifted) {
+        console.log('    The record and signature are intact. The documents they refer to have');
+        console.log('    been rewritten since, so they are not what was assessed or published.');
+        return 1;
+      }
+
+      return valid ? 0 : 1;
+}
+
+
+/** True when the file is a CRA record: its schema says so, or it sits at compliance/cra/record.json. */
+function isCraRecordFile(path: string): boolean {
+  const abs = resolve(path);
+  if (abs.endsWith(join('compliance', 'cra', 'record.json'))) return true;
+  try {
+    const parsed = JSON.parse(readFileSync(abs, 'utf8')) as { schema?: unknown };
+    return typeof parsed.schema === 'string' && parsed.schema.startsWith('legalithm.cra.record');
+  } catch {
+    return false;
+  }
+}
+
 async function runCommand(argv: string[]): Promise<number> {
   const { command, flags, positionals } = parseArgs(argv);
   const cwd = process.cwd();
   const apiUrl = resolveApiUrl();
   const apiKey = resolveApiKey();
+
+  // `legalithm cra report --help` used to print the GLOBAL help, cut off at the
+  // subcommand list, because this check ran before the cra branch saw the
+  // subcommand. Answer the question that was asked.
+  // parseArgs treats single-dash tokens as positionals, so `-h` arrives there.
+  if (command === 'cra' && (flagBool(flags, 'help') || flagBool(flags, 'h') || positionals.includes('-h'))) {
+    for (const line of craUsageLines(positionals.find((p) => p !== '-h'))) console.log(line);
+    return 0;
+  }
 
   if (command === 'help' || flagBool(flags, 'help')) {
     help();
@@ -712,149 +890,8 @@ async function runCommand(argv: string[]): Promise<number> {
     }
 
     if (sub === 'record' && flagBool(flags, 'verify')) {
-      /*
-       * Offline verification, for someone who is not us.
-       *
-       * `cra record --sign` existed and there was no way to check its output.
-       * `verify-record` only ever looked at compliance/legalithm.json, the AI
-       * Act record, so a signed CRA record could not be verified by the tool
-       * that produced it, let alone by an auditor.
-       *
-       * Reads only files: the record, the detached signature, the published
-       * public keys. No streams, no network, no API key, and nothing that
-       * depends on Legalithm being reachable or solvent when someone looks.
-       */
-      const recPath = join(cwd, 'compliance', 'cra', 'record.json');
-      if (!existsSync(recPath)) {
-        console.error('No compliance/cra/record.json. Run: legalithm cra record');
-        return 1;
-      }
-      const stored = JSON.parse(readFileSync(recPath, 'utf8')) as Record<string, unknown>;
-      const recomputed = recomputeRecordHash(stored);
-      const intact = recomputed === stored.recordHash;
-
-      console.log(intact ? '✓ Record integrity OK.' : '✗ Record has been ALTERED since it was generated.');
-      console.log(`  stored     ${String(stored.recordHash)}`);
-      if (!intact) console.log(`  recomputed ${recomputed}`);
-
-      const sigPath = join(cwd, 'compliance', 'cra', 'record.signature.json');
-      if (!existsSync(sigPath)) {
-        console.log('  No detached signature. The hash proves the record is unaltered,');
-        console.log('  it does not say who issued it. Sign it with --sign to get that.');
-        return intact ? 0 : 1;
-      }
-
-      const sig = parseSignatureFile(readFileSync(sigPath, 'utf8'));
-      const keysPath = join(cwd, 'compliance', 'cra', VERIFICATION_KEYS_FILE);
-      if (existsSync(keysPath)) {
-        const published = parseVerificationKeys(readFileSync(keysPath, 'utf8'));
-        for (const [id, pem] of Object.entries(published.keys)) registerVerificationKey(id, pem);
-      } else if (!isBuiltInKeyId(sig.keyId)) {
-        console.error(`  Signature is under "${sig.keyId}" and no public key is published for it.`);
-        console.error(`  compliance/cra/${VERIFICATION_KEYS_FILE} is missing, so nobody can check this.`);
-        return 1;
-      }
-
-      const valid = verifyDetachedSignature(String(stored.recordHash), sig);
-
-      /*
-       * A signature over a hash the content no longer produces is NOT a valid
-       * record, and must never be printed as "valid" on its own line. The
-       * signature is genuine and it covers a document that no longer exists,
-       * which is the most dangerous thing to report loosely: someone skimming
-       * for the word "valid" would accept an altered record.
-       */
-      if (!intact) {
-        console.log(
-          valid
-            ? `  Detached signature: genuine (key "${sig.keyId}"), but it covers the ORIGINAL`
-            : `  Detached signature: INVALID (key "${sig.keyId}")`,
-        );
-        if (valid) {
-          console.log('  record, not this one. Someone signed a document, then the document');
-          console.log('  changed. Treat this record as untrusted.');
-        }
-        return 1;
-      }
-
-      console.log(
-        valid
-          ? `  Detached signature: valid (key "${sig.keyId}")`
-          : `  Detached signature: INVALID (key "${sig.keyId}")`,
-      );
-      if (valid) {
-        // Say exactly what it proves, and no more.
-        console.log('  This proves the record was signed by whoever holds that key.');
-        console.log('  It does not prove who that is: confirm the key out of band.');
-      }
-
-      /*
-       * The record pins the Article 13(2) risk assessment by content, and this
-       * is the one place an auditor looks. Verifying the signature and stopping
-       * would report "valid" over a record whose cited assessment has since been
-       * rewritten, which is exactly the failure the pin exists to prevent. Still
-       * file-only: the document sits next to the record.
-       *
-       * Absent is not a failure. A record and its signature can legitimately be
-       * handed over without the assessment attached. Present but DIFFERENT is a
-       * failure, because then the bundle contradicts itself.
-       */
-      const risk = stored.riskAssessment as { document?: string; sha256?: string } | null | undefined;
-      const policies = Array.isArray(stored.documents)
-        ? (stored.documents as { kind?: string; document?: string; sha256?: string }[])
-        : [];
-
-      /*
-       * Every pinned document, not just the risk assessment. Once Part II
-       * determinations rest on a disclosure policy and published advisories,
-       * checking one document and reporting "valid" over the rest would leave
-       * exactly the gap the pin exists to close.
-       */
-      const pinned = [
-        ...(risk && risk.document && risk.sha256
-          ? [{ label: 'risk assessment', document: risk.document, sha256: risk.sha256 }]
-          : []),
-        ...policies
-          .filter((p) => p.document && p.sha256)
-          .map((p) => ({ label: p.kind ?? 'document', document: p.document!, sha256: p.sha256! })),
-      ];
-
-      let drifted = false;
-      const absent: string[] = [];
-      if (valid) {
-        for (const doc of pinned) {
-          const docPath = join(cwd, doc.document);
-          if (!existsSync(docPath)) {
-            absent.push(`${doc.document} (${doc.label})`);
-            continue;
-          }
-          const actual = createHash('sha256').update(readFileSync(docPath)).digest('hex');
-          if (actual !== doc.sha256) {
-            if (!drifted) console.log('');
-            drifted = true;
-            console.log(`  ✗ ${doc.document} no longer matches the hash this record signed.`);
-            console.log(`    signed   ${doc.sha256}`);
-            console.log(`    on disk  ${actual}`);
-          }
-        }
-      }
-
-      if (absent.length) {
-        console.log(`  Note: ${absent.length} document(s) this record cites are not present here:`);
-        for (const a of absent) console.log(`    ${a}`);
-        console.log('  The signature covers their hashes, so it stays valid; you cannot check');
-        console.log('  what they said without the documents themselves.');
-      }
-
-      if (drifted) {
-        console.log('    The record and signature are intact. The documents they refer to have');
-        console.log('    been rewritten since, so they are not what was assessed or published.');
-        return 1;
-      }
-
-      return valid ? 0 : 1;
+      return verifyCraRecordAt(cwd);
     }
-
     if (sub === 'record') {
       const { code, record } = craRecord(io, {
         asOf: flagString(flags, 'as-of'),
@@ -1057,6 +1094,27 @@ async function runCommand(argv: string[]): Promise<number> {
     // (compliance/legalithm.json) is the local CLI record. Different objects,
     // same command, told apart by --bundle.
     const bundlePath = flagString(flags, 'bundle');
+    /*
+     * `legalithm verify-record compliance/cra/record.json` answered "No
+     * compliance/legalithm.json found, run legalithm init first", which is
+     * wrong twice: the file exists, and init is the AI Act command. A CRA
+     * record is verified by the CRA verifier; route it there when the file
+     * says what it is, or when its path is the CRA record's canonical place.
+     */
+    const target = bundlePath ?? positionals[0];
+    if (target && existsSync(target) && isCraRecordFile(target)) {
+      const abs = resolve(cwd, target);
+      const canonical =
+        basename(abs) === 'record.json' &&
+        basename(dirname(abs)) === 'cra' &&
+        basename(dirname(dirname(abs))) === 'compliance';
+      if (!canonical) {
+        console.error('That is a CRA record. Verify it from its project root with: legalithm cra record --verify');
+        console.error('(it reads compliance/cra/record.json, record.signature.json and verification-keys.json together)');
+        return 1;
+      }
+      return verifyCraRecordAt(dirname(dirname(dirname(abs))));
+    }
     if (bundlePath) {
       const { verifyRecordBundle } = await import('./record-core/verify.js');
       if (!existsSync(bundlePath)) {

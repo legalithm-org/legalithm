@@ -69,3 +69,29 @@ export function dutiesFor(
 
   return { role, applied, obligations, reassigned: applied.length > 1 };
 }
+
+/**
+ * Group obligation refs by article for display, keeping the lettered points.
+ *
+ * `cra classify` printed the Annex I Part I duties as "(1) (2) (2) (2) ...",
+ * thirteen times "(2)", because the regex that split "Annex I Part I (2)(a)"
+ * into article and paragraph captured only the first parenthesised group. The
+ * letter is the information: (2)(a) and (2)(m) are different duties, and a
+ * reader who sees thirteen "(2)" learns nothing and trusts the tool less.
+ */
+export function groupDutyRefs(
+  obligations: readonly { ref: string; title: string }[],
+): { article: string; title: string; points: string[] }[] {
+  const byArticle = new Map<string, { title: string; points: string[] }>();
+  for (const o of obligations) {
+    const m = /^(Article \d+|Annex [IVX]+(?: Part [IVX]+)?)\s*/.exec(o.ref);
+    const article = m?.[1] ?? o.ref;
+    const rest = m ? o.ref.slice(m[0].length).trim() : '';
+    if (!byArticle.has(article)) {
+      byArticle.set(article, { title: o.title.replace(/^[^:]+:\s*/, ''), points: [] });
+    }
+    const entry = byArticle.get(article)!;
+    if (rest && !entry.points.includes(rest)) entry.points.push(rest);
+  }
+  return [...byArticle].map(([article, { title, points }]) => ({ article, title, points }));
+}

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterAll, afterEach, beforeAll } from 'vitest';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -86,6 +86,25 @@ describe('normaliseRemote', () => {
 });
 
 describe('projectIdentity', () => {
+  // Git exports GIT_DIR (and friends) to hook processes, and the pre-push hook runs this
+  // suite. Inherited, they point every git call here at the REAL repository instead of the
+  // temp dirs: `git init` then set core.bare=true on the Legalithm checkout (26 Sep 2026),
+  // breaking git for every worktree. Clear them for this block, restore after.
+  const GIT_LOCATION_VARS = ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_COMMON_DIR', 'GIT_PREFIX'];
+  const saved: Record<string, string | undefined> = {};
+  beforeAll(() => {
+    for (const name of GIT_LOCATION_VARS) {
+      saved[name] = process.env[name];
+      delete process.env[name];
+    }
+  });
+  afterAll(() => {
+    for (const name of GIT_LOCATION_VARS) {
+      if (saved[name] === undefined) delete process.env[name];
+      else process.env[name] = saved[name];
+    }
+  });
+
   const tmp = () => mkdtempSync(join(tmpdir(), 'legalithm-tel-'));
   const run = (args: string[], cwd: string) =>
     spawnSync('git', args, { cwd, stdio: 'ignore' });

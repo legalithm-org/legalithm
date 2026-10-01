@@ -70,7 +70,7 @@ import {
   advisoryEnvelope,
   type AdvisoryTrigger,
 } from './advisory.js';
-import { dutiesFor, type CraRole } from './duties.js';
+import { dutiesFor, type CraRole, groupDutyRefs } from './duties.js';
 import {
   buildArticle14Report,
   renderArticle14Markdown,
@@ -350,11 +350,58 @@ export const NO_COMPONENTS = '(no third-party components)';
  */
 function componentName(c: { name?: string; group?: string; purl?: string }): string {
   const purl = typeof c.purl === 'string' ? c.purl : '';
-  const npm = /^pkg:npm\/(.+?)@[^@]*$/.exec(purl) ?? /^pkg:npm\/(.+)$/.exec(purl);
-  if (npm?.[1]) return decodeURIComponent(npm[1]);
+  const fromPurl = osvNameFromPurl(purl);
+  if (fromPurl) return fromPurl;
   const group = typeof c.group === 'string' ? c.group : '';
   if (group.startsWith('@')) return `${group}/${String(c.name)}`;
+  // A dotted group with no purl is a Maven groupId; OSV names Maven packages
+  // "groupId:artifactId", and "log4j-core" alone matches nothing there.
+  if (group.includes('.')) return `${group}:${String(c.name)}`;
   return String(c.name);
+}
+
+/**
+ * The package name OSV uses for a purl, per ecosystem.
+ *
+ * `matchOsv` joins on the exact package name, so the name stored at ingest has
+ * to be the one OSV records carry. npm was handled; Maven was not, and a
+ * CycloneDX component `{ name: "log4j-core", purl: "pkg:maven/org.apache.logging.log4j/log4j-core@2.14.1" }`
+ * never met the OSV record for CVE-2021-44228, whose affected package is
+ * "org.apache.logging.log4j:log4j-core". That is the false negative the join
+ * exists to prevent, on the one CVE everybody checks first.
+ *
+ * Returns null when the purl is absent or of a type this does not know, so the
+ * caller falls back to name and group rather than guessing.
+ */
+export function osvNameFromPurl(purl: string): string | null {
+  const m = /^pkg:([^/]+)\/(.+?)(?:@[^@?#]*)?(?:[?#].*)?$/.exec(purl);
+  if (!m) return null;
+  const type = m[1]!.toLowerCase();
+  const segments = m[2]!.split('/').map((seg) => decodeURIComponent(seg));
+  const name = segments.pop() ?? '';
+  const ns = segments.join('/');
+  if (!name) return null;
+  switch (type) {
+    case 'npm':
+      return ns ? `${ns}/${name}` : name;
+    case 'maven':
+      return ns ? `${ns}:${name}` : name;
+    case 'golang':
+    case 'composer':
+      return ns ? `${ns}/${name}` : name;
+    case 'pypi':
+      // PyPI names are case-insensitive and treat _ . - alike; OSV stores lowercase with hyphens.
+      return name.toLowerCase().replace(/[_.]/g, '-');
+    case 'cargo':
+    case 'gem':
+    case 'nuget':
+    case 'hex':
+    case 'pub':
+    case 'cran':
+      return name;
+    default:
+      return ns ? `${ns}/${name}` : name;
+  }
 }
 
 /**
@@ -1701,19 +1748,9 @@ export function craClassify(
        * Five identical lines told a reader nothing; the paragraph numbers are the
        * information, and they are what a person looks up.
        */
-      const byArticle = new Map<string, { title: string; paras: string[] }>();
-      for (const o of duties.obligations) {
-        const m = /^(Article \d+|Annex [IVX]+[^(]*)\s*(?:\(([^)]+)\))?/.exec(o.ref);
-        const article = m?.[1] ?? o.ref;
-        const para = m?.[2];
-        if (!byArticle.has(article)) {
-          byArticle.set(article, { title: o.title.replace(/^[^:]+:\s*/, ''), paras: [] });
-        }
-        if (para) byArticle.get(article)!.paras.push(`(${para})`);
-      }
-      for (const [article, { title, paras }] of byArticle) {
+      for (const { article, title, points } of groupDutyRefs(duties.obligations)) {
         io.log(`  ${article.padEnd(12)} ${title}`);
-        if (paras.length) io.log(`  ${' '.repeat(12)} ${paras.join(' ')}`);
+        if (points.length) io.log(`  ${' '.repeat(12)} ${points.join(' ')}`);
       }
       if (duties.reassigned) {
         io.log('');
