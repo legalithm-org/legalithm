@@ -57,6 +57,9 @@ export interface Hypothesis {
   aiModel?: string | null;
   aiModelVersion?: string | null;
   aiPromptHash?: string | null;
+  /** An expert row's argument. Part of its id when present. */
+  rationale?: string | null;
+  citations?: readonly string[];
 }
 
 export interface Claim {
